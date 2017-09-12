@@ -20,6 +20,9 @@ public class Examples {
         String response;
         Map<String, String> input = new HashMap<>();
 
+//        sellSomething(api);
+		cancelOpenOrder(api);
+
 //        input.put("pair", "XBTEUR");
 //        response = api.queryPublic(Method.TICKER, input);
 //        System.out.println(response);
@@ -29,14 +32,36 @@ public class Examples {
 //        response = api.queryPublic(Method.ASSET_PAIRS, input);
 //        System.out.println(response);
 
-		input.clear();
-		input.put("asset", "ZEUR");
-		response = api.queryPrivate(Method.BALANCE, input);
+//		input.clear();
+//		input.put("asset", "ZEUR");
+//		response = api.queryPrivate(Method.BALANCE, input);
+//		System.out.println(response);
+//
+//		input.clear();
+//		input.put("asset", "ZEUR");
+//		response = api.queryPrivate(Method.TRADE_BALANCE, input);
+//		System.out.println(response);
+    }
+
+    private static void sellSomething(KrakenApi api) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+		Map<String, String> input = new HashMap<>();
+		input.put("pair", "XLTCZEUR");
+		input.put("type", "sell");
+		input.put("ordertype", "limit");
+		input.put("price", "120");
+		input.put("volume", "1");
+//		input.put("validate", "yes");
+
+		String response = api.queryPrivate(Method.ADD_ORDER, input);
 		System.out.println(response);
 
-		input.clear();
-		input.put("asset", "ZEUR");
-		response = api.queryPrivate(Method.TRADE_BALANCE, input);
+	}
+
+	private static void cancelOpenOrder(KrakenApi api) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+		Map<String, String> input = new HashMap<>();
+		input.put("txid", "O53TJL-M43HI-F2GVZ5");
+
+		String response = api.queryPrivate(Method.CANCEL_ORDER, input);
 		System.out.println(response);
-    }
+	}
 }
