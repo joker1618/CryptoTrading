@@ -59,7 +59,7 @@ public class Examples {
 
 	private static void cancelOpenOrder(KrakenApi api) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
 		Map<String, String> input = new HashMap<>();
-		input.put("txid", "O53TJL-M43HI-F2GVZ5");
+		input.put("txid", "OWMWBZ-HI5CN-MUPXKP");
 
 		String response = api.queryPrivate(Method.CANCEL_ORDER, input);
 		System.out.println(response);
