@@ -20,8 +20,8 @@ public class Examples {
         String response;
         Map<String, String> input = new HashMap<>();
 
-//        sellSomething(api);
-		cancelOpenOrder(api);
+        sellSomething(api);
+//		cancelOpenOrder(api);
 
 //        input.put("pair", "XBTEUR");
 //        response = api.queryPublic(Method.TICKER, input);
@@ -46,11 +46,11 @@ public class Examples {
     private static void sellSomething(KrakenApi api) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
 		Map<String, String> input = new HashMap<>();
 		input.put("pair", "XLTCZEUR");
-		input.put("type", "sell");
+		input.put("type", "buy");
 		input.put("ordertype", "limit");
-		input.put("price", "120");
+		input.put("price", "1");
 		input.put("volume", "1");
-//		input.put("validate", "yes");
+		input.put("validate", "yes");
 
 		String response = api.queryPrivate(Method.ADD_ORDER, input);
 		System.out.println(response);

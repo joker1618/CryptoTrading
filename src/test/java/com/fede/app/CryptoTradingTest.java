@@ -1,39 +1,15 @@
 package com.fede.app;
 
-import com.fede.app.crypto.trading.model.Asset;
-import com.fede.app.crypto.trading.util.StrUtils;
-import org.junit.Test;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static java.lang.System.out;
-
 /**
  * Created by f.barbano on 07/09/2017.
  */
 public class CryptoTradingTest {
 
+	// To enable this class it need to include javax.json and/or org.glassfish.json
+
 	private final String USER_AGENT = "Mozilla/5.0";
 
-
+/*
 	@Test
 	public void callGetServerTime() throws IOException {
 		String url = "https://api.kraken.com/0/public/Time";
@@ -91,13 +67,13 @@ public class CryptoTradingTest {
 
 		String[] fields = StrUtils.splitAllFields(strResult, "},", true, false);
 
-		List<Asset> assetList = new ArrayList<>();
+		List<AssetInfo> assetList = new ArrayList<>();
 
 		for(String field : fields) {
 			String[] split = StrUtils.splitAllFields(field, ":");
 			String xccy = split[0].replaceAll("\"", "").trim();
 			JsonObject jo = jsonObject.getJsonObject(xccy);
-			Asset asset = new Asset();
+			AssetInfo asset = new AssetInfo();
 			asset.setAssetName(xccy);
 			asset.setAssetClass(jo.getString("aclass"));
 			asset.setAltName(jo.getString("altname"));
@@ -130,6 +106,6 @@ public class CryptoTradingTest {
 		}
 	}
 
-
+*/
 
 }
