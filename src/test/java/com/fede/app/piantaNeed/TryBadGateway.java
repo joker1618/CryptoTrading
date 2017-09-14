@@ -41,8 +41,6 @@ public class TryBadGateway {
 			} else {
 				System.out.println("Order done [txId=" + txId + "]");
 				Thread.sleep(PAUSE_SEC * 1000);
-				cancelOrder(txId);
-				System.out.println("Order canceled for [txId=" + txId + "]");
 			}
 
 			Thread.sleep(PAUSE_SEC * 1000);
@@ -55,8 +53,8 @@ public class TryBadGateway {
 		input.put("pair", "XLTCZEUR");
 		input.put("type", "sell");
 		input.put("ordertype", "limit");
-		input.put("price", "120");
-		input.put("volume", "1");
+		input.put("price", "42");
+		input.put("volume", "4.99948");
 //		input.put("validate", "yes");
 
 		String response = api.queryPrivate(KrakenApi.Method.ADD_ORDER, input);

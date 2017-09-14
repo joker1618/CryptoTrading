@@ -1,0 +1,11 @@
+To do:
+
+# Controllare la differenza tra il TimeStamp ricavato al momento in cui richiamiamo la funzione di emissione dell'ordine
+ e quello che risulta a Kraken:
+    1. Richiedere il TimeStamp dal server di Kraken al momento di emissione dell'ordine (Time function).
+    2. Utilizzando le Funzioni OpenOrders/CloseOrders mi estraggo l'ora in cui è stato aperto o chiuso l'ordine.
+
+# Soluzione "Bad Getaway" error:
+    1. Richiedere il time stamp dal server di Kraken al momento di emissione dell'ordine (Time function).
+    2. Utilizzando le Funzioni OpenOrders/CloseOrders controllo se è stato emesso/chiuso un ordine nell'inervallo di 1
+     sec successivo al TimeStamp salvato prima dell'emissione.
