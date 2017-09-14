@@ -57,6 +57,7 @@ public class TryBadGateway {
 		input.put("volume", "4.99948");
 //		input.put("validate", "yes");
 
+
 		String response = api.queryPrivate(KrakenApi.Method.ADD_ORDER, input);
 
 		FileUtils.appendToFile(TRACE_FILE, response, true);
