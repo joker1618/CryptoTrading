@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.System.out;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Created by f.barbano on 15/09/2017.

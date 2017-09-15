@@ -4,7 +4,6 @@ import com.fede.app.crypto.trading.model.Asset;
 import com.fede.app.crypto.trading.model.AssetPair;
 import com.fede.app.crypto.trading.model.Ticker;
 
-import java.util.List;
 import java.util.Map;
 
 /**

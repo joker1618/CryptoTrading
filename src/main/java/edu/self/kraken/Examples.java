@@ -1,13 +1,13 @@
 package edu.self.kraken;
 
+import edu.self.kraken.api.KrakenApi;
+import edu.self.kraken.api.KrakenApi.Method;
+
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-
-import edu.self.kraken.api.KrakenApi;
-import edu.self.kraken.api.KrakenApi.Method;
 
 public class Examples {
 

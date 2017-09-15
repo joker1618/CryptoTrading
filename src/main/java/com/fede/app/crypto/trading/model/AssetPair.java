@@ -1,15 +1,6 @@
 package com.fede.app.crypto.trading.model;
 
-import com.fede.app.crypto.trading.util.StrUtils;
-import com.fede.app.crypto.trading.util.Utils;
-import com.sun.corba.se.spi.orbutil.fsm.FSM;
-import org.apache.commons.lang3.StringUtils;
-import sun.security.krb5.internal.APOptions;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by f.barbano on 13/09/2017.

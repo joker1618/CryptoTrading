@@ -1,5 +1,7 @@
 package edu.self.kraken.api;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -7,9 +9,6 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Provides basic utilities for hash, byte array and string manipulation.

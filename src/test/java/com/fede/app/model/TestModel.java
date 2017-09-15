@@ -1,7 +1,5 @@
 package com.fede.app.model;
 
-import com.fede.app.crypto.trading.model.Asset;
-import com.fede.app.crypto.trading.parser.JsonToModel;
 import edu.self.kraken.api.KrakenApi;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,7 +8,6 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

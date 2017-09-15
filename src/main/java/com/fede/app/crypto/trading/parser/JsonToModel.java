@@ -3,16 +3,16 @@ package com.fede.app.crypto.trading.parser;
 import com.fede.app.crypto.trading.model.Asset;
 import com.fede.app.crypto.trading.model.AssetPair;
 import com.fede.app.crypto.trading.model.Ticker;
-import static com.fede.app.crypto.trading.model.Ticker.*;
 import com.fede.app.crypto.trading.util.Utils;
-
-import static com.fede.app.crypto.trading.model.AssetPair.FeeSchedule;
 
 import javax.json.*;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.fede.app.crypto.trading.model.AssetPair.FeeSchedule;
+import static com.fede.app.crypto.trading.model.Ticker.*;
 
 /**
  * Created by f.barbano on 13/09/2017.

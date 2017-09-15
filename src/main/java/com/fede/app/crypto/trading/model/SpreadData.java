@@ -1,8 +1,5 @@
 package com.fede.app.crypto.trading.model;
 
-import com.fede.app.crypto.trading.types.ActionType;
-import com.fede.app.crypto.trading.types.OrderType;
-
 import java.util.List;
 
 /**

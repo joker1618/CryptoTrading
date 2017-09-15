@@ -1,7 +1,5 @@
 package com.fede.app.crypto.trading.model;
 
-import java.util.List;
-
 /**
  * Created by f.barbano on 13/09/2017.
  */
