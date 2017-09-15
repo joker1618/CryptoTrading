@@ -20,7 +20,10 @@ public class StrUtils {
 		return splitAllFields(source, separatorString, false, true);
 	}
 	public static String[] splitAllFields(String source, String separatorString, boolean trimValues, boolean removeSeparator) {
-
+		if(source.isEmpty()) {
+			return new String[0];
+		}
+		
 		String[] splitted = source.split(Pattern.quote(separatorString));
 		int numFields = StringUtils.countMatches(source, separatorString) + 1;
 

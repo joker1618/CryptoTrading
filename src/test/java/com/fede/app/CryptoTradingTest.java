@@ -67,13 +67,13 @@ public class CryptoTradingTest {
 
 		String[] fields = StrUtils.splitAllFields(strResult, "},", true, false);
 
-		List<AssetInfo> assetList = new ArrayList<>();
+		List<Asset> assetList = new ArrayList<>();
 
 		for(String field : fields) {
 			String[] split = StrUtils.splitAllFields(field, ":");
 			String xccy = split[0].replaceAll("\"", "").trim();
 			JsonObject jo = jsonObject.getJsonObject(xccy);
-			AssetInfo asset = new AssetInfo();
+			Asset asset = new Asset();
 			asset.setAssetName(xccy);
 			asset.setAssetClass(jo.getString("aclass"));
 			asset.setAltName(jo.getString("altname"));

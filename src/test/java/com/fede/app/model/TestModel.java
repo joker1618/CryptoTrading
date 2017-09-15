@@ -1,7 +1,7 @@
 package com.fede.app.model;
 
-import com.fede.app.crypto.trading.model.AssetInfo;
-import com.fede.app.crypto.trading.model.JsonToModel;
+import com.fede.app.crypto.trading.model.Asset;
+import com.fede.app.crypto.trading.parser.JsonToModel;
 import edu.self.kraken.api.KrakenApi;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -46,9 +46,9 @@ public class TestModel {
 //		params.put("asset", "XICN,XXDG");
 		String resp = api.queryPublic(KrakenApi.Method.ASSETS);
 
-		List<AssetInfo> assetInfoList = JsonToModel.toAssetList(resp);
-
-		assetInfoList.forEach(System.out::println);
+//		List<Asset> assetList = JsonToModel.toAssetsInfo(resp);
+//
+//		assetList.forEach(System.out::println);
 
 	}
 

@@ -5,10 +5,11 @@ import java.util.List;
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class TickerInfo {
+public class Ticker {
 
-	private TickerPrice ask;
-	private TickerPrice bid;
+	private String pairName;
+	private TickerWholePrice ask;
+	private TickerWholePrice bid;
 	private TickerPrice lastTradeClosed;
 	private TickerVolume volume;
 	private TickerVolume weightedAverageVolume;
@@ -17,16 +18,22 @@ public class TickerInfo {
 	private TickerVolume high;
 	private double todayOpeningPrice;
 
-	public TickerPrice getAsk() {
+	public String getPairName() {
+		return pairName;
+	}
+	public void setPairName(String pairName) {
+		this.pairName = pairName;
+	}
+	public TickerWholePrice getAsk() {
 		return ask;
 	}
-	public void setAsk(TickerPrice ask) {
+	public void setAsk(TickerWholePrice ask) {
 		this.ask = ask;
 	}
-	public TickerPrice getBid() {
+	public TickerWholePrice getBid() {
 		return bid;
 	}
-	public void setBid(TickerPrice bid) {
+	public void setBid(TickerWholePrice bid) {
 		this.bid = bid;
 	}
 	public TickerPrice getLastTradeClosed() {
@@ -72,15 +79,15 @@ public class TickerInfo {
 		this.todayOpeningPrice = todayOpeningPrice;
 	}
 
-	public class TickerPrice {
+	public static class TickerPrice {
+		protected double price;
+		protected double lotVolume;
 
-		private double price;
-		private int wholeLotVolume;		// not used for "lastTradeClosed"
-		private double lotVolume;
+		public TickerPrice() {
 
-		public TickerPrice(double price, int wholeLotVolume, double lotVolume) {
+		}
+		public TickerPrice(double price, double lotVolume) {
 			this.price = price;
-			this.wholeLotVolume = wholeLotVolume;
 			this.lotVolume = lotVolume;
 		}
 
@@ -90,12 +97,6 @@ public class TickerInfo {
 		public void setPrice(double price) {
 			this.price = price;
 		}
-		public int getWholeLotVolume() {
-			return wholeLotVolume;
-		}
-		public void setWholeLotVolume(int wholeLotVolume) {
-			this.wholeLotVolume = wholeLotVolume;
-		}
 		public double getLotVolume() {
 			return lotVolume;
 		}
@@ -104,11 +105,33 @@ public class TickerInfo {
 		}
 	}
 
-	public class TickerVolume {
+	public static class TickerWholePrice extends TickerPrice {
+		protected int wholeLotVolume;
+
+		public TickerWholePrice() {
+			super();
+		}
+		public TickerWholePrice(double price, int wholeLotVolume, double lotVolume) {
+			super(price, lotVolume);
+			this.wholeLotVolume = wholeLotVolume;
+		}
+
+		public int getWholeLotVolume() {
+			return wholeLotVolume;
+		}
+		public void setWholeLotVolume(int wholeLotVolume) {
+			this.wholeLotVolume = wholeLotVolume;
+		}
+	}
+
+	public static class TickerVolume {
 		
 		private double today;
 		private double last24Hours;
 
+		public TickerVolume() {
+
+		}
 		public TickerVolume(double today, double last24Hours) {
 			this.today = today;
 			this.last24Hours = last24Hours;
