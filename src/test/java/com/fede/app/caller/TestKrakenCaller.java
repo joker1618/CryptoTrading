@@ -2,6 +2,7 @@ package com.fede.app.caller;
 
 import com.fede.app.crypto.trading.manager.IKrakenManager;
 import com.fede.app.crypto.trading.manager.KrakenManagerImpl;
+import com.fede.app.crypto.trading.model.AssetPair;
 import com.fede.app.crypto.trading.util.Utils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,6 +10,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.System.out;
 
@@ -52,6 +55,32 @@ public class TestKrakenCaller {
 	@Test
 	public void testDownloadTickers() throws IOException {
 		krakenManager.downloadTickers();
+	}
+
+	@Test
+	public void testDownloadOHLC() throws IOException {
+		Map<String, AssetPair> apairs = krakenManager.synchronizeAssetPairs();
+		long start = System.currentTimeMillis();
+		AtomicInteger count = new AtomicInteger(0);
+		apairs.keySet().forEach(apair -> {
+			if(!apair.endsWith(".d")) {
+				out.println("Getting OHLC for " + apair);
+				krakenManager.downloadOHLCData(apair);
+				count.incrementAndGet();
+			}
+		});
+		long end = System.currentTimeMillis();
+		out.println("Asset pairs: " + count.get());
+		out.println("Elapsed:     " + ((end - start) / 1000));
+
+	}
+
+	@Test
+	public void testDownloadOHLCSingle() throws IOException {
+		long start = System.currentTimeMillis();
+		krakenManager.downloadOHLCData("BCHUSD");
+		long end = System.currentTimeMillis();
+		out.println("Elapsed: " + ((end - start) / 1000));
 	}
 
 }

@@ -2,6 +2,7 @@ package com.fede.app.crypto.trading.facade;
 
 import com.fede.app.crypto.trading.model.Asset;
 import com.fede.app.crypto.trading.model.AssetPair;
+import com.fede.app.crypto.trading.model.OHLC;
 import com.fede.app.crypto.trading.model.Ticker;
 
 import java.io.IOException;
@@ -21,5 +22,14 @@ public interface IKrakenProvider {
 
 	void persistTickers(List<Ticker> tickers) throws IOException;
 	Map<String, List<Ticker>> readTickers(List<String> pairNames) throws IOException;
+
+	void persistOHLCs(List<OHLC> ohlcList) throws IOException;
+	void persistOHLCLast(String pairName, long last) throws IOException;
+	List<OHLC> readOHLCs(String pairName) throws IOException;
+	long readOHLCLast(String pairName) throws IOException;
+
+
+
+
 
 }

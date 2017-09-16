@@ -2,8 +2,10 @@ package com.fede.app.crypto.trading.manager;
 
 import com.fede.app.crypto.trading.model.Asset;
 import com.fede.app.crypto.trading.model.AssetPair;
+import com.fede.app.crypto.trading.model.OHLC;
 import com.fede.app.crypto.trading.model.Ticker;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,4 +19,5 @@ public interface IKrakenManager {
 	Map<String, AssetPair> synchronizeAssetPairs();
 	Map<String, Ticker> downloadTickers();
 
+	List<OHLC> downloadOHLCData(String pairName);
 }

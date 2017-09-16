@@ -1,5 +1,6 @@
 package com.fede.app.model;
 
+import com.fede.app.crypto.trading.util.Utils;
 import edu.self.kraken.api.KrakenApi;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,6 +10,8 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.System.out;
 
 /**
  * Created by f.barbano on 13/09/2017.
@@ -25,6 +28,12 @@ public class TestModel {
 		api.setSecret("E07VIMtiE1x+0m1ef67ERAB8b3Xrk3Z1hxOlWbEUEB0dqKxghci7a+bnPeEmDrBigdYQ1My24fpPeMW9fOplIw==");
 	}
 
+	@Test
+	public void t() {
+		double v = Utils.toDouble("1505557371.1273");
+		out.println(v);
+		out.println((long)(v*1000));
+	}
 
 	/**
 	 Get asset info
@@ -53,7 +62,7 @@ public class TestModel {
 	public void testGetAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
 		String response = api.queryPrivate(KrakenApi.Method.BALANCE);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -61,7 +70,7 @@ public class TestModel {
 	public void testGetTradeBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
 		String response = api.queryPrivate(KrakenApi.Method.TRADE_BALANCE);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -69,7 +78,7 @@ public class TestModel {
 	public void testGetOpenOrders() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
 		String response = api.queryPrivate(KrakenApi.Method.OPEN_ORDERS);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -77,7 +86,7 @@ public class TestModel {
 	public void testGetClosedOrders() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
 		String response = api.queryPrivate(KrakenApi.Method.CLOSED_ORDERS);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -86,7 +95,7 @@ public class TestModel {
 		Map<String, String> params = new HashMap<>();
 		params.put("txid", "O7FEMB-64FHC-UAPV77");  // transaction ID
 		String response = api.queryPrivate(KrakenApi.Method.QUERY_ORDERS, params);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -94,7 +103,7 @@ public class TestModel {
 	public void testGetTradesHistory() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
 		String response = api.queryPrivate(KrakenApi.Method.TRADES_HISTORY);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -103,7 +112,7 @@ public class TestModel {
 		Map<String, String> params = new HashMap<>();
 		params.put("txid", "TCPR7S-MCSPU-LBNXD6");		// trade id
 		String response = api.queryPrivate(KrakenApi.Method.QUERY_TRADES);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -112,7 +121,7 @@ public class TestModel {
 		Map<String, String> params = new HashMap<>();
 //		params.put("txid", "TCPR7S-MCSPU-LBNXD6");		// trade id
 		String response = api.queryPrivate(KrakenApi.Method.OPEN_POSITIONS);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -121,7 +130,7 @@ public class TestModel {
 		Map<String, String> params = new HashMap<>();
 //		params.put("txid", "TCPR7S-MCSPU-LBNXD6");		// trade id
 		String response = api.queryPrivate(KrakenApi.Method.LEDGERS);
-		System.out.println(response);
+		out.println(response);
 
 	}
 
@@ -131,7 +140,7 @@ public class TestModel {
 //		params.put("pair", "ZUSD");
 		params.put("fee-info", "yes");
 		String response = api.queryPrivate(KrakenApi.Method.TRADE_VOLUME);
-		System.out.println(response);
+		out.println(response);
 
 	}
 }

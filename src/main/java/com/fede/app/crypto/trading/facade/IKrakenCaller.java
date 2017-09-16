@@ -2,7 +2,9 @@ package com.fede.app.crypto.trading.facade;
 
 import com.fede.app.crypto.trading.model.Asset;
 import com.fede.app.crypto.trading.model.AssetPair;
+import com.fede.app.crypto.trading.model.OHLC;
 import com.fede.app.crypto.trading.model.Ticker;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -21,4 +23,5 @@ public interface IKrakenCaller {
 
 	List<Ticker> getTickers(Collection<String> pairNames) throws IOException;
 
+	Pair<Long, List<OHLC>> getOHLCs(String pairName, long since) throws IOException;
 }

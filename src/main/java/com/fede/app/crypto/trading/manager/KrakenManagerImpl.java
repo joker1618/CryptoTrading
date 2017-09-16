@@ -7,9 +7,11 @@ import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
 import com.fede.app.crypto.trading.facade.KrakenProviderImpl;
 import com.fede.app.crypto.trading.model.Asset;
 import com.fede.app.crypto.trading.model.AssetPair;
+import com.fede.app.crypto.trading.model.OHLC;
 import com.fede.app.crypto.trading.model.Ticker;
 import com.fede.app.crypto.trading.util.CheckUtils;
 import com.fede.app.crypto.trading.util.Utils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
 import java.util.List;
@@ -118,6 +120,25 @@ public class KrakenManagerImpl implements IKrakenManager {
 			List<Ticker> tickers = krakenCaller.getTickers(pairNames);
 			krakenProvider.persistTickers(tickers);
 			return Utils.toMapSingle(tickers, Ticker::getPairName);
+
+		} catch(IOException ex) {
+			// TODO manage
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<OHLC> downloadOHLCData(String pairName) {
+		try {
+			long last = krakenProvider.readOHLCLast(pairName);
+
+			// download from kraken website
+			Pair<Long, List<OHLC>> ohlc = krakenCaller.getOHLCs(pairName, last);
+			if(ohlc != null) {
+				krakenProvider.persistOHLCs(ohlc.getValue());
+				krakenProvider.persistOHLCLast(pairName, ohlc.getKey());
+			}
+			return ohlc.getValue();
 
 		} catch(IOException ex) {
 			// TODO manage

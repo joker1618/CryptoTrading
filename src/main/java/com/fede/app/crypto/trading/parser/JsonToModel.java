@@ -2,8 +2,10 @@ package com.fede.app.crypto.trading.parser;
 
 import com.fede.app.crypto.trading.model.Asset;
 import com.fede.app.crypto.trading.model.AssetPair;
+import com.fede.app.crypto.trading.model.OHLC;
 import com.fede.app.crypto.trading.model.Ticker;
 import com.fede.app.crypto.trading.util.Utils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.json.*;
 import java.io.StringReader;
@@ -122,27 +124,42 @@ public class JsonToModel {
 		return toRet;
 	}
 
-//	public List<OHLCData> parseOHLCData() {
-//		if(containsErrors())	return null;
-//
-//		List<OHLCData> toRet = new ArrayList<>();
-//		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
-//			JsonObject jd = entry.getValue().asJsonObject();
-//			OHLCData data = new OHLCData();
-//			data.setPairName(entry.getKey());
-//			data.setAsk(parseTickerWholePrice(jd, "a"));
-//			data.setBid(parseTickerWholePrice(jd, "b"));
-//			data.setLastTradeClosed(parseTickerPrice(jd, "c"));
-//			data.setVolume(parseTickerVolume(jd, "v"));
-//			data.setWeightedAverageVolume(parseTickerVolume(jd, "p"));
-//			data.setTradesNumber(parseTickerVolume(jd, "t"));
-//			data.setLow(parseTickerVolume(jd, "l"));
-//			data.setHigh(parseTickerVolume(jd, "h"));
-//			data.setTodayOpeningPrice(Utils.toDouble(jd.getString("o")));
-//			toRet.add(data);
-//		}
-//		return toRet;
-//	}
+	public Pair<Long, List<OHLC>> parseOHLC() {
+		if(containsErrors())	return null;
+
+		String key = null;
+		// result has exactly 1 elem (size == 1)
+		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
+			if(!entry.getKey().equals("last")) {
+				key = entry.getKey();
+				break;
+			}
+		}
+
+		String pairName = key;
+		long last = result.getJsonNumber("last").longValue();
+
+		List<OHLC> ohlcList = new ArrayList<>();
+		result.getJsonArray(pairName).forEach(jv -> {
+			List<String> fields = jsonArrayToList(jv.asJsonArray());
+			long time = Long.parseLong(fields.get(0));
+			if(time <= last) {
+				OHLC ohlc = new OHLC();
+				ohlc.setPairName(pairName);
+				ohlc.setTime(time * 1000);
+				ohlc.setOpen(Utils.toDouble(fields.get(1)));
+				ohlc.setHigh(Utils.toDouble(fields.get(2)));
+				ohlc.setLow(Utils.toDouble(fields.get(3)));
+				ohlc.setClose(Utils.toDouble(fields.get(4)));
+				ohlc.setVwrap(Utils.toDouble(fields.get(5)));
+				ohlc.setVolume(Utils.toDouble(fields.get(6)));
+				ohlc.setCount(Long.parseLong(fields.get(7)));
+				ohlcList.add(ohlc);
+			}
+		});
+		return Pair.of(last, ohlcList);
+	}
+
 
 
 
@@ -165,13 +182,21 @@ public class JsonToModel {
 		return toRet;
 	}
 
-	private static List<String> jsonArrayToList(JsonObject jsonObj, String key) {
+	private static List<String> jsonArrayToList(JsonArray jsonArr) {
 		List<String> toRet = new ArrayList<>();
-		JsonArray jarr = jsonObj.getJsonArray(key);
-		if(jarr != null) {
-			jarr.forEach(jv -> toRet.add(jv.toString().replaceAll("^\"", "").replaceAll("\"$", "")));
+		if(jsonArr != null) {
+			jsonArr.forEach(jv -> {
+				String value = jv.toString();
+				if(jv.getValueType() == JsonValue.ValueType.STRING) {
+					value = value.replaceAll("^\"", "").replaceAll("\"$", "");
+				}
+				toRet.add(value);
+			});
 		}
 		return toRet;
+	}
+	private static List<String> jsonArrayToList(JsonObject jsonObj, String key) {
+		return jsonArrayToList(jsonObj.getJsonArray(key));
 	}
 
 	private static TickerPrice parseTickerPrice(JsonObject jsonObj, String key) {
@@ -202,4 +227,5 @@ public class JsonToModel {
 		tv.setLast24Hours(Utils.toDouble(values.get(1)));
 		return tv;
 	}
+
 }

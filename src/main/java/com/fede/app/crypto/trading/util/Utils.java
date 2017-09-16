@@ -38,7 +38,10 @@ public class Utils {
 	}
 
 	public static LocalDateTime fromSeconds(long sec) {
-		return Instant.ofEpochMilli(sec*1000).atZone(ZoneId.systemDefault()).toLocalDateTime();
+		return fromMillis(sec*1000);
+	}
+	public static LocalDateTime fromMillis(long millis) {
+		return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
 	public static String toString(long sec, String pattern) {
 		return toString(fromSeconds(sec), pattern);

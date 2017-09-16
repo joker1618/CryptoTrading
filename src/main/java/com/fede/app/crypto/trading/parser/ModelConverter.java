@@ -2,6 +2,7 @@ package com.fede.app.crypto.trading.parser;
 
 import com.fede.app.crypto.trading.model.Asset;
 import com.fede.app.crypto.trading.model.AssetPair;
+import com.fede.app.crypto.trading.model.OHLC;
 import com.fede.app.crypto.trading.model.Ticker;
 import com.fede.app.crypto.trading.model.Ticker.TickerPrice;
 import com.fede.app.crypto.trading.model.Ticker.TickerVolume;
@@ -118,6 +119,34 @@ public class ModelConverter {
 	}
 
 
+	public static String ohlcToString(OHLC ohlc) {
+		return String.format("%s|%d|%s|%s|%s|%s|%s|%s|%d",
+			ohlc.getPairName(),
+			ohlc.getTime(),
+			Utils.toString(ohlc.getOpen()),
+			Utils.toString(ohlc.getHigh()),
+			Utils.toString(ohlc.getLow()),
+			Utils.toString(ohlc.getClose()),
+			Utils.toString(ohlc.getVwrap()),
+			Utils.toString(ohlc.getVolume()),
+			ohlc.getCount()
+		);
+	}
+	public static OHLC stringToOHLC(String csvLine) {
+		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
+		OHLC ohlc = new OHLC();
+		ohlc.setPairName(split[0]);
+		ohlc.setTime(Long.parseLong(split[1]));
+		ohlc.setOpen(Utils.toDouble(split[2]));
+		ohlc.setHigh(Utils.toDouble(split[3]));
+		ohlc.setLow(Utils.toDouble(split[4]));
+		ohlc.setClose(Utils.toDouble(split[5]));
+		ohlc.setVwrap(Utils.toDouble(split[6]));
+		ohlc.setVolume(Utils.toDouble(split[7]));
+		ohlc.setCount(Long.parseLong(split[8]));
+		return ohlc;
+	}
+
 
 
 
@@ -181,4 +210,5 @@ public class ModelConverter {
 		tv.setLast24Hours(Utils.toDouble(split[1]));
 		return tv;
 	}
+
 }
