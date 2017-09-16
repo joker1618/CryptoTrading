@@ -99,13 +99,14 @@ public class JsonToModel {
 		return assetPairs;
 	}
 
-	public List<Ticker> parseTickers() {
+	public List<Ticker> parseTickers(long timestamp) {
 		if(containsErrors())	return null;
 
 		List<Ticker> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			JsonObject jt = entry.getValue().asJsonObject();
 			Ticker ticker = new Ticker();
+			ticker.setTimestamp(timestamp);
 			ticker.setPairName(entry.getKey());
 			ticker.setAsk(parseTickerWholePrice(jt, "a"));
 			ticker.setBid(parseTickerWholePrice(jt, "b"));
@@ -120,6 +121,28 @@ public class JsonToModel {
 		}
 		return toRet;
 	}
+
+//	public List<OHLCData> parseOHLCData() {
+//		if(containsErrors())	return null;
+//
+//		List<OHLCData> toRet = new ArrayList<>();
+//		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
+//			JsonObject jd = entry.getValue().asJsonObject();
+//			OHLCData data = new OHLCData();
+//			data.setPairName(entry.getKey());
+//			data.setAsk(parseTickerWholePrice(jd, "a"));
+//			data.setBid(parseTickerWholePrice(jd, "b"));
+//			data.setLastTradeClosed(parseTickerPrice(jd, "c"));
+//			data.setVolume(parseTickerVolume(jd, "v"));
+//			data.setWeightedAverageVolume(parseTickerVolume(jd, "p"));
+//			data.setTradesNumber(parseTickerVolume(jd, "t"));
+//			data.setLow(parseTickerVolume(jd, "l"));
+//			data.setHigh(parseTickerVolume(jd, "h"));
+//			data.setTodayOpeningPrice(Utils.toDouble(jd.getString("o")));
+//			toRet.add(data);
+//		}
+//		return toRet;
+//	}
 
 
 

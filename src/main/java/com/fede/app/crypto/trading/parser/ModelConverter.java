@@ -86,7 +86,8 @@ public class ModelConverter {
 
 
 	public static String tickerToString(Ticker ticker) {
-		return String.format("%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
+		return String.format("%d|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
+			ticker.getTimestamp(),
 			ticker.getPairName(),
 			tickerWholePriceToString(ticker.getAsk()),
 			tickerWholePriceToString(ticker.getBid()),
@@ -102,16 +103,17 @@ public class ModelConverter {
 	public static Ticker stringToTicker(String csvLine) {
 		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
 		Ticker ticker = new Ticker();
-		ticker.setPairName(split[0]);
-		ticker.setAsk(stringToTickerWholePrice(split[1]));
-		ticker.setBid(stringToTickerWholePrice(split[2]));
-		ticker.setLastTradeClosed(stringToTickerPrice(split[3]));
-		ticker.setVolume(stringToTickerVolume(split[4]));
-		ticker.setWeightedAverageVolume(stringToTickerVolume(split[5]));
-		ticker.setTradesNumber(stringToTickerVolume(split[6]));
-		ticker.setLow(stringToTickerVolume(split[7]));
-		ticker.setHigh(stringToTickerVolume(split[8]));
-		ticker.setTodayOpeningPrice(Utils.toDouble(split[9]));
+		ticker.setTimestamp(Long.parseLong(split[0]));
+		ticker.setPairName(split[1]);
+		ticker.setAsk(stringToTickerWholePrice(split[2]));
+		ticker.setBid(stringToTickerWholePrice(split[3]));
+		ticker.setLastTradeClosed(stringToTickerPrice(split[4]));
+		ticker.setVolume(stringToTickerVolume(split[5]));
+		ticker.setWeightedAverageVolume(stringToTickerVolume(split[6]));
+		ticker.setTradesNumber(stringToTickerVolume(split[7]));
+		ticker.setLow(stringToTickerVolume(split[8]));
+		ticker.setHigh(stringToTickerVolume(split[9]));
+		ticker.setTodayOpeningPrice(Utils.toDouble(split[10]));
 		return ticker;
 	}
 

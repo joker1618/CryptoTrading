@@ -5,13 +5,33 @@ import java.util.List;
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class OhlcData {
+public class OHLCData {
 
 	private String pairName;
-	private List<OhlcInfo> ohlcInfoList;
-	private long last;       // id to be used as since when polling for new, committed OHLC data
+	private List<OHLCInfo> OHLCInfos;
+	private long last;       // last committed/valid OHLC data (to be used as 'since' parameter)
 
-	public class OhlcInfo {
+	public String getPairName() {
+		return pairName;
+	}
+	public void setPairName(String pairName) {
+		this.pairName = pairName;
+	}
+	public List<OHLCInfo> getOHLCInfos() {
+		return OHLCInfos;
+	}
+	public void setOHLCInfos(List<OHLCInfo> OHLCInfos) {
+		this.OHLCInfos = OHLCInfos;
+	}
+	public long getLast() {
+		return last;
+	}
+	public void setLast(long last) {
+		this.last = last;
+	}
+
+	
+	public static class OHLCInfo implements Comparable<OHLCInfo> {
 		private long time;
 		private double open;
 		private double high;
@@ -68,6 +88,11 @@ public class OhlcData {
 		}
 		public void setCount(long count) {
 			this.count = count;
+		}
+
+		@Override
+		public int compareTo(OHLCInfo o) {
+			return (time < o.time) ? -1 : (time > o.time) ? 1 : 0;
 		}
 	}
 }

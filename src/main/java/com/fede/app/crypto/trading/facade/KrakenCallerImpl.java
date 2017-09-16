@@ -55,8 +55,9 @@ public class KrakenCallerImpl implements IKrakenCaller {
 	public List<Ticker> getTickers(Collection<String> pairNames) throws IOException {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", Utils.join(pairNames));
+		long callTime = System.currentTimeMillis();
 		String json = krakenApi.queryPublic(KrakenApi.Method.TICKER, apiParams);
 		JsonToModel jm = new JsonToModel(json);
-		return jm.parseTickers();
+		return jm.parseTickers(callTime);
 	}
 }

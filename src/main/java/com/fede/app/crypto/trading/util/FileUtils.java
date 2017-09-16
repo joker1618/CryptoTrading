@@ -36,6 +36,9 @@ public class FileUtils {
 	public static void appendToFile(Path outputPath, String data, boolean finalNewline) throws IOException {
 		appendToFile(outputPath, Collections.singletonList(data), null, finalNewline);
 	}
+	public static void appendToFile(Path outputPath, String data, Charset encoding, boolean finalNewline) throws IOException {
+		appendToFile(outputPath, Collections.singletonList(data), encoding, finalNewline);
+	}
 	public static void appendToFile(Path outputPath, List<String> lines) throws IOException {
 		appendToFile(outputPath, lines, null);
 	}

@@ -12,7 +12,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by f.barbano on 15/09/2017.
@@ -23,7 +25,9 @@ public class KrakenProviderImpl implements IKrakenProvider {
 
 	private static final String FILENAME_ASSETS = "assets.csv";
 	private static final String FILENAME_ASSET_PAIRS = "assetPairs.csv";
-	private static final String FILENAME_TICKERS = "tickers_%d.csv";
+	private static final String FILENAME_TICKERS = "tickers/tickers_@PAIR_NAME@.csv";
+
+	private static final String PH_PAIR_NAME = "@PAIR_NAME@";
 
 	private final Path baseFolder;
 
@@ -71,20 +75,29 @@ public class KrakenProviderImpl implements IKrakenProvider {
 
 	@Override
 	public void persistTickers(List<Ticker> tickers) throws IOException {
-		Path outPath = baseFolder.resolve(String.format(FILENAME_TICKERS, System.currentTimeMillis()));
-		List<String> lines = Utils.map(tickers, ModelConverter::tickerToString);
-		FileUtils.backupIfExists(outPath);
-		FileUtils.writeFile(outPath, lines, ENCODING, true);
+		for(Ticker ticker : tickers) {
+			Path outPath = getTickerPath(ticker.getPairName());
+			String line = ModelConverter.tickerToString(ticker);
+			FileUtils.appendToFile(outPath, line, ENCODING, true);
+		}
+	}
+	private Path getTickerPath(String pairName) {
+		String filename = FILENAME_TICKERS.replace(PH_PAIR_NAME, pairName);
+		return baseFolder.resolve(filename);
 	}
 
-//	@Override
-//	public List<Ticker> readTickers() throws IOException {
-//		List<Ticker> toRet = new ArrayList<>();
-//		Path outPath = baseFolder.resolve(String.format(FILENAME_TICKERS, ));
-//		if(Files.exists(outPath)) {
-//			List<String> lines = Files.readAllLines(outPath, ENCODING);
-//			toRet = Utils.map(lines, ModelConverter::stringToTicker);
-//		}
-//		return toRet;
-//	}
+	@Override
+	public Map<String, List<Ticker>> readTickers(List<String> pairNames) throws IOException {
+		Map<String, List<Ticker>> toRet = new HashMap<>();
+		for(String pairName : pairNames) {
+			Path path = getTickerPath(pairName);
+			List<Ticker> list = new ArrayList<>();
+			if(Files.exists(path)) {
+				List<String> lines = Files.readAllLines(path, ENCODING);
+				list = Utils.map(lines, ModelConverter::stringToTicker);
+			}
+			toRet.put(pairName, list);
+		}
+		return toRet;
+	}
 }

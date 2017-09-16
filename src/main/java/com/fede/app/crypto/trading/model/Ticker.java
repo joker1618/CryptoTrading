@@ -3,8 +3,9 @@ package com.fede.app.crypto.trading.model;
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class Ticker {
+public class Ticker implements Comparable<Ticker> {
 
+	private long timestamp;	// not server timestamp, but system timestamp just before call
 	private String pairName;
 	private TickerWholePrice ask;
 	private TickerWholePrice bid;
@@ -16,6 +17,12 @@ public class Ticker {
 	private TickerVolume high;
 	private double todayOpeningPrice;
 
+	public long getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
 	public String getPairName() {
 		return pairName;
 	}
@@ -75,6 +82,12 @@ public class Ticker {
 	}
 	public void setTodayOpeningPrice(double todayOpeningPrice) {
 		this.todayOpeningPrice = todayOpeningPrice;
+	}
+
+	@Override
+	public int compareTo(Ticker o) {
+		int res = pairName.compareTo(o.pairName);
+		return res != 0 ? res : (int)(timestamp - o.timestamp);
 	}
 
 	public static class TickerPrice {
