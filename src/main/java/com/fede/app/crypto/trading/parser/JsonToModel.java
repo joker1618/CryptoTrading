@@ -1,9 +1,8 @@
 package com.fede.app.crypto.trading.parser;
 
-import com.fede.app.crypto.trading.model.Asset;
-import com.fede.app.crypto.trading.model.AssetPair;
-import com.fede.app.crypto.trading.model.OHLC;
-import com.fede.app.crypto.trading.model.Ticker;
+import com.fede.app.crypto.trading.model.*;
+import com.fede.app.crypto.trading.types.ActionType;
+import com.fede.app.crypto.trading.types.OrderType;
 import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -124,19 +123,9 @@ public class JsonToModel {
 		return toRet;
 	}
 
-	public Pair<Long, List<OHLC>> parseOHLC() {
+	public Pair<Long, List<OHLC>> parseOHLCs(String pairName) {
 		if(containsErrors())	return null;
 
-		String key = null;
-		// result has exactly 1 elem (size == 1)
-		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
-			if(!entry.getKey().equals("last")) {
-				key = entry.getKey();
-				break;
-			}
-		}
-
-		String pairName = key;
 		long last = result.getJsonNumber("last").longValue();
 
 		List<OHLC> ohlcList = new ArrayList<>();
@@ -158,6 +147,52 @@ public class JsonToModel {
 			}
 		});
 		return Pair.of(last, ohlcList);
+	}
+
+	public Pair<Long, List<Trade>> parseTrades(String pairName) {
+		if(containsErrors())	return null;
+
+		long last = Long.parseLong(result.getString("last"));
+
+		List<Trade> tradeList = new ArrayList<>();
+		result.getJsonArray(pairName).forEach(jv -> {
+			List<String> fields = jsonArrayToList(jv.asJsonArray());
+			double time = Utils.toDouble(fields.get(2)) * 1000;
+			long compareTime = (long)(time * Math.pow(10, 6));
+			if(compareTime <= last) {
+				Trade trade = new Trade();
+				trade.setPairName(pairName);
+				trade.setPrice(Utils.toDouble(fields.get(0)));
+				trade.setVolume(Utils.toDouble(fields.get(1)));
+				trade.setTime((long) time);
+				trade.setActionType(ActionType.getByLabel(fields.get(3)));
+				trade.setOrderType(OrderType.getByLabel(fields.get(4)));
+				trade.setMiscellaneous(fields.get(5));
+				tradeList.add(trade);
+			}
+		});
+		return Pair.of(last, tradeList);
+	}
+
+	public Pair<Long, List<Spread>> parseSpreads(String pairName) {
+		if(containsErrors())	return null;
+
+		long last = result.getJsonNumber("last").longValue();
+
+		List<Spread> spreadList = new ArrayList<>();
+		result.getJsonArray(pairName).forEach(jv -> {
+			List<String> fields = jsonArrayToList(jv.asJsonArray());
+			long time = Long.parseLong(fields.get(0));
+			if(time <= last) {
+				Spread spread = new Spread();
+				spread.setPairName(pairName);
+				spread.setTime(time * 1000L);
+				spread.setBid(Utils.toDouble(fields.get(1)));
+				spread.setAsk(Utils.toDouble(fields.get(2)));
+				spreadList.add(spread);
+			}
+		});
+		return Pair.of(last, spreadList);
 	}
 
 

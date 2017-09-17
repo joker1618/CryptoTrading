@@ -5,18 +5,13 @@ import com.fede.app.crypto.trading.facade.IKrakenCaller;
 import com.fede.app.crypto.trading.facade.IKrakenProvider;
 import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
 import com.fede.app.crypto.trading.facade.KrakenProviderImpl;
-import com.fede.app.crypto.trading.model.Asset;
-import com.fede.app.crypto.trading.model.AssetPair;
-import com.fede.app.crypto.trading.model.OHLC;
-import com.fede.app.crypto.trading.model.Ticker;
+import com.fede.app.crypto.trading.model.*;
 import com.fede.app.crypto.trading.util.CheckUtils;
 import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by f.barbano on 15/09/2017.
@@ -134,15 +129,66 @@ public class KrakenManagerImpl implements IKrakenManager {
 
 			// download from kraken website
 			Pair<Long, List<OHLC>> ohlc = krakenCaller.getOHLCs(pairName, last);
-			if(ohlc != null) {
-				krakenProvider.persistOHLCs(ohlc.getValue());
-				krakenProvider.persistOHLCLast(pairName, ohlc.getKey());
+			if(ohlc == null) {
+				return null;
 			}
-			return ohlc.getValue();
+
+			List<OHLC> ohlcList = ohlc.getValue();
+			Collections.sort(ohlcList);
+			krakenProvider.persistOHLCs(ohlcList);
+			krakenProvider.persistOHLCLast(pairName, ohlc.getKey());
+			return ohlcList;
 
 		} catch(IOException ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
 		}
 	}
+
+	@Override
+	public List<Trade> downloadTradesData(String pairName) {
+		try {
+			long last = krakenProvider.readTradeLast(pairName);
+
+			// download from kraken website
+			Pair<Long, List<Trade>> trades = krakenCaller.getTrades(pairName, last);
+			if(trades == null) {
+				return null;
+			}
+
+			List<Trade> tradeList = trades.getValue();
+			Collections.sort(tradeList);
+			krakenProvider.persistTrades(tradeList);
+			krakenProvider.persistTradeLast(pairName, trades.getKey());
+			return tradeList;
+
+		} catch(IOException ex) {
+			// TODO manage
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<Spread> downloadSpreadsData(String pairName) {
+		try {
+			long last = krakenProvider.readSpreadLast(pairName);
+
+			// download from kraken website
+			Pair<Long, List<Spread>> spreads = krakenCaller.getSpreads(pairName, last);
+			if(spreads == null) {
+				return null;
+			}
+
+			List<Spread> spreadList = spreads.getValue();
+			Collections.sort(spreadList);
+			krakenProvider.persistSpreads(spreadList);
+			krakenProvider.persistSpreadLast(pairName, spreads.getKey());
+			return spreadList;
+
+		} catch(IOException ex) {
+			// TODO manage
+			throw new RuntimeException(ex);
+		}
+	}
+
 }

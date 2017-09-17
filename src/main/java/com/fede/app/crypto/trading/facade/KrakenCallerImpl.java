@@ -1,9 +1,6 @@
 package com.fede.app.crypto.trading.facade;
 
-import com.fede.app.crypto.trading.model.Asset;
-import com.fede.app.crypto.trading.model.AssetPair;
-import com.fede.app.crypto.trading.model.OHLC;
-import com.fede.app.crypto.trading.model.Ticker;
+import com.fede.app.crypto.trading.model.*;
 import com.fede.app.crypto.trading.parser.JsonToModel;
 import com.fede.app.crypto.trading.util.Utils;
 import edu.self.kraken.api.KrakenApi;
@@ -72,6 +69,30 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		}
 		String json = krakenApi.queryPublic(KrakenApi.Method.OHLC, apiParams);
 		JsonToModel jm = new JsonToModel(json);
-		return jm.parseOHLC();
+		return jm.parseOHLCs(pairName);
+	}
+
+	@Override
+	public Pair<Long, List<Trade>> getTrades(String pairName, long since) throws IOException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("pair", pairName);
+		if(since > 0) {
+			apiParams.put("since", String.valueOf(since));
+		}
+		String json = krakenApi.queryPublic(KrakenApi.Method.TRADES, apiParams);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseTrades(pairName);
+	}
+
+	@Override
+	public Pair<Long, List<Spread>> getSpreads(String pairName, long since) throws IOException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("pair", pairName);
+		if(since > 0) {
+			apiParams.put("since", String.valueOf(since));
+		}
+		String json = krakenApi.queryPublic(KrakenApi.Method.SPREAD, apiParams);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseSpreads(pairName);
 	}
 }

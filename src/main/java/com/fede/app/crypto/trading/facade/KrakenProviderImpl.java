@@ -1,9 +1,6 @@
 package com.fede.app.crypto.trading.facade;
 
-import com.fede.app.crypto.trading.model.Asset;
-import com.fede.app.crypto.trading.model.AssetPair;
-import com.fede.app.crypto.trading.model.OHLC;
-import com.fede.app.crypto.trading.model.Ticker;
+import com.fede.app.crypto.trading.model.*;
 import com.fede.app.crypto.trading.parser.ModelConverter;
 import com.fede.app.crypto.trading.util.FileUtils;
 import com.fede.app.crypto.trading.util.Utils;
@@ -27,8 +24,12 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	private static final String FILENAME_ASSETS = "assets.csv";
 	private static final String FILENAME_ASSET_PAIRS = "assetPairs.csv";
 	private static final String FILENAME_TICKERS = "tickers/tickers_@PAIR_NAME@.csv";
-	private static final String FILENAME_OHLC = "@PAIR_NAME@/ohlc_@PAIR_NAME@.csv";
-	private static final String FILENAME_OHLC_LAST = "@PAIR_NAME@/ohlc_@PAIR_NAME@.last";
+	private static final String FILENAME_OHLC = "OHLC/OHLC_@PAIR_NAME@.csv";
+	private static final String FILENAME_OHLC_LAST = "OHLC/OHLC_@PAIR_NAME@.last";
+	private static final String FILENAME_TRADES = "trades/trades_@PAIR_NAME@.csv";
+	private static final String FILENAME_TRADES_LAST = "trades/trades_@PAIR_NAME@.last";
+	private static final String FILENAME_SPREADS = "spread/spread_@PAIR_NAME@.csv";
+	private static final String FILENAME_SPREADS_LAST = "spread/spread_@PAIR_NAME@.last";
 
 	private static final String PH_PAIR_NAME = "@PAIR_NAME@";
 
@@ -138,6 +139,81 @@ public class KrakenProviderImpl implements IKrakenProvider {
 		return last;
 	}
 
+	@Override
+	public void persistTrades(List<Trade> tradeList) throws IOException {
+		Map<String, List<Trade>> tradeMap = Utils.toMap(tradeList, Trade::getPairName);
+		for(Map.Entry<String, List<Trade>> entry : tradeMap.entrySet()) {
+			Path outPath = getPath(FILENAME_TRADES, entry.getKey());
+			List<String> lines = Utils.map(entry.getValue(), ModelConverter::tradeToString);
+			FileUtils.appendToFile(outPath, lines, ENCODING);
+		}
+	}
+
+	@Override
+	public void persistTradeLast(String pairName, long last) throws IOException {
+		Path lastPath = getPath(FILENAME_TRADES_LAST, pairName);
+		FileUtils.writeFile(lastPath, String.valueOf(last), ENCODING, true);
+	}
+
+	@Override
+	public List<Trade> readTrades(String pairName) throws IOException {
+		List<Trade> toRet = new ArrayList<>();
+		Path outPath = getPath(FILENAME_TRADES, pairName);
+		if(Files.exists(outPath)) {
+			List<String> lines = Files.readAllLines(outPath);
+			toRet = Utils.map(lines, ModelConverter::stringToTrade);
+		}
+		return toRet;
+	}
+
+	@Override
+	public long readTradeLast(String pairName) throws IOException {
+		Path path = getPath(FILENAME_TRADES_LAST, pairName);
+		long last = 0L;
+		if(Files.exists(path)) {
+			String strLast = Files.readAllLines(path, ENCODING).get(0).trim();
+			last = Long.parseLong(strLast);
+		}
+		return last;
+	}
+
+	@Override
+	public void persistSpreads(List<Spread> spreadList) throws IOException {
+		Map<String, List<Spread>> tradeMap = Utils.toMap(spreadList, Spread::getPairName);
+		for(Map.Entry<String, List<Spread>> entry : tradeMap.entrySet()) {
+			Path outPath = getPath(FILENAME_SPREADS, entry.getKey());
+			List<String> lines = Utils.map(entry.getValue(), ModelConverter::spreadToString);
+			FileUtils.appendToFile(outPath, lines, ENCODING);
+		}
+	}
+
+	@Override
+	public void persistSpreadLast(String pairName, long last) throws IOException {
+		Path lastPath = getPath(FILENAME_SPREADS_LAST, pairName);
+		FileUtils.writeFile(lastPath, String.valueOf(last), ENCODING, true);
+	}
+
+	@Override
+	public List<Spread> readSpreads(String pairName) throws IOException {
+		List<Spread> toRet = new ArrayList<>();
+		Path outPath = getPath(FILENAME_SPREADS, pairName);
+		if(Files.exists(outPath)) {
+			List<String> lines = Files.readAllLines(outPath);
+			toRet = Utils.map(lines, ModelConverter::stringToSpread);
+		}
+		return toRet;
+	}
+
+	@Override
+	public long readSpreadLast(String pairName) throws IOException {
+		Path path = getPath(FILENAME_SPREADS_LAST, pairName);
+		long last = 0L;
+		if(Files.exists(path)) {
+			String strLast = Files.readAllLines(path, ENCODING).get(0).trim();
+			last = Long.parseLong(strLast);
+		}
+		return last;
+	}
 
 
 	private Path getPath(String filename, String pairName) {

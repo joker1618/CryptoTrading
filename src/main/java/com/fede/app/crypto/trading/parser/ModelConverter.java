@@ -1,12 +1,11 @@
 package com.fede.app.crypto.trading.parser;
 
-import com.fede.app.crypto.trading.model.Asset;
-import com.fede.app.crypto.trading.model.AssetPair;
-import com.fede.app.crypto.trading.model.OHLC;
-import com.fede.app.crypto.trading.model.Ticker;
+import com.fede.app.crypto.trading.model.*;
 import com.fede.app.crypto.trading.model.Ticker.TickerPrice;
 import com.fede.app.crypto.trading.model.Ticker.TickerVolume;
 import com.fede.app.crypto.trading.model.Ticker.TickerWholePrice;
+import com.fede.app.crypto.trading.types.ActionType;
+import com.fede.app.crypto.trading.types.OrderType;
 import com.fede.app.crypto.trading.util.StrUtils;
 import com.fede.app.crypto.trading.util.Utils;
 
@@ -145,6 +144,48 @@ public class ModelConverter {
 		ohlc.setVolume(Utils.toDouble(split[7]));
 		ohlc.setCount(Long.parseLong(split[8]));
 		return ohlc;
+	}
+
+	public static String tradeToString(Trade trade) {
+		return String.format("%s|%s|%s|%d|%s|%s|%s",
+			trade.getPairName(),
+			Utils.toString(trade.getPrice()),
+			Utils.toString(trade.getVolume()),
+			trade.getTime(),
+			trade.getActionType().label(),
+			trade.getOrderType().label(),
+			trade.getMiscellaneous()
+		);
+	}
+	public static Trade stringToTrade(String csvLine) {
+		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
+		Trade trade = new Trade();
+		trade.setPairName(split[0]);
+		trade.setPrice(Utils.toDouble(split[1]));
+		trade.setVolume(Utils.toDouble(split[2]));
+		trade.setTime(Long.parseLong(split[3]));
+		trade.setActionType(ActionType.getByLabel(split[4]));
+		trade.setOrderType(OrderType.getByLabel(split[5]));
+		trade.setMiscellaneous(split[6]);
+		return trade;
+	}
+
+	public static String spreadToString(Spread spread) {
+		return String.format("%s|%d|%s|%s",
+			spread.getPairName(),
+			spread.getTime(),
+			Utils.toString(spread.getBid()),
+			Utils.toString(spread.getAsk())
+		);
+	}
+	public static Spread stringToSpread(String csvLine) {
+		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
+		Spread spread = new Spread();
+		spread.setPairName(split[0]);
+		spread.setTime(Long.parseLong(split[1]));
+		spread.setBid(Utils.toDouble(split[2]));
+		spread.setAsk(Utils.toDouble(split[3]));
+		return spread;
 	}
 
 

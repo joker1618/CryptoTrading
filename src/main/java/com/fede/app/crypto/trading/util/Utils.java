@@ -51,13 +51,17 @@ public class Utils {
 	}
 
 	public static String toString(double d) {
-		return Const.NUMBER_FORMAT.format(d);
+		synchronized (Const.NUMBER_FORMAT) {
+			return Const.NUMBER_FORMAT.format(d);
+		}
 	}
 	public static double toDouble(String str) {
-		try {
-			return Const.NUMBER_FORMAT.parse(str).doubleValue();
-		} catch (ParseException e) {
-			throw new RuntimeException(e);
+		synchronized (Const.NUMBER_FORMAT) {
+			try {
+				return Const.NUMBER_FORMAT.parse(str).doubleValue();
+			} catch (ParseException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

@@ -10,6 +10,9 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,7 +42,7 @@ public class TestKrakenCaller {
 	public void testSynchAll() throws IOException {
 		krakenManager.synchronizeAssets();
 		krakenManager.synchronizeAssetPairs();
-		krakenManager.downloadTickers();
+//		krakenManager.downloadTickers();
 	}
 
 	@Test
@@ -59,13 +62,18 @@ public class TestKrakenCaller {
 
 	@Test
 	public void testDownloadOHLC() throws IOException {
-		Map<String, AssetPair> apairs = krakenManager.synchronizeAssetPairs();
+		List<String> pairNames = Arrays.asList("BCHUSD");
+//		List<String> pairNames = Arrays.asList("BCHEUR", "BCHUSD", "BCHXBT", "DASHEUR", "DASHUSD", "DASHXBT", "EOSETH", "EOSXBT", "GNOETH", "GNOXBT");
+//		List<String> pairNames = new ArrayList<>();
+//		pairNames.addAll(krakenManager.synchronizeAssetPairs().keySet());
+
 		long start = System.currentTimeMillis();
 		AtomicInteger count = new AtomicInteger(0);
-		apairs.keySet().forEach(apair -> {
-			if(!apair.endsWith(".d")) {
-				out.println("Getting OHLC for " + apair);
-				krakenManager.downloadOHLCData(apair);
+		pairNames.parallelStream().forEach(pairName -> {
+//		pairNames.forEach(pairName -> {
+			if(!pairName.endsWith(".d")) {
+				out.println("Getting OHLC for " + pairName);
+				krakenManager.downloadOHLCData(pairName);
 				count.incrementAndGet();
 			}
 		});
@@ -76,11 +84,50 @@ public class TestKrakenCaller {
 	}
 
 	@Test
-	public void testDownloadOHLCSingle() throws IOException {
+	public void testDownloadTrades() throws IOException {
+		List<String> pairNames = Arrays.asList("BCHUSD");
+//		List<String> pairNames = Arrays.asList("BCHEUR", "BCHUSD", "BCHXBT", "DASHEUR", "DASHUSD", "DASHXBT", "EOSETH", "EOSXBT", "GNOETH", "GNOXBT");
+//		List<String> pairNames = new ArrayList<>();
+//		pairNames.addAll(krakenManager.synchronizeAssetPairs().keySet());
+
 		long start = System.currentTimeMillis();
-		krakenManager.downloadOHLCData("BCHUSD");
+		AtomicInteger count = new AtomicInteger(0);
+		pairNames.parallelStream().forEach(pairName -> {
+//		pairNames.forEach(pairName -> {
+			if(!pairName.endsWith(".d")) {
+				out.println("Getting Trades for " + pairName);
+				krakenManager.downloadTradesData(pairName);
+				count.incrementAndGet();
+			}
+		});
 		long end = System.currentTimeMillis();
-		out.println("Elapsed: " + ((end - start) / 1000));
+		out.println("Asset pairs: " + count.get());
+		out.println("Elapsed:     " + ((end - start) / 1000));
+
 	}
+
+	@Test
+	public void testDownloadSpreads() throws IOException {
+		List<String> pairNames = Arrays.asList("BCHUSD");
+//		List<String> pairNames = Arrays.asList("BCHEUR", "BCHUSD", "BCHXBT", "DASHEUR", "DASHUSD", "DASHXBT", "EOSETH", "EOSXBT", "GNOETH", "GNOXBT");
+//		List<String> pairNames = new ArrayList<>();
+//		pairNames.addAll(krakenManager.synchronizeAssetPairs().keySet());
+
+		long start = System.currentTimeMillis();
+		AtomicInteger count = new AtomicInteger(0);
+		pairNames.parallelStream().forEach(pairName -> {
+//		pairNames.forEach(pairName -> {
+			if(!pairName.endsWith(".d")) {
+				out.println("Getting Spreads for " + pairName);
+				krakenManager.downloadSpreadsData(pairName);
+				count.incrementAndGet();
+			}
+		});
+		long end = System.currentTimeMillis();
+		out.println("Asset pairs: " + count.get());
+		out.println("Elapsed:     " + ((end - start) / 1000));
+
+	}
+
 
 }
