@@ -12,13 +12,14 @@ NOTES
     - sono dati statici
     - se cambiano, backuppo i files e persisto i nuovi dati
     ASK -> cosa sono gli AssetPair *.d? (es. XXBTZUSD.d)
+    N -> sono dei codici alfabetici che identificano un tasso di cambio. Nel caso in esempio XXBTZUSD identifica il cambio bitcoin contro usd.
 
 * Ticker, OrderBook
     - dati che cambiano ad ogni chiamata (potenzialmente)
     - salvo i dati assieme al timestamp registrato appena prima di effettuare la chiamata (System.currentTimeMillis())
     - al momento ne viene mantenuta la cronologia
-    ASK -> ha senso tenere la cronologia?
-    ASK -> sono info che servono solo al momento della chiamata?
+    ASK -> ha senso tenere la cronologia? No
+    ASK -> sono info che servono solo al momento della chiamata? No
 
 * OHLC, RecentTrades, SpreadData
     - dati storicizzati, ne mantengo la cronologia
@@ -26,13 +27,12 @@ NOTES
     - RecentTrades max 3,5 h indietro
     - SpreadData max 20 min indietro
     ASK -> why alcuni spread data sono ripetuti? (forse perché cambiano in meno di 1sec, ma il timestamp è espresso in secondi)
-
+    N -> per ogni timestamp riporta la differenza tra il prezzo della domanda ed il prezzo dell'offerta.
 
 PIANTA TODO LIST
 
 1) legami tra i valori dei vari files
-
-
+2) chiedere update al livello 3 a Kraken (20punti e +1 ogni 2sec - contro 15 punti +1 ogni 3sec del livello 2)
 
 
 
