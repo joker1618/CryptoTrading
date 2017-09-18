@@ -7,7 +7,7 @@ package com.fede.app.crypto.trading.model;
  */
 public class Asset implements Comparable<Asset> {
 
-	private String name;
+	private String assetName;
 	private String aClass;
 	private String altName;
 	private int decimals;
@@ -16,7 +16,7 @@ public class Asset implements Comparable<Asset> {
 
 	@Override
 	public int compareTo(Asset o) {
-		return name.compareTo(o.name);
+		return assetName.compareTo(o.assetName);
 	}
 
 	@Override
@@ -28,14 +28,14 @@ public class Asset implements Comparable<Asset> {
 
 		if (decimals != asset.decimals) return false;
 		if (displayDecimals != asset.displayDecimals) return false;
-		if (name != null ? !name.equals(asset.name) : asset.name != null) return false;
+		if (assetName != null ? !assetName.equals(asset.assetName) : asset.assetName != null) return false;
 		if (aClass != null ? !aClass.equals(asset.aClass) : asset.aClass != null) return false;
 		return altName != null ? altName.equals(asset.altName) : asset.altName == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = name != null ? name.hashCode() : 0;
+		int result = assetName != null ? assetName.hashCode() : 0;
 		result = 31 * result + (aClass != null ? aClass.hashCode() : 0);
 		result = 31 * result + (altName != null ? altName.hashCode() : 0);
 		result = 31 * result + decimals;
@@ -43,11 +43,11 @@ public class Asset implements Comparable<Asset> {
 		return result;
 	}
 
-	public String getName() {
-		return name;
+	public String getAssetName() {
+		return assetName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setAssetName(String assetName) {
+		this.assetName = assetName;
 	}
 	public String getAClass() {
 		return aClass;

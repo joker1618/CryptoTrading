@@ -2,15 +2,14 @@ package com.fede.app.crypto.trading.parser;
 
 import com.fede.app.crypto.trading.model.*;
 import com.fede.app.crypto.trading.types.ActionType;
+import com.fede.app.crypto.trading.types.OrderDirection;
 import com.fede.app.crypto.trading.types.OrderType;
 import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.json.*;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.fede.app.crypto.trading.model.AssetPair.FeeSchedule;
 import static com.fede.app.crypto.trading.model.Ticker.*;
@@ -60,7 +59,7 @@ public class JsonToModel {
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			JsonObject jsonAsset = entry.getValue().asJsonObject();
 			Asset asset = new Asset();
-			asset.setName(entry.getKey());
+			asset.setAssetName(entry.getKey());
 			asset.setAClass(jsonAsset.getString("aclass"));
 			asset.setAltName(jsonAsset.getString("altname"));
 			asset.setDecimals(jsonAsset.getInt("decimals"));
@@ -100,14 +99,14 @@ public class JsonToModel {
 		return assetPairs;
 	}
 
-	public List<Ticker> parseTickers(long timestamp) {
+	public List<Ticker> parseTickers(long callTime) {
 		if(containsErrors())	return null;
 
 		List<Ticker> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			JsonObject jt = entry.getValue().asJsonObject();
 			Ticker ticker = new Ticker();
-			ticker.setTimestamp(timestamp);
+			ticker.setCallTime(callTime);
 			ticker.setPairName(entry.getKey());
 			ticker.setAsk(parseTickerWholePrice(jt, "a"));
 			ticker.setBid(parseTickerWholePrice(jt, "b"));
@@ -147,6 +146,34 @@ public class JsonToModel {
 			}
 		});
 		return Pair.of(last, ohlcList);
+	}
+
+	public List<Order> parseOrderBook(String pairName) {
+		if(containsErrors())	return null;
+
+		JsonObject jobj = result.getJsonObject(pairName);
+		JsonArray asks = jobj.getJsonArray("asks");
+		JsonArray bids = jobj.getJsonArray("bids");
+
+		List<Order> orderList = new ArrayList<>();
+		orderList.addAll(parseOrders(asks, pairName, OrderDirection.ASK));
+		orderList.addAll(parseOrders(bids, pairName, OrderDirection.BID));
+
+		return orderList;
+	}
+	private List<Order> parseOrders(JsonArray jarr, String pairName, OrderDirection orderDirection) {
+		List<Order> orderList = new ArrayList<>();
+		jarr.forEach(jv -> {
+			List<String> fields = jsonArrayToList(jv.asJsonArray());
+			Order order = new Order();
+			order.setPairName(pairName);
+			order.setOrderDirection(orderDirection);
+			order.setPrice(Utils.toDouble(fields.get(0)));
+			order.setVolume(Utils.toDouble(fields.get(1)));
+			order.setTimestamp(Long.parseLong(fields.get(2)) * 1000L);
+			orderList.add(order);
+		});
+		return orderList;
 	}
 
 	public Pair<Long, List<Trade>> parseTrades(String pairName) {

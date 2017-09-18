@@ -77,10 +77,13 @@ public class FileUtils {
 	public static void writeFile(Path outputPath, String content, Charset encoding, boolean overwrite) throws IOException {
 		writeFile(outputPath, Arrays.asList(content), encoding, overwrite, false);
 	}
+	public static void writeFile(Path outputPath, String content, Charset encoding, boolean overwrite, boolean finalNewLine) throws IOException {
+		writeFile(outputPath, Arrays.asList(content), encoding, overwrite, finalNewLine);
+	}
 	public static void writeFile(Path outputPath, List<String> lines, Charset encoding, boolean overwrite) throws IOException {
 		writeFile(outputPath, lines, encoding, overwrite, true);
 	}
-	private static void writeFile(Path outputPath, List<String> lines, Charset encoding, boolean overwrite, boolean finalNewline) throws IOException {
+	public static void writeFile(Path outputPath, List<String> lines, Charset encoding, boolean overwrite, boolean finalNewline) throws IOException {
 		if(Files.exists(outputPath) && !overwrite) {
 			throw new IOException("File [" + outputPath.normalize().toString() + "] already exists");
 		}

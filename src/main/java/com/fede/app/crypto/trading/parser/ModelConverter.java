@@ -5,6 +5,7 @@ import com.fede.app.crypto.trading.model.Ticker.TickerPrice;
 import com.fede.app.crypto.trading.model.Ticker.TickerVolume;
 import com.fede.app.crypto.trading.model.Ticker.TickerWholePrice;
 import com.fede.app.crypto.trading.types.ActionType;
+import com.fede.app.crypto.trading.types.OrderDirection;
 import com.fede.app.crypto.trading.types.OrderType;
 import com.fede.app.crypto.trading.util.StrUtils;
 import com.fede.app.crypto.trading.util.Utils;
@@ -21,9 +22,9 @@ public class ModelConverter {
 	
 	public static String assetToString(Asset asset) {
 		return String.format("%s|%s|%s|%d|%d",
-			asset.getName(),
-			asset.getAltName(),
+			asset.getAssetName(),
 			asset.getAClass(),
+			asset.getAltName(),
 			asset.getDecimals(),
 			asset.getDisplayDecimals()
 		);
@@ -31,9 +32,9 @@ public class ModelConverter {
 	public static Asset stringToAsset(String csvLine) {
 		String[] fields = StrUtils.splitAllFields(csvLine, "|");
 		Asset asset = new Asset();
-		asset.setName(fields[0]);
-		asset.setAltName(fields[1]);
-		asset.setAClass(fields[2]);
+		asset.setAssetName(fields[0]);
+		asset.setAClass(fields[1]);
+		asset.setAltName(fields[2]);
 		asset.setDecimals(Integer.parseInt(fields[3]));
 		asset.setDisplayDecimals(Integer.parseInt(fields[4]));
 		return asset;
@@ -87,7 +88,7 @@ public class ModelConverter {
 
 	public static String tickerToString(Ticker ticker) {
 		return String.format("%d|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s",
-			ticker.getTimestamp(),
+			ticker.getCallTime(),
 			ticker.getPairName(),
 			tickerWholePriceToString(ticker.getAsk()),
 			tickerWholePriceToString(ticker.getBid()),
@@ -103,7 +104,7 @@ public class ModelConverter {
 	public static Ticker stringToTicker(String csvLine) {
 		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
 		Ticker ticker = new Ticker();
-		ticker.setTimestamp(Long.parseLong(split[0]));
+		ticker.setCallTime(Long.parseLong(split[0]));
 		ticker.setPairName(split[1]);
 		ticker.setAsk(stringToTickerWholePrice(split[2]));
 		ticker.setBid(stringToTickerWholePrice(split[3]));
@@ -144,6 +145,26 @@ public class ModelConverter {
 		ohlc.setVolume(Utils.toDouble(split[7]));
 		ohlc.setCount(Long.parseLong(split[8]));
 		return ohlc;
+	}
+
+	public static String orderToString(Order order) {
+		return String.format("%s|%s|%s|%s|%d",
+			order.getPairName(),
+			order.getOrderDirection().label(),
+			Utils.toString(order.getPrice()),
+			Utils.toString(order.getVolume()),
+			order.getTimestamp()
+		);
+	}
+	public static Order stringToOrder(String csvLine) {
+		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
+		Order order = new Order();
+		order.setPairName(split[0]);
+		order.setOrderDirection(OrderDirection.getByLabel(split[1]));
+		order.setPrice(Utils.toDouble(split[2]));
+		order.setVolume(Utils.toDouble(split[3]));
+		order.setTimestamp(Long.parseLong(split[4]));
+		return order;
 	}
 
 	public static String tradeToString(Trade trade) {

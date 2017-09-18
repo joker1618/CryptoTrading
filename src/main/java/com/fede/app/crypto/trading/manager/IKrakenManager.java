@@ -14,7 +14,9 @@ public interface IKrakenManager {
 
 	Map<String, Asset> synchronizeAssets();
 	Map<String, AssetPair> synchronizeAssetPairs();
+
 	Map<String, Ticker> downloadTickers();
+	List<Order> downloadOrderBook(String pairName);
 
 	List<OHLC> downloadOHLCData(String pairName);
 	List<Trade> downloadTradesData(String pairName);

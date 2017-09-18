@@ -54,12 +54,12 @@ public class KrakenManagerImpl implements IKrakenManager {
 			// read from file
 			if (assetMap == null) {
 				List<Asset> assetList = krakenProvider.readAssets();
-				assetMap = Utils.toMapSingle(assetList, Asset::getName);
+				assetMap = Utils.toMapSingle(assetList, Asset::getAssetName);
 			}
 
 			// download from kraken website
 			List<Asset> newAssets = krakenCaller.getAssets();
-			Map<String, Asset> newAssetMap = Utils.toMapSingle(newAssets, Asset::getName);
+			Map<String, Asset> newAssetMap = Utils.toMapSingle(newAssets, Asset::getAssetName);
 
 			// persist if assets changed
 			if(!CheckUtils.areEquals(assetMap, newAssetMap)) {
@@ -115,6 +115,21 @@ public class KrakenManagerImpl implements IKrakenManager {
 			List<Ticker> tickers = krakenCaller.getTickers(pairNames);
 			krakenProvider.persistTickers(tickers);
 			return Utils.toMapSingle(tickers, Ticker::getPairName);
+
+		} catch(IOException ex) {
+			// TODO manage
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<Order> downloadOrderBook(String pairName) {
+		try {
+			List<Order> orderBook = krakenCaller.getOrderBook(pairName);
+			if(orderBook != null) {
+				krakenProvider.persistOrderBook(orderBook);
+			}
+			return orderBook;
 
 		} catch(IOException ex) {
 			// TODO manage

@@ -33,9 +33,12 @@ public class TestKrakenCaller {
 
 	@Test
 	public void getServerTime() throws IOException {
-		long serverTime = krakenManager.getServerTime();
-		out.println(String.format("Server time:\t%d", serverTime));
-		out.println(String.format("Date:\t\t%s", Utils.toString(serverTime, "yyyyMMddHHmmss")));
+		long before = System.currentTimeMillis();
+		long serverTime = krakenManager.getServerTime() * 1000L;
+		long after = System.currentTimeMillis();
+		out.println(String.format("Before call:\t%d", before));
+		out.println(String.format("Server time:\t%d\t%d", serverTime, (serverTime - before)));
+		out.println(String.format("After call: \t%d\t%d", after, (after - serverTime)));
 	}
 
 	@Test

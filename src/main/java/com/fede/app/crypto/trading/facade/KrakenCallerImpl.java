@@ -73,6 +73,15 @@ public class KrakenCallerImpl implements IKrakenCaller {
 	}
 
 	@Override
+	public List<Order> getOrderBook(String pairName) throws IOException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("pair", pairName);
+		String json = krakenApi.queryPublic(KrakenApi.Method.DEPTH, apiParams);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseOrderBook(pairName);
+	}
+
+	@Override
 	public Pair<Long, List<Trade>> getTrades(String pairName, long since) throws IOException {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", pairName);

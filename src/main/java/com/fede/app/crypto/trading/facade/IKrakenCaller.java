@@ -22,6 +22,8 @@ public interface IKrakenCaller {
 
 	Pair<Long, List<OHLC>> getOHLCs(String pairName, long since) throws IOException;
 
+	List<Order> getOrderBook(String pairName) throws IOException;
+
 	Pair<Long, List<Trade>> getTrades(String pairName, long since) throws IOException;
 
 	Pair<Long, List<Spread>> getSpreads(String pairName, long since) throws IOException;
