@@ -6,70 +6,14 @@ package com.fede.app.crypto.trading.model;
 public class OHLC {
 
 	private String pairName;
-	private long time;
-	private double open;
-	private double high;
-	private double low;
-	private double close;
-	private double vwrap;
-	private double volume;
-	private long count;
-
-
-	public String getPairName() {
-		return pairName;
-	}
-	public void setPairName(String pairName) {
-		this.pairName = pairName;
-	}
-	public long getTime() {
-		return time;
-	}
-	public void setTime(long time) {
-		this.time = time;
-	}
-	public double getOpen() {
-		return open;
-	}
-	public void setOpen(double open) {
-		this.open = open;
-	}
-	public double getHigh() {
-		return high;
-	}
-	public void setHigh(double high) {
-		this.high = high;
-	}
-	public double getLow() {
-		return low;
-	}
-	public void setLow(double low) {
-		this.low = low;
-	}
-	public double getClose() {
-		return close;
-	}
-	public void setClose(double close) {
-		this.close = close;
-	}
-	public double getVwrap() {
-		return vwrap;
-	}
-	public void setVwrap(double vwrap) {
-		this.vwrap = vwrap;
-	}
-	public double getVolume() {
-		return volume;
-	}
-	public void setVolume(double volume) {
-		this.volume = volume;
-	}
-	public long getCount() {
-		return count;
-	}
-	public void setCount(long count) {
-		this.count = count;
-	}
+	private Long time;
+	private Double open;
+	private Double high;
+	private Double low;
+	private Double close;
+	private Double vwrap;
+	private Double volume;
+	private Long count;
 
 	@Override
 	public boolean equals(Object o) {
@@ -78,37 +22,83 @@ public class OHLC {
 
 		OHLC ohlc = (OHLC) o;
 
-		if (time != ohlc.time) return false;
-		if (Double.compare(ohlc.open, open) != 0) return false;
-		if (Double.compare(ohlc.high, high) != 0) return false;
-		if (Double.compare(ohlc.low, low) != 0) return false;
-		if (Double.compare(ohlc.close, close) != 0) return false;
-		if (Double.compare(ohlc.vwrap, vwrap) != 0) return false;
-		if (Double.compare(ohlc.volume, volume) != 0) return false;
-		if (count != ohlc.count) return false;
-		return pairName != null ? pairName.equals(ohlc.pairName) : ohlc.pairName == null;
+		if (pairName != null ? !pairName.equals(ohlc.pairName) : ohlc.pairName != null) return false;
+		if (time != null ? !time.equals(ohlc.time) : ohlc.time != null) return false;
+		if (open != null ? !open.equals(ohlc.open) : ohlc.open != null) return false;
+		if (high != null ? !high.equals(ohlc.high) : ohlc.high != null) return false;
+		if (low != null ? !low.equals(ohlc.low) : ohlc.low != null) return false;
+		if (close != null ? !close.equals(ohlc.close) : ohlc.close != null) return false;
+		if (vwrap != null ? !vwrap.equals(ohlc.vwrap) : ohlc.vwrap != null) return false;
+		if (volume != null ? !volume.equals(ohlc.volume) : ohlc.volume != null) return false;
+		return count != null ? count.equals(ohlc.count) : ohlc.count == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result;
-		long temp;
-		result = pairName != null ? pairName.hashCode() : 0;
-		result = 31 * result + (int) (time ^ (time >>> 32));
-		temp = Double.doubleToLongBits(open);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(high);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(low);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(close);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(vwrap);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(volume);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		result = 31 * result + (int) (count ^ (count >>> 32));
+		int result = pairName != null ? pairName.hashCode() : 0;
+		result = 31 * result + (time != null ? time.hashCode() : 0);
+		result = 31 * result + (open != null ? open.hashCode() : 0);
+		result = 31 * result + (high != null ? high.hashCode() : 0);
+		result = 31 * result + (low != null ? low.hashCode() : 0);
+		result = 31 * result + (close != null ? close.hashCode() : 0);
+		result = 31 * result + (vwrap != null ? vwrap.hashCode() : 0);
+		result = 31 * result + (volume != null ? volume.hashCode() : 0);
+		result = 31 * result + (count != null ? count.hashCode() : 0);
 		return result;
 	}
 
+	public String getPairName() {
+		return pairName;
+	}
+	public void setPairName(String pairName) {
+		this.pairName = pairName;
+	}
+	public Long getTime() {
+		return time;
+	}
+	public void setTime(Long time) {
+		this.time = time;
+	}
+	public Double getOpen() {
+		return open;
+	}
+	public void setOpen(Double open) {
+		this.open = open;
+	}
+	public Double getHigh() {
+		return high;
+	}
+	public void setHigh(Double high) {
+		this.high = high;
+	}
+	public Double getLow() {
+		return low;
+	}
+	public void setLow(Double low) {
+		this.low = low;
+	}
+	public Double getClose() {
+		return close;
+	}
+	public void setClose(Double close) {
+		this.close = close;
+	}
+	public Double getVwrap() {
+		return vwrap;
+	}
+	public void setVwrap(Double vwrap) {
+		this.vwrap = vwrap;
+	}
+	public Double getVolume() {
+		return volume;
+	}
+	public void setVolume(Double volume) {
+		this.volume = volume;
+	}
+	public Long getCount() {
+		return count;
+	}
+	public void setCount(Long count) {
+		this.count = count;
+	}
 }

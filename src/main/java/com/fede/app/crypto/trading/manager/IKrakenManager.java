@@ -23,6 +23,7 @@ public interface IKrakenManager {
 	List<Spread> downloadSpreadsData(String pairName);
 
 	List<AccountBalance> getAccountBalance();
+	TradeBalance getTradeBalance();
 
 
 }

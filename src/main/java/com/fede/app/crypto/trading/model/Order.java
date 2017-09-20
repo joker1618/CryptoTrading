@@ -9,9 +9,9 @@ public class Order {
 
 	private String pairName;
 	private OrderDirection orderDirection;
-	private double price;
-	private double volume;
-	private long timestamp;
+	private Double price;
+	private Double volume;
+	private Long timestamp;
 
 	@Override
 	public boolean equals(Object o) {
@@ -20,27 +20,22 @@ public class Order {
 
 		Order order = (Order) o;
 
-		if (Double.compare(order.price, price) != 0) return false;
-		if (Double.compare(order.volume, volume) != 0) return false;
-		if (timestamp != order.timestamp) return false;
 		if (pairName != null ? !pairName.equals(order.pairName) : order.pairName != null) return false;
-		return orderDirection == order.orderDirection;
+		if (orderDirection != order.orderDirection) return false;
+		if (price != null ? !price.equals(order.price) : order.price != null) return false;
+		if (volume != null ? !volume.equals(order.volume) : order.volume != null) return false;
+		return timestamp != null ? timestamp.equals(order.timestamp) : order.timestamp == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result;
-		long temp;
-		result = pairName != null ? pairName.hashCode() : 0;
+		int result = pairName != null ? pairName.hashCode() : 0;
 		result = 31 * result + (orderDirection != null ? orderDirection.hashCode() : 0);
-		temp = Double.doubleToLongBits(price);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(volume);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+		result = 31 * result + (price != null ? price.hashCode() : 0);
+		result = 31 * result + (volume != null ? volume.hashCode() : 0);
+		result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
 		return result;
 	}
-
 
 	public String getPairName() {
 		return pairName;
@@ -54,24 +49,22 @@ public class Order {
 	public void setOrderDirection(OrderDirection orderDirection) {
 		this.orderDirection = orderDirection;
 	}
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
-	public double getVolume() {
+	public Double getVolume() {
 		return volume;
 	}
-	public void setVolume(double volume) {
+	public void setVolume(Double volume) {
 		this.volume = volume;
 	}
-	public long getTimestamp() {
+	public Long getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(long timestamp) {
+	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
 	}
-
-
 }

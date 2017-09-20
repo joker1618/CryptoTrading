@@ -225,6 +225,36 @@ public class ModelConverter {
 		return accountBalance;
 	}
 
+	public static String tradeBalanceToString(TradeBalance tradeBalance) {
+		return String.format("%d|%s%s|%s|%s|%s|%s|%s|%s|%s",
+			tradeBalance.getCallTime(),
+			Utils.toString(tradeBalance.getEquivBalance()),
+			Utils.toString(tradeBalance.getTradeBalance()),
+			Utils.toString(tradeBalance.getMarginAmount()),
+			Utils.toString(tradeBalance.getUnrealizedProfitLoss()),
+			Utils.toString(tradeBalance.getBasisCost()),
+			Utils.toString(tradeBalance.getCurrentValuation()),
+			Utils.toString(tradeBalance.getEquity()),
+			Utils.toString(tradeBalance.getFreeMargin()),
+			Utils.toString(tradeBalance.getMarginLevel())
+		);
+	}
+	public static TradeBalance stringToTradeBalance(String csvLine) {
+		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
+		TradeBalance tradeBalance = new TradeBalance();
+		tradeBalance.setCallTime(Long.parseLong(split[0]));
+		tradeBalance.setEquivBalance(Utils.toDouble(split[1]));
+		tradeBalance.setTradeBalance(Utils.toDouble(split[2]));
+		tradeBalance.setMarginAmount(Utils.toDouble(split[3]));
+		tradeBalance.setUnrealizedProfitLoss(Utils.toDouble(split[4]));
+		tradeBalance.setBasisCost(Utils.toDouble(split[5]));
+		tradeBalance.setCurrentValuation(Utils.toDouble(split[6]));
+		tradeBalance.setEquity(Utils.toDouble(split[7]));
+		tradeBalance.setFreeMargin(Utils.toDouble(split[8]));
+		tradeBalance.setMarginLevel(Utils.toDouble(split[9]));
+		return tradeBalance;
+	}
+
 
 
 

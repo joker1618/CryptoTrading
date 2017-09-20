@@ -32,8 +32,8 @@ public class Launcher {
 		long start = System.currentTimeMillis();
 		Set<String> assetPairs = krakenManager.synchronizeAssetPairs().keySet();
 		assetPairs.removeIf(s -> s.endsWith(".d"));
-//		out.println("Downloading Tickers...");
-//		krakenManager.downloadTickers();
+		out.println("Downloading Tickers...");
+		krakenManager.downloadTickers();
 		out.println("Downloading OrderBooks...");
 		assetPairs.parallelStream().forEach(krakenManager::downloadOrderBook);
 		long end = System.currentTimeMillis();
@@ -51,6 +51,18 @@ public class Launcher {
 		assetPairs.parallelStream().forEach(krakenManager::downloadTradesData);
 		out.println("Downloading Spreads...");
 		assetPairs.parallelStream().forEach(krakenManager::downloadSpreadsData);
+		long end = System.currentTimeMillis();
+		out.println(String.format("Elapsed: %d sec", ((end-start)/1000)));
+	}
+
+	@Test
+	public void download_AccountBalance_TradeBalance() {
+		long start = System.currentTimeMillis();
+//		Set<String> assetPairs = krakenManager.synchronizeAssetPairs().keySet();
+		out.println("Downloading AccountBalance...");
+		krakenManager.getAccountBalance();
+		out.println("Downloading TradeBalance...");
+		krakenManager.getTradeBalance();
 		long end = System.currentTimeMillis();
 		out.println(String.format("Elapsed: %d sec", ((end-start)/1000)));
 	}

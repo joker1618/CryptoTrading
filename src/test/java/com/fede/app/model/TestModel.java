@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,17 +63,26 @@ public class TestModel {
 	@Test
 	public void testGetAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
+		long callTime = System.currentTimeMillis();
 		String response = api.queryPrivate(KrakenApi.Method.BALANCE);
 		out.println(response);
 		JsonToModel jm = new JsonToModel(response);
-		jm.parseAccountBalance();
+		jm.parseAccountBalance(callTime);
 	}
 
 	@Test
-	public void testGetTradeBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-		Map<String, String> params = new HashMap<>();
-		String response = api.queryPrivate(KrakenApi.Method.TRADE_BALANCE);
-		out.println(response);
+	public void testGetTradeBalance()  {
+		Arrays.asList("BCH","DASH","EOS","GNO","KFEE","USDT","XDAO","XETC","XETH","XICN","XLTC","XMLN","XNMC","XREP","XXBT","XXDG","XXLM","XXMR","XXRP","XXVN","XZEC","ZCAD","ZEUR","ZGBP","ZJPY","ZKRW","ZUSD")
+			.forEach(asset -> {
+			try {
+				Map<String, String> params = new HashMap<>();
+				params.put("asset", asset);
+				String response = api.queryPrivate(KrakenApi.Method.TRADE_BALANCE);
+				out.println(String.format("%-6s%s", asset, response));
+			} catch(IOException | NoSuchAlgorithmException | InvalidKeyException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
 
 	}
 

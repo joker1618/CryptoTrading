@@ -210,8 +210,25 @@ public class KrakenManagerImpl implements IKrakenManager {
 	@Override
 	public List<AccountBalance> getAccountBalance() {
 		try {
-			return krakenCaller.getAccounteBalance();
-		} catch (IOException ex) {
+			List<AccountBalance> accountBalance = krakenCaller.getAccountBalance();
+			Collections.sort(accountBalance, ModelCompare.compareAccountBalances());
+			krakenProvider.persistAccountBalance(accountBalance);
+			return accountBalance;
+			
+		} catch (Exception ex) {
+			// TODO manage
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public TradeBalance getTradeBalance() {
+		try {
+			TradeBalance tradeBalance = krakenCaller.getTradeBalance();
+			krakenProvider.persistTradeBalance(tradeBalance);
+			return tradeBalance;
+
+		} catch (Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
 		}

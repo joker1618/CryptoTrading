@@ -4,6 +4,8 @@ import com.fede.app.crypto.trading.model.*;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,7 +30,10 @@ public interface IKrakenCaller {
 
 	Pair<Long, List<Spread>> getSpreads(String pairName, long since) throws IOException;
 
-	List<AccountBalance> getAccounteBalance() throws IOException;
+	List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException;
+
+	TradeBalance getTradeBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException;
+	TradeBalance getTradeBalance(String baseAsset) throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 
 
 }

@@ -8,9 +8,9 @@ import java.util.List;
 public class Spread {
 	
 	private String pairName;
-	private long time;
-	private double bid;
-	private double ask;
+	private Long time;
+	private Double bid;
+	private Double ask;
 
 	@Override
 	public boolean equals(Object o) {
@@ -19,25 +19,20 @@ public class Spread {
 
 		Spread spread = (Spread) o;
 
-		if (time != spread.time) return false;
-		if (Double.compare(spread.bid, bid) != 0) return false;
-		if (Double.compare(spread.ask, ask) != 0) return false;
-		return pairName != null ? pairName.equals(spread.pairName) : spread.pairName == null;
+		if (pairName != null ? !pairName.equals(spread.pairName) : spread.pairName != null) return false;
+		if (time != null ? !time.equals(spread.time) : spread.time != null) return false;
+		if (bid != null ? !bid.equals(spread.bid) : spread.bid != null) return false;
+		return ask != null ? ask.equals(spread.ask) : spread.ask == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result;
-		long temp;
-		result = pairName != null ? pairName.hashCode() : 0;
-		result = 31 * result + (int) (time ^ (time >>> 32));
-		temp = Double.doubleToLongBits(bid);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(ask);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		int result = pairName != null ? pairName.hashCode() : 0;
+		result = 31 * result + (time != null ? time.hashCode() : 0);
+		result = 31 * result + (bid != null ? bid.hashCode() : 0);
+		result = 31 * result + (ask != null ? ask.hashCode() : 0);
 		return result;
 	}
-
 
 	public String getPairName() {
 		return pairName;
@@ -45,23 +40,22 @@ public class Spread {
 	public void setPairName(String pairName) {
 		this.pairName = pairName;
 	}
-	public long getTime() {
+	public Long getTime() {
 		return time;
 	}
-	public void setTime(long time) {
+	public void setTime(Long time) {
 		this.time = time;
 	}
-	public double getBid() {
+	public Double getBid() {
 		return bid;
 	}
-	public void setBid(double bid) {
+	public void setBid(Double bid) {
 		this.bid = bid;
 	}
-	public double getAsk() {
+	public Double getAsk() {
 		return ask;
 	}
-	public void setAsk(double ask) {
+	public void setAsk(Double ask) {
 		this.ask = ask;
 	}
-
 }

@@ -7,9 +7,9 @@ import java.util.Map;
  */
 public class AccountBalance {
 
-	private long callTime;
+	private Long callTime;
 	private String assetClass;
-	private double balance;
+	private Double balance;
 
 	@Override
 	public boolean equals(Object o) {
@@ -18,26 +18,23 @@ public class AccountBalance {
 
 		AccountBalance that = (AccountBalance) o;
 
-		if (callTime != that.callTime) return false;
-		if (Double.compare(that.balance, balance) != 0) return false;
-		return assetClass != null ? assetClass.equals(that.assetClass) : that.assetClass == null;
+		if (callTime != null ? !callTime.equals(that.callTime) : that.callTime != null) return false;
+		if (assetClass != null ? !assetClass.equals(that.assetClass) : that.assetClass != null) return false;
+		return balance != null ? balance.equals(that.balance) : that.balance == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result;
-		long temp;
-		result = (int) (callTime ^ (callTime >>> 32));
+		int result = callTime != null ? callTime.hashCode() : 0;
 		result = 31 * result + (assetClass != null ? assetClass.hashCode() : 0);
-		temp = Double.doubleToLongBits(balance);
-		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		result = 31 * result + (balance != null ? balance.hashCode() : 0);
 		return result;
 	}
 
-	public long getCallTime() {
+	public Long getCallTime() {
 		return callTime;
 	}
-	public void setCallTime(long callTime) {
+	public void setCallTime(Long callTime) {
 		this.callTime = callTime;
 	}
 	public String getAssetClass() {
@@ -46,11 +43,10 @@ public class AccountBalance {
 	public void setAssetClass(String assetClass) {
 		this.assetClass = assetClass;
 	}
-	public double getBalance() {
+	public Double getBalance() {
 		return balance;
 	}
-	public void setBalance(double balance) {
+	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
-
 }

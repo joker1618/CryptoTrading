@@ -4,9 +4,12 @@ import com.fede.app.crypto.trading.model.*;
 import com.fede.app.crypto.trading.parser.JsonToModel;
 import com.fede.app.crypto.trading.util.Utils;
 import edu.self.kraken.api.KrakenApi;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -106,9 +109,26 @@ public class KrakenCallerImpl implements IKrakenCaller {
 	}
 
 	@Override
-	public List<AccountBalance> getAccounteBalance() throws IOException {
-		String json = krakenApi.queryPublic(KrakenApi.Method.BALANCE);
+	public List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+		long callTime = System.currentTimeMillis();
+		String json = krakenApi.queryPrivate(KrakenApi.Method.BALANCE);
 		JsonToModel jm = new JsonToModel(json);
-		return jm.parseAccountBalance();
+		return jm.parseAccountBalance(callTime);
+	}
+
+	@Override
+	public TradeBalance getTradeBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+		return getTradeBalance(null);
+	}
+	@Override
+	public TradeBalance getTradeBalance(String baseAsset) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+		Map<String, String> apiParams = new HashMap<>();
+		if(StringUtils.isNotBlank(baseAsset)) {
+			apiParams.put("asset", baseAsset);
+		}
+		long callTime = System.currentTimeMillis();
+		String json = krakenApi.queryPrivate(KrakenApi.Method.TRADE_BALANCE, apiParams);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseTradeBalance(callTime);
 	}
 }

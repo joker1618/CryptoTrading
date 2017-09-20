@@ -9,10 +9,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by f.barbano on 15/09/2017.
@@ -31,6 +28,8 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	private static final String FILENAME_TRADES_LAST = "trades/trades_@PAIR_NAME@.last";
 	private static final String FILENAME_SPREADS = "spread/spread_@PAIR_NAME@.csv";
 	private static final String FILENAME_SPREADS_LAST = "spread/spread_@PAIR_NAME@.last";
+	private static final String FILENAME_ACCOUNT_BALANCE = "balance/accountBalance.csv";
+	private static final String FILENAME_TRADE_BALANCE = "balance/tradeBalance.csv";
 
 	private static final String HEADER_ASSETS;
 	private static final String HEADER_ASSET_PAIRS;
@@ -39,6 +38,8 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	private static final String HEADER_OHLC;
 	private static final String HEADER_TRADES;
 	private static final String HEADER_SPREAD;
+	private static final String HEADER_ACCOUNT_BALANCE;
+	private static final String HEADER_TRADE_BALANCE;
 	static {
 		HEADER_ASSETS = "ASSET_NAME|ASSET_CLASS|ALT_NAME|DECIMALS|DISPLAY_DECIMALS";
 
@@ -60,6 +61,13 @@ public class KrakenProviderImpl implements IKrakenProvider {
 		HEADER_TRADES = "PAIR_NAME|PRICE|VOLUME|TIME|ACTION_TYPE|ORDER_TYPE|MISCELLANEOUS";
 
 		HEADER_SPREAD = "PAIR_NAME|TIME|BID|ASK";
+
+		HEADER_ACCOUNT_BALANCE = "CALL_TIME|ASSET|BALANCE";
+
+		sb = new StringBuilder();
+		sb.append("CALL_TIME|EQUIVALENT_BALANCE|TRADE_BALANCE|MARGIN_AMOUNT|UNREALIZED_PROFIT_LOSS|");
+		sb.append("BASIS_COST|CURRENT_VALUATION|EQUITY|FREE_MARGIN|MARGIN_LEVEL");
+		HEADER_TRADE_BALANCE = sb.toString();
 	}
 
 	private static final String PH_PAIR_NAME = "@PAIR_NAME@";
@@ -269,6 +277,44 @@ public class KrakenProviderImpl implements IKrakenProvider {
 			last = Long.parseLong(strLast);
 		}
 		return last;
+	}
+
+	@Override
+	public void persistAccountBalance(List<AccountBalance> accountBalances) throws IOException {
+		Path outPath = getPath(FILENAME_ACCOUNT_BALANCE, "");
+		List<String> lines = Utils.map(accountBalances, ModelConverter::accountBalanceToString);
+		appendData(outPath, HEADER_ACCOUNT_BALANCE, lines);
+	}
+
+	@Override
+	public List<AccountBalance> readAccountBalance() throws IOException {
+		Path path = getPath(FILENAME_ACCOUNT_BALANCE, "");
+		List<AccountBalance> abList = new ArrayList<>();
+		if(Files.exists(path)) {
+			List<String> lines = Files.readAllLines(path, ENCODING);
+			lines.removeIf(HEADER_ACCOUNT_BALANCE::equals);
+			abList = Utils.map(lines, ModelConverter::stringToAccountBalance);
+		}
+		return abList;
+	}
+
+	@Override
+	public void persistTradeBalance(TradeBalance tradeBalance) throws IOException {
+		Path outPath = getPath(FILENAME_TRADE_BALANCE, "");
+		List<String> lines = Collections.singletonList(ModelConverter.tradeBalanceToString(tradeBalance));
+		appendData(outPath, HEADER_TRADE_BALANCE, lines);
+	}
+
+	@Override
+	public List<TradeBalance> readTradeBalances() throws IOException {
+		Path path = getPath(FILENAME_TRADE_BALANCE, "");
+		List<TradeBalance> tbList = new ArrayList<>();
+		if(Files.exists(path)) {
+			List<String> lines = Files.readAllLines(path, ENCODING);
+			lines.removeIf(HEADER_TRADE_BALANCE::equals);
+			tbList = Utils.map(lines, ModelConverter::stringToTradeBalance);
+		}
+		return tbList;
 	}
 
 

@@ -33,6 +33,11 @@ PIANTA TODO LIST
 1) legami tra i valori dei vari files
 
 
+ASK LIST
+
+* TradeBalance input:
+    - aClass serve? (optional, default currency) (per ora ho trovato solo delle currency)
+    - asset, nn cambia quasi un cazzo, perché?
 
 
 

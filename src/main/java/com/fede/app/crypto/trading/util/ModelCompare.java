@@ -48,6 +48,15 @@ public class ModelCompare {
 		};
 	}
 
+	public static Comparator<AccountBalance> compareAccountBalances() {
+		return (s1, s2) -> {
+			CompareBuilder cp = new CompareBuilder();
+			cp.add(s1.getCallTime(), s2.getCallTime());
+			cp.add(s1.getAssetClass(), s2.getAssetClass());
+			return cp.compare();
+		};
+	}
+
 	private static class CompareBuilder {
 		int result;
 

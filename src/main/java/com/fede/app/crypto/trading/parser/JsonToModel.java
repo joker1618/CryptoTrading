@@ -228,7 +228,7 @@ public class JsonToModel {
 		List<AccountBalance> abList = new ArrayList<>();
 		result.entrySet().forEach(entry -> {
 			String assetClass = entry.getKey();
-			double balance = Double.parseDouble(result.getString(assetClass));
+			double balance = Utils.toDouble(result.getString(assetClass));
 			AccountBalance ab = new AccountBalance();
 			ab.setCallTime(callTime);
 			ab.setAssetClass(assetClass);
@@ -237,6 +237,28 @@ public class JsonToModel {
 		});
 
 		return abList;
+	}
+
+	public TradeBalance parseTradeBalance(long callTime) {
+		if(containsErrors())	return null;
+
+		TradeBalance tb = new TradeBalance();
+		tb.setCallTime(callTime);
+		tb.setEquivBalance(Utils.toDouble(result.getString("eb")));
+		tb.setTradeBalance(Utils.toDouble(result.getString("tb")));
+		tb.setMarginAmount(Utils.toDouble(result.getString("m")));
+		tb.setUnrealizedProfitLoss(Utils.toDouble(result.getString("n")));
+		tb.setBasisCost(Utils.toDouble(result.getString("c")));
+		tb.setCurrentValuation(Utils.toDouble(result.getString("v")));
+		tb.setEquity(Utils.toDouble(result.getString("e")));
+		tb.setFreeMargin(Utils.toDouble(result.getString("mf")));
+
+		// "ml" sometimes is not present
+		if(result.containsKey("ml")) {
+			tb.setMarginLevel(Utils.toDouble(result.getString("ml")));
+		}
+
+		return tb;
 	}
 
 

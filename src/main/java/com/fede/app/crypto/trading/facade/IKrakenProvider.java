@@ -38,6 +38,12 @@ public interface IKrakenProvider {
 	List<Spread> readSpreads(String pairName) throws IOException;
 	long readSpreadLast(String pairName) throws IOException;
 
+	void persistAccountBalance(List<AccountBalance> accountBalances) throws IOException;
+	List<AccountBalance> readAccountBalance() throws IOException;
+
+	void persistTradeBalance(TradeBalance accountBalance) throws IOException;
+	List<TradeBalance> readTradeBalances() throws IOException;
+
 
 
 

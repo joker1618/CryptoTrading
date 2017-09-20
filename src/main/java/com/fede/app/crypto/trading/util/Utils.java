@@ -2,6 +2,7 @@ package com.fede.app.crypto.trading.util;
 
 import com.fede.app.crypto.trading.common.Const;
 
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -50,19 +51,24 @@ public class Utils {
 		return DateTimeFormatter.ofPattern(pattern).format(ldt);
 	}
 
-	public static String toString(double d) {
-		synchronized (Const.NUMBER_FORMAT) {
-			return Const.NUMBER_FORMAT.format(d);
+	public static String toString(Double d) {
+		if(d == null)	return "-";
+		return getNumberFormat().format(d);
+	}
+	public static Double toDouble(String str) {
+		if(str.equals("-"))	return null;
+
+		try {
+			return getNumberFormat().parse(str).doubleValue();
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
 		}
 	}
-	public static double toDouble(String str) {
-		synchronized (Const.NUMBER_FORMAT) {
-			try {
-				return Const.NUMBER_FORMAT.parse(str).doubleValue();
-			} catch (ParseException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	private static NumberFormat getNumberFormat() {
+		NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
+		nf.setMaximumFractionDigits(12);
+		nf.setGroupingUsed(false);
+		return nf;
 	}
 
 	public static <V,K> Map<K,V> toMapSingle(Collection<V> source, Function<V,K> keyMapper) {
