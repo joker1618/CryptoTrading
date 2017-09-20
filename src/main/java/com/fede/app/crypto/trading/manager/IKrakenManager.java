@@ -21,4 +21,8 @@ public interface IKrakenManager {
 	List<OHLC> downloadOHLCData(String pairName);
 	List<Trade> downloadTradesData(String pairName);
 	List<Spread> downloadSpreadsData(String pairName);
+
+	List<AccountBalance> getAccountBalance();
+
+
 }

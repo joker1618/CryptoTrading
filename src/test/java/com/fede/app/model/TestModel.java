@@ -1,5 +1,6 @@
 package com.fede.app.model;
 
+import com.fede.app.crypto.trading.parser.JsonToModel;
 import com.fede.app.crypto.trading.util.Utils;
 import edu.self.kraken.api.KrakenApi;
 import org.junit.BeforeClass;
@@ -63,7 +64,8 @@ public class TestModel {
 		Map<String, String> params = new HashMap<>();
 		String response = api.queryPrivate(KrakenApi.Method.BALANCE);
 		out.println(response);
-
+		JsonToModel jm = new JsonToModel(response);
+		jm.parseAccountBalance();
 	}
 
 	@Test

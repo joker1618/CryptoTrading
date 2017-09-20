@@ -28,7 +28,7 @@ public interface IKrakenCaller {
 
 	Pair<Long, List<Spread>> getSpreads(String pairName, long since) throws IOException;
 
-
+	List<AccountBalance> getAccounteBalance() throws IOException;
 
 
 }

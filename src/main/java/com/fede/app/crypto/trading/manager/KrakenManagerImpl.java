@@ -7,6 +7,7 @@ import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
 import com.fede.app.crypto.trading.facade.KrakenProviderImpl;
 import com.fede.app.crypto.trading.model.*;
 import com.fede.app.crypto.trading.util.CheckUtils;
+import com.fede.app.crypto.trading.util.ModelCompare;
 import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -149,7 +150,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 			}
 
 			List<OHLC> ohlcList = ohlc.getValue();
-			Collections.sort(ohlcList);
+			Collections.sort(ohlcList, ModelCompare.compareOHLC());
 			krakenProvider.persistOHLCs(ohlcList);
 			krakenProvider.persistOHLCLast(pairName, ohlc.getKey());
 			return ohlcList;
@@ -172,7 +173,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 			}
 
 			List<Trade> tradeList = trades.getValue();
-			Collections.sort(tradeList);
+			Collections.sort(tradeList, ModelCompare.compareTrades());
 			krakenProvider.persistTrades(tradeList);
 			krakenProvider.persistTradeLast(pairName, trades.getKey());
 			return tradeList;
@@ -195,12 +196,22 @@ public class KrakenManagerImpl implements IKrakenManager {
 			}
 
 			List<Spread> spreadList = spreads.getValue();
-			Collections.sort(spreadList);
+			Collections.sort(spreadList, ModelCompare.compareSpreads());
 			krakenProvider.persistSpreads(spreadList);
 			krakenProvider.persistSpreadLast(pairName, spreads.getKey());
 			return spreadList;
 
 		} catch(IOException ex) {
+			// TODO manage
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<AccountBalance> getAccountBalance() {
+		try {
+			return krakenCaller.getAccounteBalance();
+		} catch (IOException ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
 		}

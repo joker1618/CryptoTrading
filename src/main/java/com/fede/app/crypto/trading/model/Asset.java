@@ -1,11 +1,13 @@
 package com.fede.app.crypto.trading.model;
 
 
+import com.fede.app.crypto.trading.util.ModelCompare;
+
 /**
  * Created by f.barbano on 07/09/2017.
  * This class is the result object of the call to 'https://api.kraken.com/0/public/Assets'
  */
-public class Asset implements Comparable<Asset> {
+public class Asset {
 
 	private String assetName;
 	private String aClass;
@@ -13,11 +15,6 @@ public class Asset implements Comparable<Asset> {
 	private int decimals;
 	private int displayDecimals;
 
-
-	@Override
-	public int compareTo(Asset o) {
-		return assetName.compareTo(o.assetName);
-	}
 
 	@Override
 	public boolean equals(Object o) {

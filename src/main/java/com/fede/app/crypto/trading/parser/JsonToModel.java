@@ -222,6 +222,23 @@ public class JsonToModel {
 		return Pair.of(last, spreadList);
 	}
 
+	public List<AccountBalance> parseAccountBalance(long callTime) {
+		if(containsErrors())	return null;
+
+		List<AccountBalance> abList = new ArrayList<>();
+		result.entrySet().forEach(entry -> {
+			String assetClass = entry.getKey();
+			double balance = Double.parseDouble(result.getString(assetClass));
+			AccountBalance ab = new AccountBalance();
+			ab.setCallTime(callTime);
+			ab.setAssetClass(assetClass);
+			ab.setBalance(balance);
+			abList.add(ab);
+		});
+
+		return abList;
+	}
+
 
 
 

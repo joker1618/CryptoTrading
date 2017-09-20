@@ -3,7 +3,7 @@ package com.fede.app.crypto.trading.model;
 /**
  * Created by f.barbano on 16/09/2017.
  */
-public class OHLC implements Comparable<OHLC> {
+public class OHLC {
 
 	private String pairName;
 	private long time;
@@ -111,13 +111,4 @@ public class OHLC implements Comparable<OHLC> {
 		return result;
 	}
 
-	@Override
-	public int compareTo(OHLC o) {
-		if(this.equals(o))	return 0;
-
-		int res = pairName.compareTo(o.pairName);
-		if(res != 0)	return res;
-
-		return (int)(time - o.time);
-	}
 }

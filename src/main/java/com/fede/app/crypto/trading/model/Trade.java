@@ -6,7 +6,7 @@ import com.fede.app.crypto.trading.types.OrderType;
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class Trade implements Comparable<Trade> {
+public class Trade {
 	
 	private String pairName;
 	private double price;
@@ -91,11 +91,4 @@ public class Trade implements Comparable<Trade> {
 		return result;
 	}
 
-	@Override
-	public int compareTo(Trade o) {
-		if(this.equals(o))	return 0;
-
-		int res = pairName.compareTo(o.pairName);
-		return res != 0 ? res : (int)(time - o.time);
-	}
 }

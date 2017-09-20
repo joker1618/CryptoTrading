@@ -3,7 +3,7 @@ package com.fede.app.crypto.trading.model;
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class Ticker implements Comparable<Ticker> {
+public class Ticker  {
 
 	private long callTime;	// not server timestamp, but system timestamp just before call
 	private String pairName;
@@ -60,13 +60,7 @@ public class Ticker implements Comparable<Ticker> {
 		return result;
 	}
 
-	@Override
-	public int compareTo(Ticker o) {
-		int res = pairName.compareTo(o.pairName);
-		return res != 0 ? res : (int)(callTime - o.callTime);
-	}
 
-	
 	public long getCallTime() {
 		return callTime;
 	}

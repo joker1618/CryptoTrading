@@ -1,11 +1,13 @@
 package com.fede.app.crypto.trading.model;
 
+import com.fede.app.crypto.trading.util.ModelCompare;
+
 import java.util.List;
 
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class AssetPair implements Comparable<AssetPair> {
+public class AssetPair {
 
 	private String pairName;
 	private String altName;
@@ -77,11 +79,6 @@ public class AssetPair implements Comparable<AssetPair> {
 	@Override
 	public String toString() {
 		return pairName;
-	}
-
-	@Override
-	public int compareTo(AssetPair o) {
-		return pairName.compareTo(o.pairName);
 	}
 
 

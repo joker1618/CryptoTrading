@@ -209,6 +209,22 @@ public class ModelConverter {
 		return spread;
 	}
 
+	public static String accountBalanceToString(AccountBalance accountBalance) {
+		return String.format("%d|%s|%s",
+			accountBalance.getCallTime(),
+			accountBalance.getAssetClass(),
+			Utils.toString(accountBalance.getBalance())
+		);
+	}
+	public static AccountBalance stringToAccountBalance(String csvLine) {
+		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
+		AccountBalance accountBalance = new AccountBalance();
+		accountBalance.setCallTime(Long.parseLong(split[0]));
+		accountBalance.setAssetClass(split[1]);
+		accountBalance.setBalance(Utils.toDouble(split[2]));
+		return accountBalance;
+	}
+
 
 
 

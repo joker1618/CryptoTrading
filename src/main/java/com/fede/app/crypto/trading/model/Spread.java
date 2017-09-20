@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class Spread implements Comparable<Spread> {
+public class Spread {
 	
 	private String pairName;
 	private long time;
@@ -36,22 +36,6 @@ public class Spread implements Comparable<Spread> {
 		temp = Double.doubleToLongBits(ask);
 		result = 31 * result + (int) (temp ^ (temp >>> 32));
 		return result;
-	}
-
-	@Override
-	public int compareTo(Spread o) {
-		if(this.equals(o))	return 0;
-		int res = pairName.compareTo(o.pairName);
-		if(res == 0) {
-			res = (int)(time - o.time);
-			if(res == 0) {
-				res = (int)(bid - o.bid);
-				if(res == 0) {
-					res = (int)(ask - o.ask);
-				}
-			}
-		}
-		return res;
 	}
 
 

@@ -104,4 +104,11 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseSpreads(pairName);
 	}
+
+	@Override
+	public List<AccountBalance> getAccounteBalance() throws IOException {
+		String json = krakenApi.queryPublic(KrakenApi.Method.BALANCE);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseAccountBalance();
+	}
 }
