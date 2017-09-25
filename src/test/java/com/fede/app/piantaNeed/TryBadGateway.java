@@ -39,7 +39,7 @@ public class TryBadGateway {
 			if(StringUtils.isBlank(txId)) {
 				System.out.println("Error performing order");
 			} else {
-				System.out.println("Order done [txId=" + txId + "]");
+				System.out.println("MarketOrder done [txId=" + txId + "]");
 				Thread.sleep(PAUSE_SEC * 1000);
 			}
 

@@ -12,7 +12,10 @@ import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by f.barbano on 15/09/2017.
@@ -124,9 +127,9 @@ public class KrakenManagerImpl implements IKrakenManager {
 	}
 
 	@Override
-	public List<Order> downloadOrderBook(String pairName) {
+	public List<MarketOrder> downloadOrderBook(String pairName) {
 		try {
-			List<Order> orderBook = krakenCaller.getOrderBook(pairName);
+			List<MarketOrder> orderBook = krakenCaller.getOrderBook(pairName);
 			if(orderBook != null) {
 				krakenProvider.persistOrderBook(orderBook);
 			}
@@ -139,17 +142,17 @@ public class KrakenManagerImpl implements IKrakenManager {
 	}
 
 	@Override
-	public List<OHLC> downloadOHLCData(String pairName) {
+	public List<Ohlc> downloadOHLCData(String pairName) {
 		try {
 			long last = krakenProvider.readOHLCLast(pairName);
 
 			// download from kraken website
-			Pair<Long, List<OHLC>> ohlc = krakenCaller.getOHLCs(pairName, last);
+			Pair<Long, List<Ohlc>> ohlc = krakenCaller.getOhlcs(pairName, last);
 			if(ohlc == null) {
 				return null;
 			}
 
-			List<OHLC> ohlcList = ohlc.getValue();
+			List<Ohlc> ohlcList = ohlc.getValue();
 			Collections.sort(ohlcList, ModelCompare.compareOHLC());
 			krakenProvider.persistOHLCs(ohlcList);
 			krakenProvider.persistOHLCLast(pairName, ohlc.getKey());
@@ -162,21 +165,21 @@ public class KrakenManagerImpl implements IKrakenManager {
 	}
 
 	@Override
-	public List<Trade> downloadTradesData(String pairName) {
+	public List<RecentTrade> downloadTradesData(String pairName) {
 		try {
 			long last = krakenProvider.readTradeLast(pairName);
 
 			// download from kraken website
-			Pair<Long, List<Trade>> trades = krakenCaller.getTrades(pairName, last);
+			Pair<Long, List<RecentTrade>> trades = krakenCaller.getRecentTrades(pairName, last);
 			if(trades == null) {
 				return null;
 			}
 
-			List<Trade> tradeList = trades.getValue();
-			Collections.sort(tradeList, ModelCompare.compareTrades());
-			krakenProvider.persistTrades(tradeList);
+			List<RecentTrade> recentTradeList = trades.getValue();
+			Collections.sort(recentTradeList, ModelCompare.compareTrades());
+			krakenProvider.persistTrades(recentTradeList);
 			krakenProvider.persistTradeLast(pairName, trades.getKey());
-			return tradeList;
+			return recentTradeList;
 
 		} catch(IOException ex) {
 			// TODO manage
@@ -185,21 +188,21 @@ public class KrakenManagerImpl implements IKrakenManager {
 	}
 
 	@Override
-	public List<Spread> downloadSpreadsData(String pairName) {
+	public List<SpreadData> downloadSpreadsData(String pairName) {
 		try {
 			long last = krakenProvider.readSpreadLast(pairName);
 
 			// download from kraken website
-			Pair<Long, List<Spread>> spreads = krakenCaller.getSpreads(pairName, last);
+			Pair<Long, List<SpreadData>> spreads = krakenCaller.getSpreadData(pairName, last);
 			if(spreads == null) {
 				return null;
 			}
 
-			List<Spread> spreadList = spreads.getValue();
-			Collections.sort(spreadList, ModelCompare.compareSpreads());
-			krakenProvider.persistSpreads(spreadList);
+			List<SpreadData> spreadDataList = spreads.getValue();
+			Collections.sort(spreadDataList, ModelCompare.compareSpreads());
+			krakenProvider.persistSpreads(spreadDataList);
 			krakenProvider.persistSpreadLast(pairName, spreads.getKey());
-			return spreadList;
+			return spreadDataList;
 
 		} catch(IOException ex) {
 			// TODO manage
@@ -222,12 +225,32 @@ public class KrakenManagerImpl implements IKrakenManager {
 	}
 
 	@Override
-	public TradeBalance getTradeBalance() {
+	public TradeBalance getTradeBalance(String pairName) {
 		try {
-			TradeBalance tradeBalance = krakenCaller.getTradeBalance();
+			TradeBalance tradeBalance = krakenCaller.getTradeBalance(pairName);
 			krakenProvider.persistTradeBalance(tradeBalance);
 			return tradeBalance;
 
+		} catch (Exception ex) {
+			// TODO manage
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<OpenOrder> getOpenOrders() {
+		try {
+			return krakenCaller.getOpenOrders();
+		} catch (Exception ex) {
+			// TODO manage
+			throw new RuntimeException(ex);
+		}
+	}
+
+	@Override
+	public List<ClosedOrder> getClosedOrders() {
+		try {
+			return krakenCaller.getClosedOrders();
 		} catch (Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);

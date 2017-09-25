@@ -1,11 +1,8 @@
 package com.fede.app.crypto.trading.util;
 
 import com.fede.app.crypto.trading.model.*;
-import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Created by f.barbano on 20/09/2017.
@@ -20,7 +17,7 @@ public class ModelCompare {
 		return Comparator.comparing(AssetPair::getPairName);
 	}
 
-	public static Comparator<OHLC> compareOHLC() {
+	public static Comparator<Ohlc> compareOHLC() {
 		return (o1, o2) -> {
 			CompareBuilder cp = new CompareBuilder();
 			cp.add(o1.getPairName(), o2.getPairName());
@@ -29,7 +26,7 @@ public class ModelCompare {
 		};
 	}
 
-	public static Comparator<Trade> compareTrades() {
+	public static Comparator<RecentTrade> compareTrades() {
 		return (t1, t2) -> {
 			CompareBuilder cp = new CompareBuilder();
 			cp.add(t1.getPairName(), t2.getPairName());
@@ -39,7 +36,7 @@ public class ModelCompare {
 		};
 	}
 
-	public static Comparator<Spread> compareSpreads() {
+	public static Comparator<SpreadData> compareSpreads() {
 		return (s1, s2) -> {
 			CompareBuilder cp = new CompareBuilder();
 			cp.add(s1.getPairName(), s2.getPairName());

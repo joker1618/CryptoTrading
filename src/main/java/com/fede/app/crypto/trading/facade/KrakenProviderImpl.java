@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by f.barbano on 15/09/2017.
@@ -22,8 +25,8 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	private static final String FILENAME_ASSET_PAIRS = "assetPairs.csv";
 	private static final String FILENAME_TICKERS = "tickers/tickers_@PAIR_NAME@.csv";
 	private static final String FILENAME_ORDERS = "orders/orders_@PAIR_NAME@.csv";
-	private static final String FILENAME_OHLC = "OHLC/OHLC_@PAIR_NAME@.csv";
-	private static final String FILENAME_OHLC_LAST = "OHLC/OHLC_@PAIR_NAME@.last";
+	private static final String FILENAME_OHLC = "Ohlc/OHLC_@PAIR_NAME@.csv";
+	private static final String FILENAME_OHLC_LAST = "Ohlc/OHLC_@PAIR_NAME@.last";
 	private static final String FILENAME_TRADES = "trades/trades_@PAIR_NAME@.csv";
 	private static final String FILENAME_TRADES_LAST = "trades/trades_@PAIR_NAME@.last";
 	private static final String FILENAME_SPREADS = "spread/spread_@PAIR_NAME@.csv";
@@ -68,6 +71,7 @@ public class KrakenProviderImpl implements IKrakenProvider {
 		sb.append("CALL_TIME|EQUIVALENT_BALANCE|TRADE_BALANCE|MARGIN_AMOUNT|UNREALIZED_PROFIT_LOSS|");
 		sb.append("BASIS_COST|CURRENT_VALUATION|EQUITY|FREE_MARGIN|MARGIN_LEVEL");
 		HEADER_TRADE_BALANCE = sb.toString();
+
 	}
 
 	private static final String PH_PAIR_NAME = "@PAIR_NAME@";
@@ -141,9 +145,9 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public void persistOrderBook(List<Order> orders) throws IOException {
-		Map<String, List<Order>> map = Utils.toMap(orders, Order::getPairName);
-		for(Map.Entry<String, List<Order>> entry : map.entrySet()) {
+	public void persistOrderBook(List<MarketOrder> marketOrders) throws IOException {
+		Map<String, List<MarketOrder>> map = Utils.toMap(marketOrders, MarketOrder::getPairName);
+		for(Map.Entry<String, List<MarketOrder>> entry : map.entrySet()) {
 			Path outPath = getPath(FILENAME_ORDERS, entry.getKey());
 			List<String> lines = Utils.map(entry.getValue(), ModelConverter::orderToString);
 			appendData(outPath, HEADER_ORDERS, lines);
@@ -151,9 +155,9 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public List<Order> readOrderBook(String pairName) throws IOException {
+	public List<MarketOrder> readOrderBook(String pairName) throws IOException {
 		Path path = getPath(FILENAME_ORDERS, pairName);
-		List<Order> orderList = new ArrayList<>();
+		List<MarketOrder> orderList = new ArrayList<>();
 		if(Files.exists(path)) {
 			List<String> lines = Files.readAllLines(path, ENCODING);
 			lines.removeIf(HEADER_ORDERS::equals);
@@ -163,9 +167,9 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public void persistOHLCs(List<OHLC> ohlcList) throws IOException {
-		Map<String, List<OHLC>> ohlcMap = Utils.toMap(ohlcList, OHLC::getPairName);
-		for(Map.Entry<String, List<OHLC>> entry : ohlcMap.entrySet()) {
+	public void persistOHLCs(List<Ohlc> ohlcList) throws IOException {
+		Map<String, List<Ohlc>> ohlcMap = Utils.toMap(ohlcList, Ohlc::getPairName);
+		for(Map.Entry<String, List<Ohlc>> entry : ohlcMap.entrySet()) {
 			Path outPath = getPath(FILENAME_OHLC, entry.getKey());
 			List<String> lines = Utils.map(entry.getValue(), ModelConverter::ohlcToString);
 			appendData(outPath, HEADER_OHLC, lines);
@@ -179,8 +183,8 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public List<OHLC> readOHLCs(String pairName) throws IOException {
-		List<OHLC> toRet = new ArrayList<>();
+	public List<Ohlc> readOHLCs(String pairName) throws IOException {
+		List<Ohlc> toRet = new ArrayList<>();
 		Path outPath = getPath(FILENAME_OHLC, pairName);
 		if(Files.exists(outPath)) {
 			List<String> lines = Files.readAllLines(outPath);
@@ -202,9 +206,9 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public void persistTrades(List<Trade> tradeList) throws IOException {
-		Map<String, List<Trade>> tradeMap = Utils.toMap(tradeList, Trade::getPairName);
-		for(Map.Entry<String, List<Trade>> entry : tradeMap.entrySet()) {
+	public void persistTrades(List<RecentTrade> recentTradeList) throws IOException {
+		Map<String, List<RecentTrade>> tradeMap = Utils.toMap(recentTradeList, RecentTrade::getPairName);
+		for(Map.Entry<String, List<RecentTrade>> entry : tradeMap.entrySet()) {
 			Path outPath = getPath(FILENAME_TRADES, entry.getKey());
 			List<String> lines = Utils.map(entry.getValue(), ModelConverter::tradeToString);
 			appendData(outPath, HEADER_TRADES, lines);
@@ -218,8 +222,8 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public List<Trade> readTrades(String pairName) throws IOException {
-		List<Trade> toRet = new ArrayList<>();
+	public List<RecentTrade> readTrades(String pairName) throws IOException {
+		List<RecentTrade> toRet = new ArrayList<>();
 		Path outPath = getPath(FILENAME_TRADES, pairName);
 		if(Files.exists(outPath)) {
 			List<String> lines = Files.readAllLines(outPath);
@@ -241,9 +245,9 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public void persistSpreads(List<Spread> spreadList) throws IOException {
-		Map<String, List<Spread>> tradeMap = Utils.toMap(spreadList, Spread::getPairName);
-		for(Map.Entry<String, List<Spread>> entry : tradeMap.entrySet()) {
+	public void persistSpreads(List<SpreadData> spreadDataList) throws IOException {
+		Map<String, List<SpreadData>> tradeMap = Utils.toMap(spreadDataList, SpreadData::getPairName);
+		for(Map.Entry<String, List<SpreadData>> entry : tradeMap.entrySet()) {
 			Path outPath = getPath(FILENAME_SPREADS, entry.getKey());
 			List<String> lines = Utils.map(entry.getValue(), ModelConverter::spreadToString);
 			appendData(outPath, HEADER_SPREAD, lines);
@@ -257,8 +261,8 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public List<Spread> readSpreads(String pairName) throws IOException {
-		List<Spread> toRet = new ArrayList<>();
+	public List<SpreadData> readSpreads(String pairName) throws IOException {
+		List<SpreadData> toRet = new ArrayList<>();
 		Path outPath = getPath(FILENAME_SPREADS, pairName);
 		if(Files.exists(outPath)) {
 			List<String> lines = Files.readAllLines(outPath);

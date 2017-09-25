@@ -2,18 +2,14 @@ package com.fede.app.caller;
 
 import com.fede.app.crypto.trading.manager.IKrakenManager;
 import com.fede.app.crypto.trading.manager.KrakenManagerImpl;
-import com.fede.app.crypto.trading.model.AssetPair;
-import com.fede.app.crypto.trading.util.Utils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.System.out;

@@ -151,6 +151,14 @@ public class Ticker  {
 			return result;
 		}
 
+		@Override
+		public String toString() {
+			return "TickerPrice{" +
+					   "price=" + price +
+					   ", lotVolume=" + lotVolume +
+					   '}';
+		}
+
 		public Double getPrice() {
 			return price;
 		} 
@@ -186,6 +194,15 @@ public class Ticker  {
 			return result;
 		}
 
+		@Override
+		public String toString() {
+			return "TickerWholePrice{" +
+					   "price=" + price +
+					   ", lotVolume=" + lotVolume +
+					   ", wholeLotVolume=" + wholeLotVolume +
+					   '}';
+		}
+
 		public Integer getWholeLotVolume() {
 			return wholeLotVolume;
 		}
@@ -214,6 +231,14 @@ public class Ticker  {
 			int result = today != null ? today.hashCode() : 0;
 			result = 31 * result + (last24Hours != null ? last24Hours.hashCode() : 0);
 			return result;
+		}
+
+		@Override
+		public String toString() {
+			return "TickerVolume{" +
+					   "today=" + today +
+					   ", last24Hours=" + last24Hours +
+					   '}';
 		}
 
 		public Double getToday() {

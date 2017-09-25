@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface IKrakenCaller {
 
-	long getServerTime() throws IOException;
+	Long getServerTime() throws IOException;
 
 	List<Asset> getAssets() throws IOException;
 
@@ -22,18 +22,19 @@ public interface IKrakenCaller {
 
 	List<Ticker> getTickers(Collection<String> pairNames) throws IOException;
 
-	Pair<Long, List<OHLC>> getOHLCs(String pairName, long since) throws IOException;
+	Pair<Long, List<Ohlc>> getOhlcs(String pairName, long since) throws IOException;
 
-	List<Order> getOrderBook(String pairName) throws IOException;
+	List<MarketOrder> getOrderBook(String pairName) throws IOException;
 
-	Pair<Long, List<Trade>> getTrades(String pairName, long since) throws IOException;
+	Pair<Long, List<RecentTrade>> getRecentTrades(String pairName, long since) throws IOException;
 
-	Pair<Long, List<Spread>> getSpreads(String pairName, long since) throws IOException;
+	Pair<Long, List<SpreadData>> getSpreadData(String pairName, long since) throws IOException;
 
 	List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 
-	TradeBalance getTradeBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 	TradeBalance getTradeBalance(String baseAsset) throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 
+	List<OpenOrder> getOpenOrders() throws NoSuchAlgorithmException, InvalidKeyException, IOException;
+	List<ClosedOrder> getClosedOrders() throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
 }

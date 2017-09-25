@@ -1,7 +1,5 @@
 package com.fede.app.crypto.trading.util;
 
-import com.fede.app.crypto.trading.common.Const;
-
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.Instant;
@@ -55,6 +53,14 @@ public class Utils {
 		if(d == null)	return "-";
 		return getNumberFormat().format(d);
 	}
+	public static String toString(Integer num) {
+		if(num == null)	return "-";
+		return String.valueOf(num);
+	}
+	public static String toString(Long num) {
+		if(num == null)	return "-";
+		return String.valueOf(num);
+	}
 	public static Double toDouble(String str) {
 		if(str.equals("-"))	return null;
 
@@ -64,8 +70,17 @@ public class Utils {
 			throw new RuntimeException(e);
 		}
 	}
+	public static Integer toInteger(String str) {
+		if(str.equals("-"))	return null;
+		return Integer.parseInt(str);
+	}
+	public static Long toLong(String str) {
+		if(str.equals("-"))	return null;
+		return Long.parseLong(str);
+	}
 	private static NumberFormat getNumberFormat() {
 		NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
+		nf.setMinimumFractionDigits(1);
 		nf.setMaximumFractionDigits(12);
 		nf.setGroupingUsed(false);
 		return nf;

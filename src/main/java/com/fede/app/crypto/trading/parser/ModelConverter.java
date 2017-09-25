@@ -4,9 +4,9 @@ import com.fede.app.crypto.trading.model.*;
 import com.fede.app.crypto.trading.model.Ticker.TickerPrice;
 import com.fede.app.crypto.trading.model.Ticker.TickerVolume;
 import com.fede.app.crypto.trading.model.Ticker.TickerWholePrice;
-import com.fede.app.crypto.trading.types.ActionType;
-import com.fede.app.crypto.trading.types.OrderDirection;
-import com.fede.app.crypto.trading.types.OrderType;
+import com.fede.app.crypto.trading.model.types.OrderAction;
+import com.fede.app.crypto.trading.model.types.OrderDirection;
+import com.fede.app.crypto.trading.model.types.OrderType;
 import com.fede.app.crypto.trading.util.StrUtils;
 import com.fede.app.crypto.trading.util.Utils;
 
@@ -45,9 +45,9 @@ public class ModelConverter {
 		return String.format("%s|%s|%s|%s|%s|%s|%s|%d|%d|%d|%s|%s|%s|%s|%s|%d|%d",
 			assetPair.getPairName(),
 			assetPair.getAltName(),
-			assetPair.getAClassBase(),
-			assetPair.getBase(),
-			assetPair.getAClassQuote(),
+//			assetPair.getAClassBase(),
+//			assetPair.getBase(),
+//			assetPair.getAClassQuote(),
 			assetPair.getQuote(),
 			assetPair.getLot(),
 			assetPair.getPairDecimals(),
@@ -67,9 +67,9 @@ public class ModelConverter {
 		AssetPair ap = new AssetPair();
 		ap.setPairName(fields[0]);
 		ap.setAltName(fields[1]);
-		ap.setAClassBase(fields[2]);
-		ap.setBase(fields[3]);
-		ap.setAClassQuote(fields[4]);
+//		ap.setAClassBase(fields[2]);
+//		ap.setBase(fields[3]);
+//		ap.setAClassQuote(fields[4]);
 		ap.setQuote(fields[5]);
 		ap.setLot(fields[6]);
 		ap.setPairDecimals(Integer.parseInt(fields[7]));
@@ -119,7 +119,7 @@ public class ModelConverter {
 	}
 
 
-	public static String ohlcToString(OHLC ohlc) {
+	public static String ohlcToString(Ohlc ohlc) {
 		return String.format("%s|%d|%s|%s|%s|%s|%s|%s|%d",
 			ohlc.getPairName(),
 			ohlc.getTime(),
@@ -132,9 +132,9 @@ public class ModelConverter {
 			ohlc.getCount()
 		);
 	}
-	public static OHLC stringToOHLC(String csvLine) {
+	public static Ohlc stringToOHLC(String csvLine) {
 		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
-		OHLC ohlc = new OHLC();
+		Ohlc ohlc = new Ohlc();
 		ohlc.setPairName(split[0]);
 		ohlc.setTime(Long.parseLong(split[1]));
 		ohlc.setOpen(Utils.toDouble(split[2]));
@@ -147,18 +147,18 @@ public class ModelConverter {
 		return ohlc;
 	}
 
-	public static String orderToString(Order order) {
+	public static String orderToString(MarketOrder marketOrder) {
 		return String.format("%s|%s|%s|%s|%d",
-			order.getPairName(),
-			order.getOrderDirection().label(),
-			Utils.toString(order.getPrice()),
-			Utils.toString(order.getVolume()),
-			order.getTimestamp()
+			marketOrder.getPairName(),
+			marketOrder.getOrderDirection().label(),
+			Utils.toString(marketOrder.getPrice()),
+			Utils.toString(marketOrder.getVolume()),
+			marketOrder.getTimestamp()
 		);
 	}
-	public static Order stringToOrder(String csvLine) {
+	public static MarketOrder stringToOrder(String csvLine) {
 		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
-		Order order = new Order();
+		MarketOrder order = new MarketOrder();
 		order.setPairName(split[0]);
 		order.setOrderDirection(OrderDirection.getByLabel(split[1]));
 		order.setPrice(Utils.toDouble(split[2]));
@@ -167,46 +167,46 @@ public class ModelConverter {
 		return order;
 	}
 
-	public static String tradeToString(Trade trade) {
+	public static String tradeToString(RecentTrade recentTrade) {
 		return String.format("%s|%s|%s|%d|%s|%s|%s",
-			trade.getPairName(),
-			Utils.toString(trade.getPrice()),
-			Utils.toString(trade.getVolume()),
-			trade.getTime(),
-			trade.getActionType().label(),
-			trade.getOrderType().label(),
-			trade.getMiscellaneous()
+			recentTrade.getPairName(),
+			Utils.toString(recentTrade.getPrice()),
+			Utils.toString(recentTrade.getVolume()),
+			recentTrade.getTime(),
+			recentTrade.getOrderAction().label(),
+			recentTrade.getOrderType().label(),
+			recentTrade.getMiscellaneous()
 		);
 	}
-	public static Trade stringToTrade(String csvLine) {
+	public static RecentTrade stringToTrade(String csvLine) {
 		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
-		Trade trade = new Trade();
-		trade.setPairName(split[0]);
-		trade.setPrice(Utils.toDouble(split[1]));
-		trade.setVolume(Utils.toDouble(split[2]));
-		trade.setTime(Long.parseLong(split[3]));
-		trade.setActionType(ActionType.getByLabel(split[4]));
-		trade.setOrderType(OrderType.getByLabel(split[5]));
-		trade.setMiscellaneous(split[6]);
-		return trade;
+		RecentTrade recentTrade = new RecentTrade();
+		recentTrade.setPairName(split[0]);
+		recentTrade.setPrice(Utils.toDouble(split[1]));
+		recentTrade.setVolume(Utils.toDouble(split[2]));
+		recentTrade.setTime(Long.parseLong(split[3]));
+		recentTrade.setOrderAction(OrderAction.getByLabel(split[4]));
+		recentTrade.setOrderType(OrderType.getByLabel(split[5]));
+		recentTrade.setMiscellaneous(split[6]);
+		return recentTrade;
 	}
 
-	public static String spreadToString(Spread spread) {
+	public static String spreadToString(SpreadData spreadData) {
 		return String.format("%s|%d|%s|%s",
-			spread.getPairName(),
-			spread.getTime(),
-			Utils.toString(spread.getBid()),
-			Utils.toString(spread.getAsk())
+			spreadData.getPairName(),
+			spreadData.getTime(),
+			Utils.toString(spreadData.getBid()),
+			Utils.toString(spreadData.getAsk())
 		);
 	}
-	public static Spread stringToSpread(String csvLine) {
+	public static SpreadData stringToSpread(String csvLine) {
 		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
-		Spread spread = new Spread();
-		spread.setPairName(split[0]);
-		spread.setTime(Long.parseLong(split[1]));
-		spread.setBid(Utils.toDouble(split[2]));
-		spread.setAsk(Utils.toDouble(split[3]));
-		return spread;
+		SpreadData spreadData = new SpreadData();
+		spreadData.setPairName(split[0]);
+		spreadData.setTime(Long.parseLong(split[1]));
+		spreadData.setBid(Utils.toDouble(split[2]));
+		spreadData.setAsk(Utils.toDouble(split[3]));
+		return spreadData;
 	}
 
 	public static String accountBalanceToString(AccountBalance accountBalance) {
@@ -226,7 +226,7 @@ public class ModelConverter {
 	}
 
 	public static String tradeBalanceToString(TradeBalance tradeBalance) {
-		return String.format("%d|%s%s|%s|%s|%s|%s|%s|%s|%s",
+		return String.format("%d|%s|%s|%s|%s|%s|%s|%s|%s|%s",
 			tradeBalance.getCallTime(),
 			Utils.toString(tradeBalance.getEquivBalance()),
 			Utils.toString(tradeBalance.getTradeBalance()),
@@ -254,6 +254,8 @@ public class ModelConverter {
 		tradeBalance.setMarginLevel(Utils.toDouble(split[9]));
 		return tradeBalance;
 	}
+
+	// REVIEW BEFORE HERE
 
 
 
