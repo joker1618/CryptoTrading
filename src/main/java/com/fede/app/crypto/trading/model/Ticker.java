@@ -62,10 +62,10 @@ public class Ticker  {
 	}
 
 
-	public long getCallTime() {
+	public Long getCallTime() {
 		return callTime;
 	}
-	public void setCallTime(long callTime) {
+	public void setCallTime(Long callTime) {
 		this.callTime = callTime;
 	}
 	public String getPairName() {
@@ -122,10 +122,10 @@ public class Ticker  {
 	public void setHigh(TickerVolume high) {
 		this.high = high;
 	}
-	public double getTodayOpeningPrice() {
+	public Double getTodayOpeningPrice() {
 		return todayOpeningPrice;
 	}
-	public void setTodayOpeningPrice(double todayOpeningPrice) {
+	public void setTodayOpeningPrice(Double todayOpeningPrice) {
 		this.todayOpeningPrice = todayOpeningPrice;
 	}
 

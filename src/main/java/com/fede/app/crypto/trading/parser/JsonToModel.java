@@ -1,17 +1,21 @@
 package com.fede.app.crypto.trading.parser;
 
 import com.fede.app.crypto.trading.model.*;
-import com.fede.app.crypto.trading.types.ActionType;
-import com.fede.app.crypto.trading.types.OrderDirection;
-import com.fede.app.crypto.trading.types.OrderType;
+import com.fede.app.crypto.trading.model.types.*;
+import com.fede.app.crypto.trading.util.StrUtils;
 import com.fede.app.crypto.trading.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.json.*;
 import java.io.StringReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import static com.fede.app.crypto.trading.model.AssetPair.FeeSchedule;
+import static com.fede.app.crypto.trading.model.OpenOrder.OrderDescr;
 import static com.fede.app.crypto.trading.model.Ticker.*;
 
 /**
@@ -27,7 +31,7 @@ public class JsonToModel {
 		JsonObject jsonObject = reader.readObject();
 		reader.close();
 
-		this.errors = jsonArrayToList(jsonObject, "error");
+		this.errors = getArrayString(jsonObject, "error");
 		if(errors.isEmpty()) {
 			this.result = jsonObject.getJsonObject("result");
 		}
@@ -43,13 +47,8 @@ public class JsonToModel {
 
 
 	public Long parseServerTime() {
-		if(!containsErrors()) {
-			JsonNumber jnum = result.getJsonNumber("unixtime");
-			if(jnum != null) {
-				return jnum.longValue();
-			}
-		}
-		return null;
+		if(containsErrors()) 	return null;
+		return getTimestamp(result, "unixtime", 1000L);
 	}
 
 	public List<Asset> parseAssets() {
@@ -60,10 +59,10 @@ public class JsonToModel {
 			JsonObject jsonAsset = entry.getValue().asJsonObject();
 			Asset asset = new Asset();
 			asset.setAssetName(entry.getKey());
-			asset.setAClass(jsonAsset.getString("aclass"));
-			asset.setAltName(jsonAsset.getString("altname"));
-			asset.setDecimals(jsonAsset.getInt("decimals"));
-			asset.setDisplayDecimals(jsonAsset.getInt("display_decimals"));
+			asset.setAClass(getString(jsonAsset, "aclass"));
+			asset.setAltName(getString(jsonAsset, "altname"));
+			asset.setDecimals(getInt(jsonAsset, "decimals"));
+			asset.setDisplayDecimals(getInt(jsonAsset, "display_decimals"));
 			assetList.add(asset);
 		}
 
@@ -78,22 +77,22 @@ public class JsonToModel {
 			AssetPair pair = new AssetPair();
 			JsonObject jsonPair = entry.getValue().asJsonObject();
 			pair.setPairName(entry.getKey());
-			pair.setAltName(jsonPair.getString("altname"));
-			pair.setAClassBase(jsonPair.getString("aclass_base"));
-			pair.setBase(jsonPair.getString("base"));
-			pair.setAClassQuote(jsonPair.getString("aclass_quote"));
-			pair.setQuote(jsonPair.getString("quote"));
-			pair.setLot(jsonPair.getString("lot"));
-			pair.setPairDecimals(jsonPair.getInt("pair_decimals"));
-			pair.setLotDecimals(jsonPair.getInt("lot_decimals"));
-			pair.setLotMultiplier(jsonPair.getInt("lot_multiplier"));
-			pair.setLeverageBuy(parseJsonIntArray(jsonPair, "leverage_buy"));
-			pair.setLeverageSell(parseJsonIntArray(jsonPair, "leverage_sell"));
+			pair.setAltName(getString(jsonPair, "altname"));
+			pair.setAClassBase(getString(jsonPair, "aclass_base"));
+			pair.setBase(getString(jsonPair, "base"));
+			pair.setAClassQuote(getString(jsonPair, "aclass_quote"));
+			pair.setQuote(getString(jsonPair, "quote"));
+			pair.setLot(getString(jsonPair, "lot"));
+			pair.setPairDecimals(getInt(jsonPair, "pair_decimals"));
+			pair.setLotDecimals(getInt(jsonPair, "lot_decimals"));
+			pair.setLotMultiplier(getInt(jsonPair, "lot_multiplier"));
+			pair.setLeverageBuy(getArrayInt(jsonPair, "leverage_buy"));
+			pair.setLeverageSell(getArrayInt(jsonPair, "leverage_sell"));
 			pair.setFees(parseJsonFeeScheduleArray(jsonPair, "fees"));
 			pair.setFeesMaker(parseJsonFeeScheduleArray(jsonPair, "fees_maker"));
-			pair.setFeeVolumeCurrency(jsonPair.getString("fee_volume_currency"));
-			pair.setMarginCall(jsonPair.getInt("margin_call"));
-			pair.setMarginStop(jsonPair.getInt("margin_stop"));
+			pair.setFeeVolumeCurrency(getString(jsonPair, "fee_volume_currency"));
+			pair.setMarginCall(getInt(jsonPair, "margin_call"));
+			pair.setMarginStop(getInt(jsonPair, "margin_stop"));
 			assetPairs.add(pair);
 		}
 		return assetPairs;
@@ -116,31 +115,31 @@ public class JsonToModel {
 			ticker.setTradesNumber(parseTickerVolume(jt, "t"));
 			ticker.setLow(parseTickerVolume(jt, "l"));
 			ticker.setHigh(parseTickerVolume(jt, "h"));
-			ticker.setTodayOpeningPrice(Utils.toDouble(jt.getString("o")));
+			ticker.setTodayOpeningPrice(getDouble(jt, "o"));
 			toRet.add(ticker);
 		}
 		return toRet;
 	}
 
-	public Pair<Long, List<OHLC>> parseOHLCs(String pairName) {
+	public Pair<Long, List<Ohlc>> parseOhlcs(String pairName) {
 		if(containsErrors())	return null;
 
-		long last = result.getJsonNumber("last").longValue();
+		Long last = getLong(result, "last");
 
-		List<OHLC> ohlcList = new ArrayList<>();
+		List<Ohlc> ohlcList = new ArrayList<>();
 		result.getJsonArray(pairName).forEach(jv -> {
-			List<String> fields = jsonArrayToList(jv.asJsonArray());
+			List<String> fields = getArrayString(jv.asJsonArray());
 			long time = Long.parseLong(fields.get(0));
 			if(time <= last) {
-				OHLC ohlc = new OHLC();
+				Ohlc ohlc = new Ohlc();
 				ohlc.setPairName(pairName);
-				ohlc.setTime(time * 1000);
-				ohlc.setOpen(Utils.toDouble(fields.get(1)));
-				ohlc.setHigh(Utils.toDouble(fields.get(2)));
-				ohlc.setLow(Utils.toDouble(fields.get(3)));
-				ohlc.setClose(Utils.toDouble(fields.get(4)));
-				ohlc.setVwrap(Utils.toDouble(fields.get(5)));
-				ohlc.setVolume(Utils.toDouble(fields.get(6)));
+				ohlc.setTime(time * 1000L);
+				ohlc.setOpen(Double.parseDouble(fields.get(1)));
+				ohlc.setHigh(Double.parseDouble(fields.get(2)));
+				ohlc.setLow(Double.parseDouble(fields.get(3)));
+				ohlc.setClose(Double.parseDouble(fields.get(4)));
+				ohlc.setVwrap(Double.parseDouble(fields.get(5)));
+				ohlc.setVolume(Double.parseDouble(fields.get(6)));
 				ohlc.setCount(Long.parseLong(fields.get(7)));
 				ohlcList.add(ohlc);
 			}
@@ -148,78 +147,64 @@ public class JsonToModel {
 		return Pair.of(last, ohlcList);
 	}
 
-	public List<Order> parseOrderBook(String pairName) {
+	public List<MarketOrder> parseOrderBook(String pairName) {
 		if(containsErrors())	return null;
 
 		JsonObject jobj = result.getJsonObject(pairName);
 		JsonArray asks = jobj.getJsonArray("asks");
 		JsonArray bids = jobj.getJsonArray("bids");
 
-		List<Order> orderList = new ArrayList<>();
+		List<MarketOrder> orderList = new ArrayList<>();
 		orderList.addAll(parseOrders(asks, pairName, OrderDirection.ASK));
 		orderList.addAll(parseOrders(bids, pairName, OrderDirection.BID));
 
 		return orderList;
 	}
-	private List<Order> parseOrders(JsonArray jarr, String pairName, OrderDirection orderDirection) {
-		List<Order> orderList = new ArrayList<>();
-		jarr.forEach(jv -> {
-			List<String> fields = jsonArrayToList(jv.asJsonArray());
-			Order order = new Order();
-			order.setPairName(pairName);
-			order.setOrderDirection(orderDirection);
-			order.setPrice(Utils.toDouble(fields.get(0)));
-			order.setVolume(Utils.toDouble(fields.get(1)));
-			order.setTimestamp(Long.parseLong(fields.get(2)) * 1000L);
-			orderList.add(order);
-		});
-		return orderList;
-	}
 
-	public Pair<Long, List<Trade>> parseTrades(String pairName) {
+	public Pair<Long, List<RecentTrade>> parseRecentTrades(String pairName) {
 		if(containsErrors())	return null;
 
-		long last = Long.parseLong(result.getString("last"));
+		Long last = getLong(result, "last");
 
-		List<Trade> tradeList = new ArrayList<>();
+		List<RecentTrade> tradeList = new ArrayList<>();
 		result.getJsonArray(pairName).forEach(jv -> {
-			List<String> fields = jsonArrayToList(jv.asJsonArray());
-			double time = Utils.toDouble(fields.get(2)) * 1000;
+			List<String> fields = getArrayString(jv.asJsonArray());
+			double time = Double.parseDouble(fields.get(2)) * 1000;
 			long compareTime = (long)(time * Math.pow(10, 6));
 			if(compareTime <= last) {
-				Trade trade = new Trade();
-				trade.setPairName(pairName);
-				trade.setPrice(Utils.toDouble(fields.get(0)));
-				trade.setVolume(Utils.toDouble(fields.get(1)));
-				trade.setTime((long) time);
-				trade.setActionType(ActionType.getByLabel(fields.get(3)));
-				trade.setOrderType(OrderType.getByLabel(fields.get(4)));
-				trade.setMiscellaneous(fields.get(5));
-				tradeList.add(trade);
+				RecentTrade recentTrade = new RecentTrade();
+				recentTrade.setPairName(pairName);
+				recentTrade.setPrice(Double.parseDouble(fields.get(0)));
+				recentTrade.setVolume(Double.parseDouble(fields.get(1)));
+				recentTrade.setTime((long) time);
+				recentTrade.setOrderAction(OrderAction.getByLabel(fields.get(3)));
+				recentTrade.setOrderType(OrderType.getByLabel(fields.get(4)));
+				recentTrade.setMiscellaneous(fields.get(5));
+				tradeList.add(recentTrade);
 			}
 		});
 		return Pair.of(last, tradeList);
 	}
 
-	public Pair<Long, List<Spread>> parseSpreads(String pairName) {
+	public Pair<Long, List<SpreadData>> parseSpreadData(String pairName) {
 		if(containsErrors())	return null;
 
-		long last = result.getJsonNumber("last").longValue();
+		Long last = getLong(result, "last");
 
-		List<Spread> spreadList = new ArrayList<>();
+		List<SpreadData> spreadDataList = new ArrayList<>();
 		result.getJsonArray(pairName).forEach(jv -> {
-			List<String> fields = jsonArrayToList(jv.asJsonArray());
+			List<String> fields = getArrayString(jv.asJsonArray());
 			long time = Long.parseLong(fields.get(0));
 			if(time <= last) {
-				Spread spread = new Spread();
-				spread.setPairName(pairName);
-				spread.setTime(time * 1000L);
-				spread.setBid(Utils.toDouble(fields.get(1)));
-				spread.setAsk(Utils.toDouble(fields.get(2)));
-				spreadList.add(spread);
+				SpreadData spreadData = new SpreadData();
+				spreadData.setPairName(pairName);
+				spreadData.setTime(time * 1000L);
+				spreadData.setBid(Double.parseDouble(fields.get(1)));
+				spreadData.setAsk(Double.parseDouble(fields.get(2)));
+				spreadDataList.add(spreadData);
 			}
 		});
-		return Pair.of(last, spreadList);
+		return Pair.of(last, spreadDataList);
 	}
 
 	public List<AccountBalance> parseAccountBalance(long callTime) {
@@ -228,7 +213,7 @@ public class JsonToModel {
 		List<AccountBalance> abList = new ArrayList<>();
 		result.entrySet().forEach(entry -> {
 			String assetClass = entry.getKey();
-			double balance = Utils.toDouble(result.getString(assetClass));
+			Double balance = Double.parseDouble(jsonValueToString(entry.getValue()));
 			AccountBalance ab = new AccountBalance();
 			ab.setCallTime(callTime);
 			ab.setAssetClass(assetClass);
@@ -244,33 +229,69 @@ public class JsonToModel {
 
 		TradeBalance tb = new TradeBalance();
 		tb.setCallTime(callTime);
-		tb.setEquivBalance(Utils.toDouble(result.getString("eb")));
-		tb.setTradeBalance(Utils.toDouble(result.getString("tb")));
-		tb.setMarginAmount(Utils.toDouble(result.getString("m")));
-		tb.setUnrealizedProfitLoss(Utils.toDouble(result.getString("n")));
-		tb.setBasisCost(Utils.toDouble(result.getString("c")));
-		tb.setCurrentValuation(Utils.toDouble(result.getString("v")));
-		tb.setEquity(Utils.toDouble(result.getString("e")));
-		tb.setFreeMargin(Utils.toDouble(result.getString("mf")));
-
-		// "ml" sometimes is not present
-		if(result.containsKey("ml")) {
-			tb.setMarginLevel(Utils.toDouble(result.getString("ml")));
-		}
+		tb.setEquivBalance(getDouble(result, "eb"));
+		tb.setTradeBalance(getDouble(result, "tb"));
+		tb.setMarginAmount(getDouble(result, "m"));
+		tb.setUnrealizedProfitLoss(getDouble(result, "n"));
+		tb.setBasisCost(getDouble(result, "c"));
+		tb.setCurrentValuation(getDouble(result, "v"));
+		tb.setEquity(getDouble(result, "e"));
+		tb.setFreeMargin(getDouble(result, "mf"));
+		tb.setMarginLevel(getDouble(result, "ml"));
 
 		return tb;
 	}
 
+	public List<OpenOrder> parseOpenOrders() {
+		List<OpenOrder> toRet = new ArrayList<>();
 
+		for(Map.Entry<String, JsonValue> entry : result.getJsonObject("open").entrySet()) {
+			JsonObject jtx = entry.getValue().asJsonObject();
+			OpenOrder oo = parseOpenOrders(jtx, OpenOrder::new);
+			oo.setOrderTxID(entry.getKey());
+			toRet.add(oo);
+		}
 
-
-
-
-	private static List<Integer> parseJsonIntArray(JsonObject jsonObj, String key) {
-		return Utils.map(jsonArrayToList(jsonObj, key), Integer::parseInt);
+		return toRet;
 	}
 
-	private static List<FeeSchedule> parseJsonFeeScheduleArray(JsonObject jsonObj, String key) {
+	public List<ClosedOrder> parseClosedOrders() {
+		List<ClosedOrder> toRet = new ArrayList<>();
+
+		for(Map.Entry<String, JsonValue> entry : result.getJsonObject("closed").entrySet()) {
+			JsonObject jtx = entry.getValue().asJsonObject();
+			ClosedOrder co = (ClosedOrder) parseOpenOrders(jtx, ClosedOrder::new);
+			co.setOrderTxID(entry.getKey());
+			co.setCloseTimestamp(getTimestamp(jtx, "closetm", 1000L));
+			co.setReason(getString(jtx, "reason"));
+			toRet.add(co);
+		}
+
+		return toRet;
+	}
+
+
+
+
+
+
+
+	private List<MarketOrder> parseOrders(JsonArray jarr, String pairName, OrderDirection orderDirection) {
+		List<MarketOrder> orderList = new ArrayList<>();
+		jarr.forEach(jv -> {
+			List<String> fields = getArrayString(jv.asJsonArray());
+			MarketOrder order = new MarketOrder();
+			order.setPairName(pairName);
+			order.setOrderDirection(orderDirection);
+			order.setPrice(Double.parseDouble(fields.get(0)));
+			order.setVolume(Double.parseDouble(fields.get(1)));
+			order.setTimestamp(Long.parseLong(fields.get(2)) * 1000L);
+			orderList.add(order);
+		});
+		return orderList;
+	}
+
+	private List<FeeSchedule> parseJsonFeeScheduleArray(JsonObject jsonObj, String key) {
 		List<FeeSchedule> toRet = new ArrayList<>();
 		JsonArray jsonArray = jsonObj.getJsonArray(key);
 		if(jsonArray != null) {
@@ -283,50 +304,134 @@ public class JsonToModel {
 		return toRet;
 	}
 
-	private static List<String> jsonArrayToList(JsonArray jsonArr) {
-		List<String> toRet = new ArrayList<>();
-		if(jsonArr != null) {
-			jsonArr.forEach(jv -> {
-				String value = jv.toString();
-				if(jv.getValueType() == JsonValue.ValueType.STRING) {
-					value = value.replaceAll("^\"", "").replaceAll("\"$", "");
-				}
-				toRet.add(value);
-			});
-		}
-		return toRet;
-	}
-	private static List<String> jsonArrayToList(JsonObject jsonObj, String key) {
-		return jsonArrayToList(jsonObj.getJsonArray(key));
-	}
-
-	private static TickerPrice parseTickerPrice(JsonObject jsonObj, String key) {
-		List<String> values = jsonArrayToList(jsonObj, key);
-		if(values.size() != 2) 	return null;
-
+	private TickerPrice parseTickerPrice(JsonObject jsonObj, String key) {
+		List<String> values = getArrayString(jsonObj, key);
 		TickerPrice tp = new TickerPrice();
-		tp.setPrice(Utils.toDouble(values.get(0)));
-		tp.setLotVolume(Utils.toDouble(values.get(1)));
+		tp.setPrice(Double.parseDouble(values.get(0)));
+		tp.setLotVolume(Double.parseDouble(values.get(1)));
 		return tp;
 	}
-	private static TickerWholePrice parseTickerWholePrice(JsonObject jsonObj, String key) {
-		List<String> values = jsonArrayToList(jsonObj, key);
-		if(values.size() != 3) 	return null;
-
+	private TickerWholePrice parseTickerWholePrice(JsonObject jsonObj, String key) {
+		List<String> values = getArrayString(jsonObj, key);
 		TickerWholePrice twp = new TickerWholePrice();
-		twp.setPrice(Utils.toDouble(values.get(0)));
+		twp.setPrice(Double.parseDouble(values.get(0)));
 		twp.setWholeLotVolume(Integer.parseInt(values.get(1)));
-		twp.setLotVolume(Utils.toDouble(values.get(2)));
+		twp.setLotVolume(Double.parseDouble(values.get(2)));
 		return twp;
 	}
-	private static TickerVolume parseTickerVolume(JsonObject jsonObj, String key) {
-		List<String> values = jsonArrayToList(jsonObj, key);
-		if(values.size() != 2) 	return null;
-
+	private TickerVolume parseTickerVolume(JsonObject jsonObj, String key) {
+		List<String> values = getArrayString(jsonObj, key);
 		TickerVolume tv = new TickerVolume();
-		tv.setToday(Utils.toDouble(values.get(0)));
-		tv.setLast24Hours(Utils.toDouble(values.get(1)));
+		tv.setToday(Double.parseDouble(values.get(0)));
+		tv.setLast24Hours(Double.parseDouble(values.get(1)));
 		return tv;
 	}
 
+  	private OpenOrder parseOpenOrders(JsonObject jtx, Supplier<OpenOrder> create) {
+		JsonObject jdescr = jtx.getJsonObject("descr");
+
+		OrderDescr od = new OrderDescr();
+		od.setPairName(getString(jdescr, "pair"));
+		od.setOrderAction(OrderAction.getByLabel(getString(jdescr, "type")));
+		od.setOrderType(OrderType.getByLabel(getString(jdescr, "ordertype")));
+		od.setPrimaryPrime(getDouble(jdescr, "price"));
+		od.setSecondaryPrice(getDouble(jdescr, "price2"));
+		String strLeverage = getString(jdescr, "leverage");
+		if(strLeverage != null && !strLeverage.equals("none")) {
+			od.setLeverage(Integer.parseInt(strLeverage));
+		}
+		od.setOrderDescription(getString(jdescr, "order"));
+		od.setCloseDescription(getString(jdescr, "close"));
+
+		OpenOrder oo = create.get();
+		oo.setRefId(getString(jtx, "refid"));
+		oo.setUserRef(getString(jtx, "userref"));
+		oo.setStatus(OrderStatus.getByLabel(getStringValue(jtx, "status")));
+		oo.setOpenTimestamp(getTimestamp(jtx, "opentm", 1000L));
+		oo.setStartTimestamp(getTimestamp(jtx, "starttm", 1000L));
+		oo.setExpireTimestamp(getTimestamp(jtx, "expiretm", 1000L));
+		oo.setDescr(od);
+		oo.setVolume(getDouble(jtx, "vol"));
+		oo.setVolumeExecuted(getDouble(jtx, "vol_exec"));
+		oo.setCost(getDouble(jtx, "cost"));
+		oo.setFee(getDouble(jtx, "fee"));
+		oo.setAveragePrice(getDouble(jtx, "price"));
+		oo.setStopPrice(getDouble(jtx, "stopprice"));
+		oo.setLimitPrice(getDouble(jtx, "limitprice"));
+		oo.setMisc(Utils.map(getCommaDelimitedList(jtx, "misc"), OrderMisc::getByLabel));
+		oo.setFlags(Utils.map(getCommaDelimitedList(jtx, "oflags"), OrderFlag::getByLabel));
+		oo.setTrades(getArrayString(jtx, "trades"));
+
+		return oo;
+	}
+
+
+	private String jsonValueToString(JsonValue jv) {
+		if(jv.getValueType() == JsonValue.ValueType.STRING) {
+			return ((JsonString)jv).getString();
+		} else {
+			return jv.toString();
+		}
+	}
+	private String getStringValue(JsonObject jsonObject, String key) {
+		JsonValue jv = jsonObject.get(key);
+		String value = null;
+		if(jv != null && !jsonObject.isNull(key)) {
+			value = jsonValueToString(jv);
+		}
+		return value;
+	}
+	private String getString(JsonObject jsonObject, String key) {
+		JsonValue jv = jsonObject.get(key);
+		if(jv != null && !jsonObject.isNull(key)) {
+			if(jv.getValueType() == JsonValue.ValueType.STRING) {
+				return ((JsonString)jv).getString();
+			}
+		}
+		return null;
+	}
+	private Long getTimestamp(JsonObject jsonObject, String key, long multiplier) {
+		Double dnum = getDouble(jsonObject, key);
+		if(dnum == null) 	return null;
+		return (long)(dnum * multiplier);
+	}
+	private Long getLong(JsonObject jsonObject, String key) {
+		String value = getStringValue(jsonObject, key);
+		if(value == null) 	return null;
+		return Long.parseLong(value);
+	}
+	private Double getDouble(JsonObject jsonObject, String key) {
+		String value = getStringValue(jsonObject, key);
+		if(value == null) 	return null;
+		return Double.parseDouble(value);
+	}
+	private Integer getInt(JsonObject jsonObject, String key) {
+		String value = getStringValue(jsonObject, key);
+		if(value == null) 	return null;
+		return Integer.parseInt(value);
+	}
+	private List<String> getCommaDelimitedList(JsonObject jObj, String key) {
+		String strValue = getStringValue(jObj, key);
+		List<String> toRet = new ArrayList<>();
+		if(StringUtils.isNotBlank(strValue)) {
+			toRet = StrUtils.splitFieldsList(strValue, ",", true);
+		}
+		return toRet;
+	}
+	private List<String> getArrayString(JsonObject jObj, String key) {
+		List<String> toRet = new ArrayList<>();
+		JsonArray jsonArr = jObj.getJsonArray(key);
+		if(jsonArr != null) {
+			jsonArr.forEach(jv -> toRet.add(jsonValueToString(jv)));
+		}
+		return toRet;
+	}
+	private List<String> getArrayString(JsonArray jsonArr) {
+		List<String> toRet = new ArrayList<>();
+		jsonArr.forEach(jv -> toRet.add(jsonValueToString(jv)));
+		return toRet;
+	}
+	private List<Integer> getArrayInt(JsonObject jObj, String key) {
+		return Utils.map(getArrayString(jObj, key), Integer::parseInt);
+	}
 }

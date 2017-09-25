@@ -98,10 +98,10 @@ public class AssetPair {
 	public void setAltName(String altName) {
 		this.altName = altName;
 	} 
-	public String getaClassBase() {
+	public String getAClassBase() {
 		return aClassBase;
 	} 
-	public void setaClassBase(String aClassBase) {
+	public void setAClassBase(String aClassBase) {
 		this.aClassBase = aClassBase;
 	} 
 	public String getBase() {
@@ -110,10 +110,10 @@ public class AssetPair {
 	public void setBase(String base) {
 		this.base = base;
 	} 
-	public String getaClassQuote() {
+	public String getAClassQuote() {
 		return aClassQuote;
 	} 
-	public void setaClassQuote(String aClassQuote) {
+	public void setAClassQuote(String aClassQuote) {
 		this.aClassQuote = aClassQuote;
 	} 
 	public String getQuote() {
