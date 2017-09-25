@@ -1,7 +1,5 @@
 package com.fede.app.crypto.trading.model;
 
-import java.util.Map;
-
 /**
  * Created by f.barbano on 14/09/2017.
  */
@@ -30,6 +28,16 @@ public class AccountBalance {
 		result = 31 * result + (balance != null ? balance.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "AccountBalance{" +
+				   "callTime=" + callTime +
+				   ", assetClass='" + assetClass + '\'' +
+				   ", balance=" + balance +
+				   '}';
+	}
+
 
 	public Long getCallTime() {
 		return callTime;

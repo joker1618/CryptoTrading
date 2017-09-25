@@ -1,10 +1,346 @@
 package com.fede.app.crypto.trading.model;
 
+import com.fede.app.crypto.trading.model.types.*;
+
+import java.util.List;
+
 /**
  * Created by f.barbano on 14/09/2017.
  */
 public class OrderInfo {
 
-	// {"error":[],"result":{"trades":{"TCPR7S-MCSPU-LBNXD6":{"ordertxid":"O7FEMB-64FHC-UAPV77","pair":"XXBTZEUR","time":1505395944.499,"type":"sell","ordertype":"limit","price":"2981.70000","cost":"15.56447","fee":"0.02490","vol":"0.00522000","margin":"0.00000","misc":""},"TAIGBX-HEJ63-WMT72A":{"ordertxid":"OJTVQU-VDRLO-MLHDAB","pair":"XXLMXXBT","time":1505395534.101,"type":"sell","ordertype":"market","price":"0.000003390","cost":"0.003729000","fee":"0.000009695","vol":"1100.00000000","margin":"0.000000000","misc":""},"TOOOMH-MGL47-S2TPV5":{"ordertxid":"OWJPQ4-W3LWS-GFXUFM","pair":"EOSXBT","time":1505395103.4839,"type":"sell","ordertype":"market","price":"0.00017700","cost":"0.00088500","fee":"0.00000230","vol":"5.00000000","margin":"0.00000000","misc":""},"TM7NZE-WNLSH-ZH45MG":{"ordertxid":"OJKBME-NV4DX-6BZHV2","pair":"XLTCZEUR","time":1505394967.8389,"type":"sell","ordertype":"limit","price":"42.05000","cost":"190.31182","fee":"0.30450","vol":"4.52584580","margin":"0.00000","misc":""},"TDGCPR-4JOZX-UKEAUN":{"ordertxid":"OJKBME-NV4DX-6BZHV2","pair":"XLTCZEUR","time":1505394962.4151,"type":"sell","ordertype":"limit","price":"42.10000","cost":"19.94000","fee":"0.03190","vol":"0.47363420","margin":"0.00000","misc":""},"TH67UR-JMEGH-SQDRLA":{"ordertxid":"O5R4WH-NTESC-2ETOCQ","pair":"XXMRZEUR","time":1505394637.1964,"type":"sell","ordertype":"market","price":"81.04000000","cost":"11.97227827","fee":"0.03112792","vol":"0.14773295","margin":"0.00000000","misc":""},"TBKCYK-EVBT5-N4LE66":{"ordertxid":"O5R4WH-NTESC-2ETOCQ","pair":"XXMRZEUR","time":1505394637.1858,"type":"sell","ordertype":"market","price":"81.06000000","cost":"25.73955327","fee":"0.06692284","vol":"0.31753705","margin":"0.00000000","misc":""},"T2WPQ2-QMCZ4-RF3R3J":{"ordertxid":"OUBYUV-JJLAK-ES2CD5","pair":"XZECZEUR","time":1505394386.0035,"type":"sell","ordertype":"market","price":"151.10000","cost":"17.81771","fee":"0.04633","vol":"0.11792000","margin":"0.00000","misc":""},"T5QO3N-2EGW2-IB6SZA":{"ordertxid":"OUSC7C-XDSQY-EYMNNV","pair":"XZECZEUR","time":1504942796.3541,"type":"buy","ordertype":"limit","price":"190.00000","cost":"22.42000","fee":"0.03587","vol":"0.11800000","margin":"0.00000","misc":""},"TNAZRN-XORQZ-MTEOXO":{"ordertxid":"OBPPHK-476GJ-XD4V4U","pair":"XXRPZEUR","time":1504936351.5647,"type":"sell","ordertype":"limit","price":"0.18220000","cost":"10.37172042","fee":"0.01659475","vol":"56.92492000","margin":"0.00000000","misc":""},"T6PLSB-HJQ5F-RILQZW":{"ordertxid":"O3C3WU-SAGOD-UNOGNU","pair":"XXMRZEUR","time":1504922440.4351,"type":"buy","ordertype":"limit","price":"97.99000000","cost":"0.87505070","fee":"0.00140008","vol":"0.00893000","margin":"0.00000000","misc":""},"TTO6XP-ZWIVC-4OFB4R":{"ordertxid":"O3C3WU-SAGOD-UNOGNU","pair":"XXMRZEUR","time":1504911026.896,"type":"buy","ordertype":"limit","price":"97.99000000","cost":"14.91407800","fee":"0.03877660","vol":"0.15220000","margin":"0.00000000","misc":""},"TYBLEG-KJQZT-IFSP6Y":{"ordertxid":"O7DMXP-D57LG-XGCNLR","pair":"XXRPZEUR","time":1504908826.3849,"type":"buy","ordertype":"limit","price":"0.17567000","cost":"10.00000070","fee":"0.01600000","vol":"56.92492000","margin":"0.00000000","misc":""},"T66AY5-2LIRX-XYJ5FL":{"ordertxid":"OYLRA5-25YCA-GJWUK7","pair":"XLTCZEUR","time":1504906680.8685,"type":"buy","ordertype":"limit","price":"58.00000","cost":"58.00000","fee":"0.09280","vol":"1.00000000","margin":"0.00000","misc":""},"TJJWWX-3NYHH-DRS64Y":{"ordertxid":"OLLKIE-ZUEF7-CFOI7X","pair":"XLTCZEUR","time":1504902191.8773,"type":"sell","ordertype":"limit","price":"59.12000","cost":"59.12000","fee":"0.15371","vol":"1.00000000","margin":"0.00000","misc":""},"TSNPQU-TMULX-CZ63TM":{"ordertxid":"OFSQ3O-CT7KD-OSXPEI","pair":"XXMRZEUR","time":1504893714.9226,"type":"buy","ordertype":"limit","price":"100.57000000","cost":"15.78947290","fee":"0.02526316","vol":"0.15699983","margin":"0.00000000","misc":""},"TYSI4Y-ZCXZY-4QLR6V":{"ordertxid":"OUPHWB-323CK-SF2WPB","pair":"XXMRZEUR","time":1504892893.7076,"type":"buy","ordertype":"limit","price":"101.94000000","cost":"14.99999902","fee":"0.03900000","vol":"0.14714537","margin":"0.00000000","misc":""},"TY32GK-FARYR-IIUPMH":{"ordertxid":"OSL46R-BI3R6-IZAUUX","pair":"XXMRZEUR","time":1504884419.3176,"type":"sell","ordertype":"market","price":"101.10000000","cost":"10.11000000","fee":"0.02628600","vol":"0.10000000","margin":"0.00000000","misc":""},"T2MIQX-XLJNX-6LMKOD":{"ordertxid":"O5WCAS-DE4VB-QCLP4S","pair":"XXMRZEUR","time":1504883280.9293,"type":"buy","ordertype":"limit","price":"103.35000000","cost":"10.33500000","fee":"0.02687100","vol":"0.10000000","margin":"0.00000000","misc":""},"TVN2EU-NM2Z4-QA6SLL":{"ordertxid":"O42LME-TE7YN-ZRVCL6","pair":"XLTCZEUR","time":1504861686.6039,"type":"sell","ordertype":"limit","price":"68.30000","cost":"20.65392","fee":"0.03305","vol":"0.30240000","margin":"0.00000","misc":""},"T625PH-QLJZR-7UPOO3":{"ordertxid":"O42LME-TE7YN-ZRVCL6","pair":"XLTCZEUR","time":1504861521.0183,"type":"sell","ordertype":"limit","price":"68.30000","cost":"23.82304","fee":"0.03812","vol":"0.34880000","margin":"0.00000","misc":""},"TRNRVJ-PN6EK-DUQSOV":{"ordertxid":"O42LME-TE7YN-ZRVCL6","pair":"XLTCZEUR","time":1504861509.2322,"type":"sell","ordertype":"limit","price":"68.30000","cost":"23.82304","fee":"0.03812","vol":"0.34880000","margin":"0.00000","misc":""},"TUSUEO-UZYE4-QGRJBY":{"ordertxid":"OPAU5X-6GUSM-23WKZO","pair":"XLTCZEUR","time":1504361390.193,"type":"buy","ordertype":"limit","price":"67.60000","cost":"338.00000","fee":"0.54080","vol":"5.00000000","margin":"0.00000","misc":""},"TTLTDT-AQ5P5-7BFUA3":{"ordertxid":"O2AQRP-4CI7Y-D36EEO","pair":"BCHEUR","time":1504287266.9114,"type":"sell","ordertype":"market","price":"531.301000","cost":"328.051802","fee":"0.852935","vol":"0.61745000","margin":"0.000000","misc":""},"TCJ4XP-4MCIS-SHAIQ4":{"ordertxid":"OH5ZIY-H56HA-JLIJBC","pair":"XXRPZEUR","time":1504137075.1178,"type":"sell","ordertype":"market","price":"0.19401000","cost":"10.02335204","fee":"0.02606072","vol":"51.66410000","margin":"0.00000000","misc":""},"TYUJNN-YZWCW-BAXKEP":{"ordertxid":"OLM64S-BN5KW-5QOGDZ","pair":"XXRPZEUR","time":1504135263.4386,"type":"buy","ordertype":"limit","price":"0.19355600","cost":"9.99989654","fee":"0.02599973","vol":"51.66410000","margin":"0.00000000","misc":""},"TOK5OQ-OCXZ7-GYTWLP":{"ordertxid":"OVRLFX-6KCVG-AMSP5S","pair":"XXRPZEUR","time":1504105293.2893,"type":"sell","ordertype":"limit","price":"0.19500000","cost":"10.45318950","fee":"0.01672510","vol":"53.60610000","margin":"0.00000000","misc":""},"TEG5RK-653HG-XKBI2A":{"ordertxid":"OOC4PV-GJMOX-3DOVEE","pair":"BCHEUR","time":1504096102.5308,"type":"buy","ordertype":"limit","price":"470.000000","cost":"60.136500","fee":"0.096218","vol":"0.12795000","margin":"0.000000","misc":""},"THVMNR-MJFAS-3SEXDG":{"ordertxid":"OZNVLD-JQODD-EHVK4B","pair":"XXRPZEUR","time":1504085886.8027,"type":"sell","ordertype":"market","price":"0.18651100","cost":"10.02742820","fee":"0.02607131","vol":"53.76320000","margin":"0.00000000","misc":""},"TEWW5A-P22FW-UVTIDP":{"ordertxid":"OK4723-PSXB5-MU7UTG","pair":"XXRPZEUR","time":1504085886.2536,"type":"buy","ordertype":"limit","price":"0.18655000","cost":"10.00008882","fee":"0.01600014","vol":"53.60540776","margin":"0.00000000","misc":""},"TCK6MH-PKNDL-3HWVPD":{"ordertxid":"OK4723-PSXB5-MU7UTG","pair":"XXRPZEUR","time":1504085881.7876,"type":"buy","ordertype":"limit","price":"0.18654600","cost":"0.00012913","fee":"0.00000034","vol":"0.00069224","margin":"0.00000000","misc":""},"TDHVUR-RJLQ4-R3BCS5":{"ordertxid":"OUVFNF-PMHPH-WKQJH2","pair":"XXRPZEUR","time":1504085297.1015,"type":"buy","ordertype":"limit","price":"0.18600100","cost":"10.00000896","fee":"0.01600001","vol":"53.76320000","margin":"0.00000000","misc":""},"T7ZQD2-S6DPH-PIVHK3":{"ordertxid":"OQDOUU-5WMF6-V4D6S2","pair":"XXRPZEUR","time":1504085241.7937,"type":"sell","ordertype":"market","price":"0.18554100","cost":"9.94499760","fee":"0.02585699","vol":"53.60000000","margin":"0.00000000","misc":""},"TR5HPN-2YZGY-JJY2IU":{"ordertxid":"OCRQ2J-V2XKN-NXVHA3","pair":"XXRPZEUR","time":1504084810.7283,"type":"buy","ordertype":"limit","price":"0.18657800","cost":"1.72538006","fee":"0.00448599","vol":"9.24750000","margin":"0.00000000","misc":""},"TA2V4T-XK6OZ-64BUA7":{"ordertxid":"OCRQ2J-V2XKN-NXVHA3","pair":"XXRPZEUR","time":1504084810.4986,"type":"buy","ordertype":"limit","price":"0.18655500","cost":"8.27418064","fee":"0.02151287","vol":"44.35250000","margin":"0.00000000","misc":""},"THTLDI-AASZ4-2ATQUL":{"ordertxid":"OUDSQY-OLX4X-7AJLZL","pair":"XXRPZEUR","time":1504084658.6851,"type":"sell","ordertype":"market","price":"0.18570000","cost":"9.93579494","fee":"0.02583307","vol":"53.50455000","margin":"0.00000000","misc":""},"TXCWZC-YUGXP-SCPR5S":{"ordertxid":"ODTVTE-H4SAW-RNES74","pair":"XXRPZEUR","time":1504084174.3998,"type":"buy","ordertype":"limit","price":"0.18680000","cost":"9.99464954","fee":"0.02598609","vol":"53.50454788","margin":"0.00000000","misc":""},"TS2GZ3-YPCOT-WWD36F":{"ordertxid":"OHRDXN-JASBF-GL6KPF","pair":"XZECZEUR","time":1504083684.3912,"type":"sell","ordertype":"limit","price":"232.50000","cost":"56.96250","fee":"0.14810","vol":"0.24500000","margin":"0.00000","misc":""},"TCPUM3-DA4WN-FTX6RJ":{"ordertxid":"OB6J73-AWVQN-XZIHMR","pair":"XXRPZEUR","time":1504082617.2384,"type":"sell","ordertype":"market","price":"0.18421000","cost":"10.07197280","fee":"0.02618713","vol":"54.67658000","margin":"0.00000000","misc":""},"T3BZVJ-WLQL6-XM52G6":{"ordertxid":"OJXF36-5JDU5-RRLARJ","pair":"XXRPZEUR","time":1504052358.8022,"type":"buy","ordertype":"limit","price":"0.18495500","cost":"9.98682498","fee":"0.02596574","vol":"53.99597190","margin":"0.00000000","misc":""},"T7AVHY-7EO6L-LWFTPH":{"ordertxid":"OPBKRN-GNYG6-EZV2SZ","pair":"BCHXBT","time":1504044017.3831,"type":"buy","ordertype":"market","price":"0.11443000","cost":"0.01024149","fee":"0.00002663","vol":"0.08950000","margin":"0.00000000","misc":""},"T5NQWX-MDEU3-P4OG72":{"ordertxid":"O5SG47-FWFAY-CFEJB6","pair":"XXRPZEUR","time":1504040547.6524,"type":"sell","ordertype":"market","price":"0.18591100","cost":"9.85328300","fee":"0.02561854","vol":"53.00000000","margin":"0.00000000","misc":""},"TOHHMS-43AUS-75KTS3":{"ordertxid":"ODCI3D-GKOGW-VKT3AG","pair":"XXRPZEUR","time":1504040372.9578,"type":"buy","ordertype":"limit","price":"0.18626500","cost":"9.99881903","fee":"0.01599811","vol":"53.68061110","margin":"0.00000000","misc":""},"TJAVRP-KETNG-DV26G7":{"ordertxid":"O2A47O-Z6OHD-F5QMA6","pair":"XXRPZEUR","time":1503934349.5919,"type":"sell","ordertype":"market","price":"0.16680500","cost":"14.67884000","fee":"0.03816498","vol":"88.00000000","margin":"0.00000000","misc":""},"TQDEB5-DSHUZ-OCY7IS":{"ordertxid":"OILFGJ-U5HNG-FUWPKG","pair":"XXRPZEUR","time":1503830020.9573,"type":"buy","ordertype":"market","price":"0.17190500","cost":"5.84477000","fee":"0.01519640","vol":"34.00000000","margin":"0.00000000","misc":""},"TXJDQ5-HLOWY-66FLFV":{"ordertxid":"O33K35-YF5XT-R36NRQ","pair":"BCHEUR","time":1503828229.6473,"type":"buy","ordertype":"market","price":"493.761700","cost":"98.752340","fee":"0.256756","vol":"0.20000000","margin":"0.000000","misc":""},"TCBSLX-LDX3O-IZLYV4":{"ordertxid":"OEPV4C-HNGHV-WEJ4MH","pair":"XXRPZEUR","time":1503696400.9931,"type":"buy","ordertype":"market","price":"0.18579600","cost":"10.03298400","fee":"0.02608576","vol":"54.00000000","margin":"0.00000000","misc":""},"TZLCGS-KOR67-JVDHNV":{"ordertxid":"OHDJY6-PCFJV-SAOGVY","pair":"BCHEUR","time":1503696290.1444,"type":"buy","ordertype":"market","price":"536.000000","cost":"12.328000","fee":"0.032053","vol":"0.02300000","margin":"0.000000","misc":""},"TFP3JA-KADVK-V4CTPD":{"ordertxid":"OHDJY6-PCFJV-SAOGVY","pair":"BCHEUR","time":1503696290.1154,"type":"buy","ordertype":"market","price":"535.999900","cost":"41.271992","fee":"0.107307","vol":"0.07700000","margin":"0.000000","misc":""},"TIL5KL-ZKHYG-UPYXQN":{"ordertxid":"O6AD4H-VWUFE-T623CR","pair":"BCHEUR","time":1503696250.8155,"type":"buy","ordertype":"market","price":"535.392100","cost":"53.539210","fee":"0.139202","vol":"0.10000000","margin":"0.000000","misc":""}},"count":81}}
+	private String orderTxID;
+	//	refid = Referral order transaction id that created this order
+	private String refId;
+	//	userref = user reference id
+	private String userRef;
+	//	status = status of order:
+//		pending = order pending book entry
+//		open = open order
+//		closed = closed order
+//		canceled = order canceled
+//		expired = order expired
+	private OrderStatus status;
+	//	opentm = unix timestamp of when order was placed
+	private Long openTimestamp;
+	//	starttm = unix timestamp of order start time (or 0 if not set)
+	private Long startTimestamp;
+	//	expiretm = unix timestamp of order end time (or 0 if not set)
+	private Long expireTimestamp;
+	//	descr = order description info
+	private OrderDescr descr;
+	//	vol = volume of order (base currency unless viqc set in oflags)
+	private Double volume;
+	//	vol_exec = volume executed (base currency unless viqc set in oflags)
+	private Double volumeExecuted;
+	//	cost = total cost (quote currency unless unless viqc set in oflags)
+	private Double cost;
+	//	fee = total fee (quote currency)
+	private Double fee;
+	//	price = average price (quote currency unless viqc set in oflags)
+	private Double averagePrice;
+	//	stopprice = stop price (quote currency, for trailing stops)
+	private Double stopPrice;
+	//	limitprice = triggered limit price (quote currency, when limit based order type triggered)
+	private Double limitPrice;
+	//	misc = comma delimited list of miscellaneous info
+//		stopped = triggered by stop price
+//		touched = triggered by touch price
+//		liquidated = liquidation
+//		partial = partial fill
+	private List<OrderMisc> misc;
+	//	oflags = comma delimited list of order flags
+//		viqc = volume in quote currency
+//		fcib = prefer fee in base currency (default if selling)
+//		fciq = prefer fee in quote currency (default if buying)
+//		nompp = no market price protection
+	private List<OrderFlag> flags;
+	//	trades = array of trade ids related to order (if trades info requested and data available)
+	private List<String> trades;
 
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof OrderInfo)) return false;
+
+		OrderInfo orderInfo = (OrderInfo) o;
+
+		if (orderTxID != null ? !orderTxID.equals(orderInfo.orderTxID) : orderInfo.orderTxID != null) return false;
+		if (refId != null ? !refId.equals(orderInfo.refId) : orderInfo.refId != null) return false;
+		if (userRef != null ? !userRef.equals(orderInfo.userRef) : orderInfo.userRef != null) return false;
+		if (status != orderInfo.status) return false;
+		if (openTimestamp != null ? !openTimestamp.equals(orderInfo.openTimestamp) : orderInfo.openTimestamp != null)
+			return false;
+		if (startTimestamp != null ? !startTimestamp.equals(orderInfo.startTimestamp) : orderInfo.startTimestamp != null)
+			return false;
+		if (expireTimestamp != null ? !expireTimestamp.equals(orderInfo.expireTimestamp) : orderInfo.expireTimestamp != null)
+			return false;
+		if (descr != null ? !descr.equals(orderInfo.descr) : orderInfo.descr != null) return false;
+		if (volume != null ? !volume.equals(orderInfo.volume) : orderInfo.volume != null) return false;
+		if (volumeExecuted != null ? !volumeExecuted.equals(orderInfo.volumeExecuted) : orderInfo.volumeExecuted != null)
+			return false;
+		if (cost != null ? !cost.equals(orderInfo.cost) : orderInfo.cost != null) return false;
+		if (fee != null ? !fee.equals(orderInfo.fee) : orderInfo.fee != null) return false;
+		if (averagePrice != null ? !averagePrice.equals(orderInfo.averagePrice) : orderInfo.averagePrice != null)
+			return false;
+		if (stopPrice != null ? !stopPrice.equals(orderInfo.stopPrice) : orderInfo.stopPrice != null) return false;
+		if (limitPrice != null ? !limitPrice.equals(orderInfo.limitPrice) : orderInfo.limitPrice != null) return false;
+		if (misc != null ? !misc.equals(orderInfo.misc) : orderInfo.misc != null) return false;
+		if (flags != null ? !flags.equals(orderInfo.flags) : orderInfo.flags != null) return false;
+		return trades != null ? trades.equals(orderInfo.trades) : orderInfo.trades == null;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = orderTxID != null ? orderTxID.hashCode() : 0;
+		result = 31 * result + (refId != null ? refId.hashCode() : 0);
+		result = 31 * result + (userRef != null ? userRef.hashCode() : 0);
+		result = 31 * result + (status != null ? status.hashCode() : 0);
+		result = 31 * result + (openTimestamp != null ? openTimestamp.hashCode() : 0);
+		result = 31 * result + (startTimestamp != null ? startTimestamp.hashCode() : 0);
+		result = 31 * result + (expireTimestamp != null ? expireTimestamp.hashCode() : 0);
+		result = 31 * result + (descr != null ? descr.hashCode() : 0);
+		result = 31 * result + (volume != null ? volume.hashCode() : 0);
+		result = 31 * result + (volumeExecuted != null ? volumeExecuted.hashCode() : 0);
+		result = 31 * result + (cost != null ? cost.hashCode() : 0);
+		result = 31 * result + (fee != null ? fee.hashCode() : 0);
+		result = 31 * result + (averagePrice != null ? averagePrice.hashCode() : 0);
+		result = 31 * result + (stopPrice != null ? stopPrice.hashCode() : 0);
+		result = 31 * result + (limitPrice != null ? limitPrice.hashCode() : 0);
+		result = 31 * result + (misc != null ? misc.hashCode() : 0);
+		result = 31 * result + (flags != null ? flags.hashCode() : 0);
+		result = 31 * result + (trades != null ? trades.hashCode() : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return orderTxID;
+	}
+
+
+	public String getOrderTxID() {
+		return orderTxID;
+	} 
+	public void setOrderTxID(String orderTxID) {
+		this.orderTxID = orderTxID;
+	} 
+	public String getRefId() {
+		return refId;
+	} 
+	public void setRefId(String refId) {
+		this.refId = refId;
+	} 
+	public String getUserRef() {
+		return userRef;
+	} 
+	public void setUserRef(String userRef) {
+		this.userRef = userRef;
+	} 
+	public OrderStatus getStatus() {
+		return status;
+	} 
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	} 
+	public Long getOpenTimestamp() {
+		return openTimestamp;
+	} 
+	public void setOpenTimestamp(Long openTimestamp) {
+		this.openTimestamp = openTimestamp;
+	} 
+	public Long getStartTimestamp() {
+		return startTimestamp;
+	} 
+	public void setStartTimestamp(Long startTimestamp) {
+		this.startTimestamp = startTimestamp;
+	} 
+	public Long getExpireTimestamp() {
+		return expireTimestamp;
+	} 
+	public void setExpireTimestamp(Long expireTimestamp) {
+		this.expireTimestamp = expireTimestamp;
+	} 
+	public OrderDescr getDescr() {
+		return descr;
+	} 
+	public void setDescr(OrderDescr descr) {
+		this.descr = descr;
+	} 
+	public Double getVolume() {
+		return volume;
+	} 
+	public void setVolume(Double volume) {
+		this.volume = volume;
+	} 
+	public Double getVolumeExecuted() {
+		return volumeExecuted;
+	} 
+	public void setVolumeExecuted(Double volumeExecuted) {
+		this.volumeExecuted = volumeExecuted;
+	} 
+	public Double getCost() {
+		return cost;
+	} 
+	public void setCost(Double cost) {
+		this.cost = cost;
+	} 
+	public Double getFee() {
+		return fee;
+	} 
+	public void setFee(Double fee) {
+		this.fee = fee;
+	} 
+	public Double getAveragePrice() {
+		return averagePrice;
+	} 
+	public void setAveragePrice(Double averagePrice) {
+		this.averagePrice = averagePrice;
+	} 
+	public Double getStopPrice() {
+		return stopPrice;
+	} 
+	public void setStopPrice(Double stopPrice) {
+		this.stopPrice = stopPrice;
+	} 
+	public Double getLimitPrice() {
+		return limitPrice;
+	} 
+	public void setLimitPrice(Double limitPrice) {
+		this.limitPrice = limitPrice;
+	} 
+	public List<OrderMisc> getMisc() {
+		return misc;
+	} 
+	public void setMisc(List<OrderMisc> misc) {
+		this.misc = misc;
+	} 
+	public List<OrderFlag> getFlags() {
+		return flags;
+	} 
+	public void setFlags(List<OrderFlag> flags) {
+		this.flags = flags;
+	} 
+	public List<String> getTrades() {
+		return trades;
+	} 
+	public void setTrades(List<String> trades) {
+		this.trades = trades;
+	}
+
+	public static class OrderDescr {
+		// pair = asset pair
+		private String pairName;
+		// type = type of order (buy/sell)
+		private OrderAction orderAction;
+		// ordertype = order type (See Add standard order)
+		private OrderType orderType;
+		// price = primary price
+		private Double primaryPrime;
+		// price2 = secondary price
+		private Double secondaryPrice;
+		// leverage = amount of leverage
+		private Integer leverage;
+		// order = order description
+		private String orderDescription;
+		// close = conditional close order description (if conditional close set)
+		private String closeDescription;
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof OrderDescr)) return false;
+
+			OrderDescr that = (OrderDescr) o;
+
+			if (pairName != null ? !pairName.equals(that.pairName) : that.pairName != null) return false;
+			if (orderAction != that.orderAction) return false;
+			if (orderType != that.orderType) return false;
+			if (primaryPrime != null ? !primaryPrime.equals(that.primaryPrime) : that.primaryPrime != null)
+				return false;
+			if (secondaryPrice != null ? !secondaryPrice.equals(that.secondaryPrice) : that.secondaryPrice != null)
+				return false;
+			if (leverage != null ? !leverage.equals(that.leverage) : that.leverage != null) return false;
+			if (orderDescription != null ? !orderDescription.equals(that.orderDescription) : that.orderDescription != null)
+				return false;
+			return closeDescription != null ? closeDescription.equals(that.closeDescription) : that.closeDescription == null;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = pairName != null ? pairName.hashCode() : 0;
+			result = 31 * result + (orderAction != null ? orderAction.hashCode() : 0);
+			result = 31 * result + (orderType != null ? orderType.hashCode() : 0);
+			result = 31 * result + (primaryPrime != null ? primaryPrime.hashCode() : 0);
+			result = 31 * result + (secondaryPrice != null ? secondaryPrice.hashCode() : 0);
+			result = 31 * result + (leverage != null ? leverage.hashCode() : 0);
+			result = 31 * result + (orderDescription != null ? orderDescription.hashCode() : 0);
+			result = 31 * result + (closeDescription != null ? closeDescription.hashCode() : 0);
+			return result;
+		}
+
+		public String getPairName() {
+			return pairName;
+		} 
+		public void setPairName(String pairName) {
+			this.pairName = pairName;
+		} 
+		public OrderAction getOrderAction() {
+			return orderAction;
+		} 
+		public void setOrderAction(OrderAction orderAction) {
+			this.orderAction = orderAction;
+		} 
+		public OrderType getOrderType() {
+			return orderType;
+		} 
+		public void setOrderType(OrderType orderType) {
+			this.orderType = orderType;
+		} 
+		public Double getPrimaryPrime() {
+			return primaryPrime;
+		} 
+		public void setPrimaryPrime(Double primaryPrime) {
+			this.primaryPrime = primaryPrime;
+		} 
+		public Double getSecondaryPrice() {
+			return secondaryPrice;
+		} 
+		public void setSecondaryPrice(Double secondaryPrice) {
+			this.secondaryPrice = secondaryPrice;
+		} 
+		public Integer getLeverage() {
+			return leverage;
+		} 
+		public void setLeverage(Integer leverage) {
+			this.leverage = leverage;
+		} 
+		public String getOrderDescription() {
+			return orderDescription;
+		} 
+		public void setOrderDescription(String orderDescription) {
+			this.orderDescription = orderDescription;
+		} 
+		public String getCloseDescription() {
+			return closeDescription;
+		} 
+		public void setCloseDescription(String closeDescription) {
+			this.closeDescription = closeDescription;
+		}
+
+		@Override
+		public String toString() {
+			return "OrderDescr{" +
+					   "pairName='" + pairName + '\'' +
+					   ", orderAction=" + orderAction +
+					   ", orderType=" + orderType +
+					   ", primaryPrime=" + primaryPrime +
+					   ", secondaryPrice=" + secondaryPrice +
+					   ", leverage=" + leverage +
+					   ", orderDescription='" + orderDescription + '\'' +
+					   ", closeDescription='" + closeDescription + '\'' +
+					   '}';
+		}
+	}
 }

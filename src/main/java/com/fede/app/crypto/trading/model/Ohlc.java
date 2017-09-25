@@ -3,7 +3,7 @@ package com.fede.app.crypto.trading.model;
 /**
  * Created by f.barbano on 16/09/2017.
  */
-public class OHLC {
+public class Ohlc {
 
 	private String pairName;
 	private Long time;
@@ -15,12 +15,13 @@ public class OHLC {
 	private Double volume;
 	private Long count;
 
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof OHLC)) return false;
+		if (!(o instanceof Ohlc)) return false;
 
-		OHLC ohlc = (OHLC) o;
+		Ohlc ohlc = (Ohlc) o;
 
 		if (pairName != null ? !pairName.equals(ohlc.pairName) : ohlc.pairName != null) return false;
 		if (time != null ? !time.equals(ohlc.time) : ohlc.time != null) return false;
@@ -46,6 +47,12 @@ public class OHLC {
 		result = 31 * result + (count != null ? count.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return pairName;
+	}
+
 
 	public String getPairName() {
 		return pairName;

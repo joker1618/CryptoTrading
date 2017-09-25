@@ -1,28 +1,27 @@
 package com.fede.app.crypto.trading.model;
 
-import java.util.List;
-
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class Spread {
+public class SpreadData {
 	
 	private String pairName;
 	private Long time;
 	private Double bid;
 	private Double ask;
 
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Spread)) return false;
+		if (!(o instanceof SpreadData)) return false;
 
-		Spread spread = (Spread) o;
+		SpreadData spreadData = (SpreadData) o;
 
-		if (pairName != null ? !pairName.equals(spread.pairName) : spread.pairName != null) return false;
-		if (time != null ? !time.equals(spread.time) : spread.time != null) return false;
-		if (bid != null ? !bid.equals(spread.bid) : spread.bid != null) return false;
-		return ask != null ? ask.equals(spread.ask) : spread.ask == null;
+		if (pairName != null ? !pairName.equals(spreadData.pairName) : spreadData.pairName != null) return false;
+		if (time != null ? !time.equals(spreadData.time) : spreadData.time != null) return false;
+		if (bid != null ? !bid.equals(spreadData.bid) : spreadData.bid != null) return false;
+		return ask != null ? ask.equals(spreadData.ask) : spreadData.ask == null;
 	}
 
 	@Override
@@ -33,6 +32,12 @@ public class Spread {
 		result = 31 * result + (ask != null ? ask.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return pairName;
+	}
+
 
 	public String getPairName() {
 		return pairName;

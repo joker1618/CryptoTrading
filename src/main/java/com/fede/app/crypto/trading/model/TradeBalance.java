@@ -61,6 +61,7 @@ public class TradeBalance {
 		return result;
 	}
 
+
 	public Long getCallTime() {
 		return callTime;
 	}

@@ -1,11 +1,13 @@
 package com.fede.app.crypto.trading.model;
 
-import com.fede.app.crypto.trading.types.OrderDirection;
+import com.fede.app.crypto.trading.model.types.OrderDirection;
 
 /**
  * Created by f.barbano on 13/09/2017.
+ *
+ * Object model for 'Get order book' call
  */
-public class Order {
+public class MarketOrder {
 
 	private String pairName;
 	private OrderDirection orderDirection;
@@ -13,18 +15,19 @@ public class Order {
 	private Double volume;
 	private Long timestamp;
 
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof Order)) return false;
+		if (!(o instanceof MarketOrder)) return false;
 
-		Order order = (Order) o;
+		MarketOrder that = (MarketOrder) o;
 
-		if (pairName != null ? !pairName.equals(order.pairName) : order.pairName != null) return false;
-		if (orderDirection != order.orderDirection) return false;
-		if (price != null ? !price.equals(order.price) : order.price != null) return false;
-		if (volume != null ? !volume.equals(order.volume) : order.volume != null) return false;
-		return timestamp != null ? timestamp.equals(order.timestamp) : order.timestamp == null;
+		if (pairName != null ? !pairName.equals(that.pairName) : that.pairName != null) return false;
+		if (orderDirection != that.orderDirection) return false;
+		if (price != null ? !price.equals(that.price) : that.price != null) return false;
+		if (volume != null ? !volume.equals(that.volume) : that.volume != null) return false;
+		return timestamp != null ? timestamp.equals(that.timestamp) : that.timestamp == null;
 	}
 
 	@Override
@@ -36,6 +39,12 @@ public class Order {
 		result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return pairName;
+	}
+
 
 	public String getPairName() {
 		return pairName;

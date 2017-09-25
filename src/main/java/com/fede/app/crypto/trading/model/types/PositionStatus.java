@@ -1,19 +1,19 @@
-package com.fede.app.crypto.trading.types;
+package com.fede.app.crypto.trading.model.types;
 
 import java.util.Arrays;
 
 /**
- * Created by f.barbano on 18/09/2017.
+ * Created by f.barbano on 25/09/2017.
  */
-public enum OrderDirection {
+public enum PositionStatus {
 
-	ASK("a"),
-	BID("b")
+	OPNE("open"),
+	CLOSED("closed"),
 	;
 
 	private String label;
 
-	OrderDirection(String label) {
+	PositionStatus(String label) {
 		this.label = label;
 	}
 
@@ -21,7 +21,7 @@ public enum OrderDirection {
 		return label;
 	}
 
-	public static synchronized OrderDirection getByLabel(String label) {
+	public static synchronized PositionStatus getByLabel(String label) {
 		return Arrays.stream(values())
 				   .filter(at -> at.label.equals(label))
 				   .findAny()

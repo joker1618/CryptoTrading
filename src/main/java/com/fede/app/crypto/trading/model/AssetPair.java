@@ -1,7 +1,5 @@
 package com.fede.app.crypto.trading.model;
 
-import com.fede.app.crypto.trading.util.ModelCompare;
-
 import java.util.List;
 
 /**
@@ -16,42 +14,48 @@ public class AssetPair {
 	private String aClassQuote;
 	private String quote;
 	private String lot;
-	private int pairDecimals;
-	private int lotDecimals;
-	private int lotMultiplier;
+	private Integer pairDecimals;
+	private Integer lotDecimals;
+	private Integer lotMultiplier;
 	private List<Integer> leverageBuy;     	// es. "leverage_buy":[2,3]
 	private List<Integer> leverageSell;		// es. "leverage_sell":[2,3]
 	private List<FeeSchedule> fees;       	// es. "fees":[[0,0.26],[50000,0.24],[100000,0.22],...]
 	private List<FeeSchedule> feesMaker;   	// es. "fees_maker":[[0,0.16],[50000,0.14],[100000,0.12],...]
 	private String feeVolumeCurrency;
-	private int marginCall;
-	private int marginStop;
-
+	private Integer marginCall;
+	private Integer marginStop;
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof AssetPair)) return false;
 
-		AssetPair that = (AssetPair) o;
+		AssetPair assetPair = (AssetPair) o;
 
-		if (pairDecimals != that.pairDecimals) return false;
-		if (lotDecimals != that.lotDecimals) return false;
-		if (lotMultiplier != that.lotMultiplier) return false;
-		if (marginCall != that.marginCall) return false;
-		if (marginStop != that.marginStop) return false;
-		if (pairName != null ? !pairName.equals(that.pairName) : that.pairName != null) return false;
-		if (altName != null ? !altName.equals(that.altName) : that.altName != null) return false;
-		if (aClassBase != null ? !aClassBase.equals(that.aClassBase) : that.aClassBase != null) return false;
-		if (base != null ? !base.equals(that.base) : that.base != null) return false;
-		if (aClassQuote != null ? !aClassQuote.equals(that.aClassQuote) : that.aClassQuote != null) return false;
-		if (quote != null ? !quote.equals(that.quote) : that.quote != null) return false;
-		if (lot != null ? !lot.equals(that.lot) : that.lot != null) return false;
-		if (leverageBuy != null ? !leverageBuy.equals(that.leverageBuy) : that.leverageBuy != null) return false;
-		if (leverageSell != null ? !leverageSell.equals(that.leverageSell) : that.leverageSell != null) return false;
-		if (fees != null ? !fees.equals(that.fees) : that.fees != null) return false;
-		if (feesMaker != null ? !feesMaker.equals(that.feesMaker) : that.feesMaker != null) return false;
-		return feeVolumeCurrency != null ? feeVolumeCurrency.equals(that.feeVolumeCurrency) : that.feeVolumeCurrency == null;
+		if (pairName != null ? !pairName.equals(assetPair.pairName) : assetPair.pairName != null) return false;
+		if (altName != null ? !altName.equals(assetPair.altName) : assetPair.altName != null) return false;
+		if (aClassBase != null ? !aClassBase.equals(assetPair.aClassBase) : assetPair.aClassBase != null) return false;
+		if (base != null ? !base.equals(assetPair.base) : assetPair.base != null) return false;
+		if (aClassQuote != null ? !aClassQuote.equals(assetPair.aClassQuote) : assetPair.aClassQuote != null)
+			return false;
+		if (quote != null ? !quote.equals(assetPair.quote) : assetPair.quote != null) return false;
+		if (lot != null ? !lot.equals(assetPair.lot) : assetPair.lot != null) return false;
+		if (pairDecimals != null ? !pairDecimals.equals(assetPair.pairDecimals) : assetPair.pairDecimals != null)
+			return false;
+		if (lotDecimals != null ? !lotDecimals.equals(assetPair.lotDecimals) : assetPair.lotDecimals != null)
+			return false;
+		if (lotMultiplier != null ? !lotMultiplier.equals(assetPair.lotMultiplier) : assetPair.lotMultiplier != null)
+			return false;
+		if (leverageBuy != null ? !leverageBuy.equals(assetPair.leverageBuy) : assetPair.leverageBuy != null)
+			return false;
+		if (leverageSell != null ? !leverageSell.equals(assetPair.leverageSell) : assetPair.leverageSell != null)
+			return false;
+		if (fees != null ? !fees.equals(assetPair.fees) : assetPair.fees != null) return false;
+		if (feesMaker != null ? !feesMaker.equals(assetPair.feesMaker) : assetPair.feesMaker != null) return false;
+		if (feeVolumeCurrency != null ? !feeVolumeCurrency.equals(assetPair.feeVolumeCurrency) : assetPair.feeVolumeCurrency != null)
+			return false;
+		if (marginCall != null ? !marginCall.equals(assetPair.marginCall) : assetPair.marginCall != null) return false;
+		return marginStop != null ? marginStop.equals(assetPair.marginStop) : assetPair.marginStop == null;
 	}
 
 	@Override
@@ -63,16 +67,16 @@ public class AssetPair {
 		result = 31 * result + (aClassQuote != null ? aClassQuote.hashCode() : 0);
 		result = 31 * result + (quote != null ? quote.hashCode() : 0);
 		result = 31 * result + (lot != null ? lot.hashCode() : 0);
-		result = 31 * result + pairDecimals;
-		result = 31 * result + lotDecimals;
-		result = 31 * result + lotMultiplier;
+		result = 31 * result + (pairDecimals != null ? pairDecimals.hashCode() : 0);
+		result = 31 * result + (lotDecimals != null ? lotDecimals.hashCode() : 0);
+		result = 31 * result + (lotMultiplier != null ? lotMultiplier.hashCode() : 0);
 		result = 31 * result + (leverageBuy != null ? leverageBuy.hashCode() : 0);
 		result = 31 * result + (leverageSell != null ? leverageSell.hashCode() : 0);
 		result = 31 * result + (fees != null ? fees.hashCode() : 0);
 		result = 31 * result + (feesMaker != null ? feesMaker.hashCode() : 0);
 		result = 31 * result + (feeVolumeCurrency != null ? feeVolumeCurrency.hashCode() : 0);
-		result = 31 * result + marginCall;
-		result = 31 * result + marginStop;
+		result = 31 * result + (marginCall != null ? marginCall.hashCode() : 0);
+		result = 31 * result + (marginStop != null ? marginStop.hashCode() : 0);
 		return result;
 	}
 
@@ -84,132 +88,126 @@ public class AssetPair {
 
 	public String getPairName() {
 		return pairName;
-	}
+	} 
 	public void setPairName(String pairName) {
 		this.pairName = pairName;
-	}
+	} 
 	public String getAltName() {
 		return altName;
-	}
+	} 
 	public void setAltName(String altName) {
 		this.altName = altName;
-	}
-	public String getAClassBase() {
+	} 
+	public String getaClassBase() {
 		return aClassBase;
-	}
-	public void setAClassBase(String aClassBase) {
+	} 
+	public void setaClassBase(String aClassBase) {
 		this.aClassBase = aClassBase;
-	}
+	} 
 	public String getBase() {
 		return base;
-	}
+	} 
 	public void setBase(String base) {
 		this.base = base;
-	}
-	public String getAClassQuote() {
+	} 
+	public String getaClassQuote() {
 		return aClassQuote;
-	}
-	public void setAClassQuote(String aClassQuote) {
+	} 
+	public void setaClassQuote(String aClassQuote) {
 		this.aClassQuote = aClassQuote;
-	}
+	} 
 	public String getQuote() {
 		return quote;
-	}
+	} 
 	public void setQuote(String quote) {
 		this.quote = quote;
-	}
+	} 
 	public String getLot() {
 		return lot;
-	}
+	} 
 	public void setLot(String lot) {
 		this.lot = lot;
-	}
-	public int getPairDecimals() {
+	} 
+	public Integer getPairDecimals() {
 		return pairDecimals;
-	}
-	public void setPairDecimals(int pairDecimals) {
+	} 
+	public void setPairDecimals(Integer pairDecimals) {
 		this.pairDecimals = pairDecimals;
-	}
-	public int getLotDecimals() {
+	} 
+	public Integer getLotDecimals() {
 		return lotDecimals;
-	}
-	public void setLotDecimals(int lotDecimals) {
+	} 
+	public void setLotDecimals(Integer lotDecimals) {
 		this.lotDecimals = lotDecimals;
-	}
-	public int getLotMultiplier() {
+	} 
+	public Integer getLotMultiplier() {
 		return lotMultiplier;
-	}
-	public void setLotMultiplier(int lotMultiplier) {
+	} 
+	public void setLotMultiplier(Integer lotMultiplier) {
 		this.lotMultiplier = lotMultiplier;
-	}
+	} 
 	public List<Integer> getLeverageBuy() {
 		return leverageBuy;
-	}
+	} 
 	public void setLeverageBuy(List<Integer> leverageBuy) {
 		this.leverageBuy = leverageBuy;
-	}
+	} 
 	public List<Integer> getLeverageSell() {
 		return leverageSell;
-	}
+	} 
 	public void setLeverageSell(List<Integer> leverageSell) {
 		this.leverageSell = leverageSell;
-	}
+	} 
 	public List<FeeSchedule> getFees() {
 		return fees;
-	}
-	public void addFee(FeeSchedule fee) {
-		this.fees.add(fee);
-	}
+	} 
 	public void setFees(List<FeeSchedule> fees) {
 		this.fees = fees;
-	}
+	} 
 	public List<FeeSchedule> getFeesMaker() {
 		return feesMaker;
-	}
-	public void addFeeMaker(FeeSchedule feeMaker) {
-		this.feesMaker.add(feeMaker);
-	}
+	} 
 	public void setFeesMaker(List<FeeSchedule> feesMaker) {
 		this.feesMaker = feesMaker;
-	}
+	} 
 	public String getFeeVolumeCurrency() {
 		return feeVolumeCurrency;
-	}
+	} 
 	public void setFeeVolumeCurrency(String feeVolumeCurrency) {
 		this.feeVolumeCurrency = feeVolumeCurrency;
-	}
-	public int getMarginCall() {
+	} 
+	public Integer getMarginCall() {
 		return marginCall;
-	}
-	public void setMarginCall(int marginCall) {
+	} 
+	public void setMarginCall(Integer marginCall) {
 		this.marginCall = marginCall;
-	}
-	public int getMarginStop() {
+	} 
+	public Integer getMarginStop() {
 		return marginStop;
-	}
-	public void setMarginStop(int marginStop) {
+	} 
+	public void setMarginStop(Integer marginStop) {
 		this.marginStop = marginStop;
 	}
 
-	public static class FeeSchedule implements Comparable<FeeSchedule> {
-		private int volume;
-		private double percentFee;
+	public static class FeeSchedule {
+		private Integer volume;
+		private Double percentFee;
 
-		public FeeSchedule(int volume, double percentFee) {
+		public FeeSchedule(Integer volume, Double percentFee) {
 			this.volume = volume;
 			this.percentFee = percentFee;
 		}
 
-		public int getVolume() {
+		public Integer getVolume() {
 			return volume;
-		}
-		public void setVolume(int volume) {
+		} 
+		public void setVolume(Integer volume) {
 			this.volume = volume;
-		}
-		public double getPercentFee() {
+		} 
+		public Double getPercentFee() {
 			return percentFee;
-		}
-		public void setPercentFee(double percentFee) {
+		} 
+		public void setPercentFee(Double percentFee) {
 			this.percentFee = percentFee;
 		}
 
@@ -220,23 +218,15 @@ public class AssetPair {
 
 			FeeSchedule that = (FeeSchedule) o;
 
-			if (volume != that.volume) return false;
-			return Double.compare(that.percentFee, percentFee) == 0;
+			if (volume != null ? !volume.equals(that.volume) : that.volume != null) return false;
+			return percentFee != null ? percentFee.equals(that.percentFee) : that.percentFee == null;
 		}
 
 		@Override
 		public int hashCode() {
-			int result;
-			long temp;
-			result = volume;
-			temp = Double.doubleToLongBits(percentFee);
-			result = 31 * result + (int) (temp ^ (temp >>> 32));
+			int result = volume != null ? volume.hashCode() : 0;
+			result = 31 * result + (percentFee != null ? percentFee.hashCode() : 0);
 			return result;
-		}
-
-		@Override
-		public int compareTo(FeeSchedule o) {
-			return volume - o.volume;
 		}
 	}
 }
