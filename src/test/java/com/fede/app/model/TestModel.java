@@ -1,7 +1,6 @@
 package com.fede.app.model;
 
 import com.fede.app.crypto.trading.parser.JsonToModel;
-import com.fede.app.crypto.trading.util.Utils;
 import edu.self.kraken.api.KrakenApi;
 import org.junit.BeforeClass;
 import org.junit.Test;

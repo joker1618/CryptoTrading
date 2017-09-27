@@ -10,10 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by f.barbano on 15/09/2017.
@@ -161,5 +158,41 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		String json = krakenApi.queryPrivate(KrakenApi.Method.QUERY_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOrdersInfo();
+	}
+
+	@Override
+	public List<OpenPosition> getOpenPositions(Collection<String> tradeIDs) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+		// TODO impl when an example will be found
+		return Collections.emptyList();
+	}
+
+	@Override
+	public List<LedgerInfo> getLedgersInfo() throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+		return getLedgersInfo(Collections.emptyList());
+	}
+
+	@Override
+	public List<LedgerInfo> getLedgersInfo(Collection<String> ledgerIDs) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+		Map<String, String> apiParams = new HashMap<>();
+		KrakenApi.Method kmethod;
+		if(!ledgerIDs.isEmpty()) {
+			apiParams.put("id", Utils.join(ledgerIDs, ","));
+			kmethod = KrakenApi.Method.QUERY_LEDGERS;
+		} else {
+			kmethod = KrakenApi.Method.LEDGERS;
+		}
+		String json = krakenApi.queryPrivate(kmethod, apiParams);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseLedgersInfo();
+	}
+
+	@Override
+	public TradeVolume getTradeVolume(Collection<String> assetPairs) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("pair", Utils.join(assetPairs, ","));
+		apiParams.put("fee-info", "true");
+		String json = krakenApi.queryPrivate(KrakenApi.Method.TRADE_VOLUME, apiParams);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseTradeVolume();
 	}
 }

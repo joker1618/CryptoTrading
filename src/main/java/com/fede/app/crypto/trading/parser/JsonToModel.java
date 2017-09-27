@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import static com.fede.app.crypto.trading.model.AssetPair.FeeSchedule;
 import static com.fede.app.crypto.trading.model.OpenOrder.OrderDescr;
 import static com.fede.app.crypto.trading.model.Ticker.*;
+import static com.fede.app.crypto.trading.model.TradeVolume.FeeInfo;
 
 /**
  * Created by f.barbano on 13/09/2017.
@@ -243,21 +244,22 @@ public class JsonToModel {
 	}
 
 	public List<OpenOrder> parseOpenOrders() {
-		List<OpenOrder> toRet = new ArrayList<>();
+		if(containsErrors())	return null;
 
+		List<OpenOrder> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.getJsonObject("open").entrySet()) {
 			JsonObject jtx = entry.getValue().asJsonObject();
 			OpenOrder oo = (OpenOrder) parseOrderInfo(jtx, OpenOrder::new);
 			oo.setOrderTxID(entry.getKey());
 			toRet.add(oo);
 		}
-
 		return toRet;
 	}
 
 	public List<ClosedOrder> parseClosedOrders() {
-		List<ClosedOrder> toRet = new ArrayList<>();
+		if(containsErrors())	return null;
 
+		List<ClosedOrder> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.getJsonObject("closed").entrySet()) {
 			JsonObject jtx = entry.getValue().asJsonObject();
 			ClosedOrder co = (ClosedOrder) parseOrderInfo(jtx, ClosedOrder::new);
@@ -266,24 +268,56 @@ public class JsonToModel {
 			co.setReason(getString(jtx, "reason"));
 			toRet.add(co);
 		}
-
 		return toRet;
 	}
 
 	public List<OrderInfo> parseOrdersInfo() {
-		List<OrderInfo> toRet = new ArrayList<>();
+		if(containsErrors())	return null;
 
+		List<OrderInfo> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			JsonObject jtx = entry.getValue().asJsonObject();
 			OrderInfo oi = parseOrderInfo(jtx, null);
 			oi.setOrderTxID(entry.getKey());
 			toRet.add(oi);
 		}
-
 		return toRet;
 	}
 
+	public List<OpenPosition> parseOpenPositions() {
+		if(containsErrors())	return null;
 
+		List<OpenPosition> toRet = new ArrayList<>();
+		// TODO impl when an example will be found
+		return toRet;
+	}
+
+	public List<LedgerInfo> parseLedgersInfo() {
+		if(containsErrors())	return null;
+
+		List<LedgerInfo> toRet = new ArrayList<>();
+		JsonObject jledger = result.containsKey("ledger") ? result.getJsonObject("ledger") : result;
+		if(jledger != null) {
+			for (Map.Entry<String, JsonValue> entry : jledger.entrySet()) {
+				JsonObject jtx = entry.getValue().asJsonObject();
+				LedgerInfo li = parseLedgerInfo(jtx);
+				li.setLedgerID(entry.getKey());
+				toRet.add(li);
+			}
+		}
+		return toRet;
+	}
+
+	public TradeVolume parseTradeVolume() {
+		if(containsErrors())	return null;
+
+		TradeVolume tv = new TradeVolume();
+		tv.setCurrency(getString(result, "currency"));
+		tv.setVolume(getDouble(result, "volume"));
+		tv.setFees(parseFeeInfos(result.getJsonObject("fees")));
+		tv.setFeesMaker(parseFeeInfos(result.getJsonObject("fees_maker")));
+		return tv;
+	}
 
 
 
@@ -376,6 +410,39 @@ public class JsonToModel {
 		oi.setTrades(getArrayString(jtx, "trades"));
 
 		return oi;
+	}
+
+	private LedgerInfo parseLedgerInfo(JsonObject jobj) {
+		LedgerInfo li = new LedgerInfo();
+		li.setRefID(getString(jobj, "refid"));
+		li.setTime(getTimestamp(jobj, "time", 1000L));
+		li.setLedgerType(LedgerType.getByLabel(getString(jobj, "type")));
+		li.setAssetClass(getStringValue(jobj, "aclass"));
+		li.setAssetName(getString(jobj, "asset"));
+		li.setAmount(getDouble(jobj, "amount"));
+		li.setFee(getDouble(jobj, "fee"));
+		li.setBalance(getDouble(jobj, "balance"));
+		return li;
+	}
+
+	private List<FeeInfo> parseFeeInfos(JsonObject jfee) {
+		List<FeeInfo> fees = new ArrayList<>();
+		if(jfee != null) {
+			for (Map.Entry<String, JsonValue> entry : jfee.entrySet()) {
+				String pair = entry.getKey();
+				JsonObject jobj = jfee.getJsonObject(pair);
+				FeeInfo fi = new FeeInfo();
+				fi.setPairName(pair);
+				fi.setFee(getDouble(jobj, "fee"));
+				fi.setMinFee(getDouble(jobj, "minfee"));
+				fi.setMaxFee(getDouble(jobj, "maxfee"));
+				fi.setNextFee(getDouble(jobj, "nextfee"));
+				fi.setNextVolume(getDouble(jobj, "nextvolume"));
+				fi.setTierVolume(getDouble(jobj, "tiervolume"));
+				fees.add(fi);
+			}
+		}
+		return fees;
 	}
 
 

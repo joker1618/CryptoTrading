@@ -16,6 +16,7 @@ public class TradeVolume {
 	// fees_maker = array of asset pairs and maker fee tier info (if requested) for any pairs on maker/taker schedule
 	private List<FeeInfo> feesMaker;
 
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -37,6 +38,17 @@ public class TradeVolume {
 		result = 31 * result + (feesMaker != null ? feesMaker.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return "TradeVolume{" +
+				   "currency='" + currency + '\'' +
+				   ", volume=" + volume +
+				   ", fees=" + fees +
+				   ", feesMaker=" + feesMaker +
+				   '}';
+	}
+
 
 	public String getCurrency() {
 		return currency;
@@ -64,6 +76,7 @@ public class TradeVolume {
 	}
 
 	public static class FeeInfo {
+		private String pairName;
 		// fee = current fee in percent
 		private Double fee;
 		// minfee = minimum fee for pair (if not fixed fee)
@@ -84,6 +97,7 @@ public class TradeVolume {
 
 			FeeInfo feeInfo = (FeeInfo) o;
 
+			if (pairName != null ? !pairName.equals(feeInfo.pairName) : feeInfo.pairName != null) return false;
 			if (fee != null ? !fee.equals(feeInfo.fee) : feeInfo.fee != null) return false;
 			if (minFee != null ? !minFee.equals(feeInfo.minFee) : feeInfo.minFee != null) return false;
 			if (maxFee != null ? !maxFee.equals(feeInfo.maxFee) : feeInfo.maxFee != null) return false;
@@ -94,7 +108,8 @@ public class TradeVolume {
 
 		@Override
 		public int hashCode() {
-			int result = fee != null ? fee.hashCode() : 0;
+			int result = pairName != null ? pairName.hashCode() : 0;
+			result = 31 * result + (fee != null ? fee.hashCode() : 0);
 			result = 31 * result + (minFee != null ? minFee.hashCode() : 0);
 			result = 31 * result + (maxFee != null ? maxFee.hashCode() : 0);
 			result = 31 * result + (nextFee != null ? nextFee.hashCode() : 0);
@@ -106,7 +121,8 @@ public class TradeVolume {
 		@Override
 		public String toString() {
 			return "FeeInfo{" +
-					   "fee=" + fee +
+					   "pairName='" + pairName + '\'' +
+					   ", fee=" + fee +
 					   ", minFee=" + minFee +
 					   ", maxFee=" + maxFee +
 					   ", nextFee=" + nextFee +
@@ -115,6 +131,12 @@ public class TradeVolume {
 					   '}';
 		}
 
+		public String getPairName() {
+			return pairName;
+		}
+		public void setPairName(String pairName) {
+			this.pairName = pairName;
+		}
 		public Double getFee() {
 			return fee;
 		}

@@ -144,6 +144,38 @@ public class SingleCall {
 		printOut(ordersInfo, String.format("ORDERS INFO for %s", tradeIDs), starttm, endtm);
 	}
 
+	@Test
+	public void testGetOpenPositions() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+		// TODO
+	}
+
+	@Test
+	public void testGetLedgersInfo() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+		long starttm = System.currentTimeMillis();
+		List<LedgerInfo> ledgers = krakenCaller.getLedgersInfo();
+		long endtm = System.currentTimeMillis();
+		printOut(ledgers, "LEDGERS INFO", starttm, endtm);
+	}
+
+	@Test
+	public void testQueryLedgers() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+		List<String> ledgerIDs = Arrays.asList("L6UNG4-HICDP-QBVUN2","LUBAH5-KEADB-YEDSMR","LYUH2V-YGORX-VPJFPX");
+		long starttm = System.currentTimeMillis();
+		List<LedgerInfo> ledgersInfo = krakenCaller.getLedgersInfo(ledgerIDs);
+		long endtm = System.currentTimeMillis();
+		printOut(ledgersInfo, String.format("LEDGERS INFO for %s", ledgerIDs), starttm, endtm);
+	}
+
+	@Test
+	public void testTradeVolume() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+		List<String> pairs = Arrays.asList("XXBTZUSD", "XXBTZEUR");
+		long starttm = System.currentTimeMillis();
+		TradeVolume tradeVolume = krakenCaller.getTradeVolume(pairs);
+		long endtm = System.currentTimeMillis();
+		printOut(Arrays.asList(tradeVolume), String.format("TRADE VOLUME for %s", pairs), starttm, endtm);
+	}
+
+
 
 
 
