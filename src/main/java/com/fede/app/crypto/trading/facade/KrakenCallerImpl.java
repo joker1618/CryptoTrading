@@ -130,20 +130,36 @@ public class KrakenCallerImpl implements IKrakenCaller {
 	}
 
 	@Override
-	public List<OpenOrder> getOpenOrders() throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+	public List<OpenOrder> getOpenOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
 		Map<String, String> apiParams = new HashMap<>();
-		apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
+		if(includeTrades) {
+			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
+		}
 		String json = krakenApi.queryPrivate(KrakenApi.Method.OPEN_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOpenOrders();
 	}
 
 	@Override
-	public List<ClosedOrder> getClosedOrders() throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+	public List<ClosedOrder> getClosedOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
 		Map<String, String> apiParams = new HashMap<>();
-		apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
+		if(includeTrades) {
+			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
+		}
 		String json = krakenApi.queryPrivate(KrakenApi.Method.CLOSED_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseClosedOrders();
+	}
+
+	@Override
+	public List<OrderInfo> getOrdersInfo(Collection<String> tradeIDs, boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("txid", Utils.join(tradeIDs, ","));
+		if(includeTrades) {
+			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
+		}
+		String json = krakenApi.queryPrivate(KrakenApi.Method.QUERY_ORDERS, apiParams);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseOrdersInfo();
 	}
 }

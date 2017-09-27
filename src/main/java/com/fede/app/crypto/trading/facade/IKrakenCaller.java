@@ -34,7 +34,14 @@ public interface IKrakenCaller {
 
 	TradeBalance getTradeBalance(String baseAsset) throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 
-	List<OpenOrder> getOpenOrders() throws NoSuchAlgorithmException, InvalidKeyException, IOException;
-	List<ClosedOrder> getClosedOrders() throws NoSuchAlgorithmException, InvalidKeyException, IOException;
+	List<OpenOrder> getOpenOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
+	List<ClosedOrder> getClosedOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
+
+	List<OrderInfo> getOrdersInfo(Collection<String> tradeIDs, boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
+
+
+
+
+	
 }

@@ -155,8 +155,8 @@ public class JsonToModel {
 		JsonArray bids = jobj.getJsonArray("bids");
 
 		List<MarketOrder> orderList = new ArrayList<>();
-		orderList.addAll(parseOrders(asks, pairName, OrderDirection.ASK));
-		orderList.addAll(parseOrders(bids, pairName, OrderDirection.BID));
+		orderList.addAll(parseMarketOrders(asks, pairName, OrderDirection.ASK));
+		orderList.addAll(parseMarketOrders(bids, pairName, OrderDirection.BID));
 
 		return orderList;
 	}
@@ -247,7 +247,7 @@ public class JsonToModel {
 
 		for(Map.Entry<String, JsonValue> entry : result.getJsonObject("open").entrySet()) {
 			JsonObject jtx = entry.getValue().asJsonObject();
-			OpenOrder oo = parseOpenOrders(jtx, OpenOrder::new);
+			OpenOrder oo = (OpenOrder) parseOrderInfo(jtx, OpenOrder::new);
 			oo.setOrderTxID(entry.getKey());
 			toRet.add(oo);
 		}
@@ -260,11 +260,24 @@ public class JsonToModel {
 
 		for(Map.Entry<String, JsonValue> entry : result.getJsonObject("closed").entrySet()) {
 			JsonObject jtx = entry.getValue().asJsonObject();
-			ClosedOrder co = (ClosedOrder) parseOpenOrders(jtx, ClosedOrder::new);
+			ClosedOrder co = (ClosedOrder) parseOrderInfo(jtx, ClosedOrder::new);
 			co.setOrderTxID(entry.getKey());
 			co.setCloseTimestamp(getTimestamp(jtx, "closetm", 1000L));
 			co.setReason(getString(jtx, "reason"));
 			toRet.add(co);
+		}
+
+		return toRet;
+	}
+
+	public List<OrderInfo> parseOrdersInfo() {
+		List<OrderInfo> toRet = new ArrayList<>();
+
+		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
+			JsonObject jtx = entry.getValue().asJsonObject();
+			OrderInfo oi = parseOrderInfo(jtx, null);
+			oi.setOrderTxID(entry.getKey());
+			toRet.add(oi);
 		}
 
 		return toRet;
@@ -276,7 +289,7 @@ public class JsonToModel {
 
 
 
-	private List<MarketOrder> parseOrders(JsonArray jarr, String pairName, OrderDirection orderDirection) {
+	private List<MarketOrder> parseMarketOrders(JsonArray jarr, String pairName, OrderDirection orderDirection) {
 		List<MarketOrder> orderList = new ArrayList<>();
 		jarr.forEach(jv -> {
 			List<String> fields = getArrayString(jv.asJsonArray());
@@ -327,7 +340,7 @@ public class JsonToModel {
 		return tv;
 	}
 
-  	private OpenOrder parseOpenOrders(JsonObject jtx, Supplier<OpenOrder> create) {
+  	private OrderInfo parseOrderInfo(JsonObject jtx, Supplier<OpenOrder> create) {
 		JsonObject jdescr = jtx.getJsonObject("descr");
 
 		OrderDescr od = new OrderDescr();
@@ -343,26 +356,26 @@ public class JsonToModel {
 		od.setOrderDescription(getString(jdescr, "order"));
 		od.setCloseDescription(getString(jdescr, "close"));
 
-		OpenOrder oo = create.get();
-		oo.setRefId(getString(jtx, "refid"));
-		oo.setUserRef(getString(jtx, "userref"));
-		oo.setStatus(OrderStatus.getByLabel(getStringValue(jtx, "status")));
-		oo.setOpenTimestamp(getTimestamp(jtx, "opentm", 1000L));
-		oo.setStartTimestamp(getTimestamp(jtx, "starttm", 1000L));
-		oo.setExpireTimestamp(getTimestamp(jtx, "expiretm", 1000L));
-		oo.setDescr(od);
-		oo.setVolume(getDouble(jtx, "vol"));
-		oo.setVolumeExecuted(getDouble(jtx, "vol_exec"));
-		oo.setCost(getDouble(jtx, "cost"));
-		oo.setFee(getDouble(jtx, "fee"));
-		oo.setAveragePrice(getDouble(jtx, "price"));
-		oo.setStopPrice(getDouble(jtx, "stopprice"));
-		oo.setLimitPrice(getDouble(jtx, "limitprice"));
-		oo.setMisc(Utils.map(getCommaDelimitedList(jtx, "misc"), OrderMisc::getByLabel));
-		oo.setFlags(Utils.map(getCommaDelimitedList(jtx, "oflags"), OrderFlag::getByLabel));
-		oo.setTrades(getArrayString(jtx, "trades"));
+		OrderInfo oi = create == null ? new OrderInfo() : create.get();
+		oi.setRefId(getString(jtx, "refid"));
+		oi.setUserRef(getString(jtx, "userref"));
+		oi.setStatus(OrderStatus.getByLabel(getStringValue(jtx, "status")));
+		oi.setOpenTimestamp(getTimestamp(jtx, "opentm", 1000L));
+		oi.setStartTimestamp(getTimestamp(jtx, "starttm", 1000L));
+		oi.setExpireTimestamp(getTimestamp(jtx, "expiretm", 1000L));
+		oi.setDescr(od);
+		oi.setVolume(getDouble(jtx, "vol"));
+		oi.setVolumeExecuted(getDouble(jtx, "vol_exec"));
+		oi.setCost(getDouble(jtx, "cost"));
+		oi.setFee(getDouble(jtx, "fee"));
+		oi.setAveragePrice(getDouble(jtx, "price"));
+		oi.setStopPrice(getDouble(jtx, "stopprice"));
+		oi.setLimitPrice(getDouble(jtx, "limitprice"));
+		oi.setMisc(Utils.map(getCommaDelimitedList(jtx, "misc"), OrderMisc::getByLabel));
+		oi.setFlags(Utils.map(getCommaDelimitedList(jtx, "oflags"), OrderFlag::getByLabel));
+		oi.setTrades(getArrayString(jtx, "trades"));
 
-		return oo;
+		return oi;
 	}
 
 

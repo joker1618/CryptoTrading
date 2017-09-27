@@ -240,7 +240,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 	@Override
 	public List<OpenOrder> getOpenOrders() {
 		try {
-			return krakenCaller.getOpenOrders();
+			return krakenCaller.getOpenOrders(true);
 		} catch (Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
@@ -250,7 +250,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 	@Override
 	public List<ClosedOrder> getClosedOrders() {
 		try {
-			return krakenCaller.getClosedOrders();
+			return krakenCaller.getClosedOrders(true);
 		} catch (Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);

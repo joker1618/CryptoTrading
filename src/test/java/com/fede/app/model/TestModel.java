@@ -108,7 +108,7 @@ public class TestModel {
 	@Test
 	public void testQueryOrdersInfo() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
-		params.put("txid", "O7FEMB-64FHC-UAPV77");  // transaction ID  mandatory
+		params.put("txid", "O7FEMB-64FHC-UAPV77,OWXP77-XN33Z-YDODPJ");  // transaction ID  mandatory
 		params.put("trades", "true");
 		String response = api.queryPrivate(KrakenApi.Method.QUERY_ORDERS, params);
 		out.println(response);
@@ -128,8 +128,8 @@ public class TestModel {
 	public void testQueryTradesInfo() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
 		params.put("trades", "true");
-		params.put("txid", "TCPR7S-MCSPU-LBNXD6");		// trade id
-		String response = api.queryPrivate(KrakenApi.Method.QUERY_TRADES);
+		params.put("txid", "TJPSMJ-OQ7AL-BEE5DK");		// trade id
+		String response = api.queryPrivate(KrakenApi.Method.QUERY_TRADES, params);
 		out.println(response);
 
 	}

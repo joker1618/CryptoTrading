@@ -122,7 +122,7 @@ public class SingleCall {
 	@Test
 	public void testGetOpenOrders() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		long starttm = System.currentTimeMillis();
-		List<OpenOrder> openOrders = krakenCaller.getOpenOrders();
+		List<OpenOrder> openOrders = krakenCaller.getOpenOrders(true);
 		long endtm = System.currentTimeMillis();
 		printOut(openOrders, "OPEN ORDERS", starttm, endtm);
 	}
@@ -130,9 +130,18 @@ public class SingleCall {
 	@Test
 	public void testGetClosedOrders() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		long starttm = System.currentTimeMillis();
-		List<ClosedOrder> closedOrders = krakenCaller.getClosedOrders();
+		List<ClosedOrder> closedOrders = krakenCaller.getClosedOrders(true);
 		long endtm = System.currentTimeMillis();
 		printOut(closedOrders, "CLOSED ORDERS", starttm, endtm);
+	}
+
+	@Test
+	public void testGetOrdersInfo() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+		List<String> tradeIDs = Arrays.asList("O7FEMB-64FHC-UAPV77", "OWXP77-XN33Z-YDODPJ");
+		long starttm = System.currentTimeMillis();
+		List<OrderInfo> ordersInfo = krakenCaller.getOrdersInfo(tradeIDs, true);
+		long endtm = System.currentTimeMillis();
+		printOut(ordersInfo, String.format("ORDERS INFO for %s", tradeIDs), starttm, endtm);
 	}
 
 
