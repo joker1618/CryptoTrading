@@ -1,6 +1,9 @@
 package com.fede.app.crypto.trading.facade;
 
-import com.fede.app.crypto.trading.model.*;
+import com.fede.app.crypto.trading.model._private.*;
+import com.fede.app.crypto.trading.model._public.*;
+import com.fede.app.crypto.trading.model._trading.AddOrderIn;
+import com.fede.app.crypto.trading.model._trading.AddOrderOut;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
@@ -47,5 +50,6 @@ public interface IKrakenCaller {
 	List<LedgerInfo> getLedgersInfo(Collection<String> ledgerIDs) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
 	TradeVolume getTradeVolume(Collection<String> assetPairs) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
-	
+
+	AddOrderOut addOrder(AddOrderIn orderRequest) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 }

@@ -1,4 +1,4 @@
-package com.fede.app.crypto.trading.model;
+package com.fede.app.crypto.trading.model._private;
 
 import com.fede.app.crypto.trading.model.types.OrderAction;
 import com.fede.app.crypto.trading.model.types.OrderType;

@@ -1,9 +1,11 @@
 package com.fede.app.crypto.trading.parser;
 
-import com.fede.app.crypto.trading.model.*;
-import com.fede.app.crypto.trading.model.Ticker.TickerPrice;
-import com.fede.app.crypto.trading.model.Ticker.TickerVolume;
-import com.fede.app.crypto.trading.model.Ticker.TickerWholePrice;
+import com.fede.app.crypto.trading.model._private.AccountBalance;
+import com.fede.app.crypto.trading.model._private.TradeBalance;
+import com.fede.app.crypto.trading.model._public.*;
+import com.fede.app.crypto.trading.model._public.Ticker.TickerPrice;
+import com.fede.app.crypto.trading.model._public.Ticker.TickerVolume;
+import com.fede.app.crypto.trading.model._public.Ticker.TickerWholePrice;
 import com.fede.app.crypto.trading.model.types.OrderAction;
 import com.fede.app.crypto.trading.model.types.OrderDirection;
 import com.fede.app.crypto.trading.model.types.OrderType;
@@ -13,7 +15,7 @@ import com.fede.app.crypto.trading.util.Utils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.fede.app.crypto.trading.model.AssetPair.FeeSchedule;
+import static com.fede.app.crypto.trading.model._public.AssetPair.FeeSchedule;
 
 /**
  * Created by f.barbano on 15/09/2017.

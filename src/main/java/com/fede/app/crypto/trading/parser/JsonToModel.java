@@ -1,6 +1,9 @@
 package com.fede.app.crypto.trading.parser;
 
-import com.fede.app.crypto.trading.model.*;
+import com.fede.app.crypto.trading.model._private.*;
+import com.fede.app.crypto.trading.model._public.*;
+import com.fede.app.crypto.trading.model._trading.AddOrderIn;
+import com.fede.app.crypto.trading.model._trading.AddOrderOut;
 import com.fede.app.crypto.trading.model.types.*;
 import com.fede.app.crypto.trading.util.StrUtils;
 import com.fede.app.crypto.trading.util.Utils;
@@ -14,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.fede.app.crypto.trading.model.AssetPair.FeeSchedule;
-import static com.fede.app.crypto.trading.model.OpenOrder.OrderDescr;
-import static com.fede.app.crypto.trading.model.Ticker.*;
-import static com.fede.app.crypto.trading.model.TradeVolume.FeeInfo;
+import static com.fede.app.crypto.trading.model._public.AssetPair.FeeSchedule;
+import static com.fede.app.crypto.trading.model._private.OpenOrder.OrderDescr;
+import static com.fede.app.crypto.trading.model._public.Ticker.*;
+import static com.fede.app.crypto.trading.model._private.TradeVolume.FeeInfo;
 
 /**
  * Created by f.barbano on 13/09/2017.
@@ -317,6 +320,19 @@ public class JsonToModel {
 		tv.setFees(parseFeeInfos(result.getJsonObject("fees")));
 		tv.setFeesMaker(parseFeeInfos(result.getJsonObject("fees_maker")));
 		return tv;
+	}
+
+	public AddOrderOut parseOrderOut() {
+		if(containsErrors())	return null;
+
+		AddOrderOut out = new AddOrderOut();
+		JsonObject jdescr = result.getJsonObject("descr");
+		if(jdescr != null) {
+			out.setOrderDescr(getString(jdescr, "order"));
+			out.setCloseDescr(getString(jdescr, "close"));
+		}
+		out.setTxIDs(getArrayString(jdescr, "txid"));
+		return out;
 	}
 
 

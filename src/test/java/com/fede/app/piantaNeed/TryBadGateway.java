@@ -1,5 +1,6 @@
 package com.fede.app.piantaNeed;
 
+import com.fede.app.crypto.trading.common.Const;
 import com.fede.app.crypto.trading.util.FileUtils;
 import edu.self.kraken.api.KrakenApi;
 import org.apache.commons.lang3.StringUtils;
@@ -27,8 +28,8 @@ public class TryBadGateway {
 	@Before
 	public void before() {
 		api = new KrakenApi();
-		api.setKey("VRQ4Oe8ZNPbLEyjv26SlU7F5O8zR9DjXr07Q6EHf95ooaSszvOkISQTc");
-		api.setSecret("E07VIMtiE1x+0m1ef67ERAB8b3Xrk3Z1hxOlWbEUEB0dqKxghci7a+bnPeEmDrBigdYQ1My24fpPeMW9fOplIw==");
+		api.setKey(Const.KRAKEN_KEY);
+		api.setSecret(Const.KRAKEN_SECRET);
 	}
 
 	@Test
@@ -44,6 +45,7 @@ public class TryBadGateway {
 			}
 
 			Thread.sleep(PAUSE_SEC * 1000);
+			break;
 		}
 
 	}
@@ -55,10 +57,11 @@ public class TryBadGateway {
 		input.put("ordertype", "limit");
 		input.put("price", "42");
 		input.put("volume", "4.99948");
-//		input.put("validate", "yes");
+		input.put("validate", "yes");
 
 
 		String response = api.queryPrivate(KrakenApi.Method.ADD_ORDER, input);
+		System.out.println(response);
 
 		FileUtils.appendToFile(TRACE_FILE, response, true);
 

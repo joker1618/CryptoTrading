@@ -6,15 +6,12 @@ import java.util.Arrays;
  * Created by f.barbano on 24/09/2017.
  */
 public enum OrderFlag {
-	//	oflags = comma delimited list of order flags
-	//		viqc = volume in quote currency
-	//		fcib = prefer fee in base currency (default if selling)
-	//		fciq = prefer fee in quote currency (default if buying)
-	//		nompp = no market price protection
+
 	VIQC("viqc", "volume in quote currency"),
 	FCIB("fcib", "prefer fee in base currency (default if selling)"),
 	FCIQ("fciq", "prefer fee in quote currency (default if buying)"),
 	NOMPP("nompp", "no market price protection"),
+	POST("post", "post only order (available when ordertype = limit)"),
 	;
 
 	private String label;

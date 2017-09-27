@@ -1,6 +1,8 @@
 package com.fede.app.crypto.trading.facade;
 
-import com.fede.app.crypto.trading.model.*;
+import com.fede.app.crypto.trading.model._private.AccountBalance;
+import com.fede.app.crypto.trading.model._private.TradeBalance;
+import com.fede.app.crypto.trading.model._public.*;
 
 import java.io.IOException;
 import java.util.List;

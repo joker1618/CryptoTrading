@@ -2,8 +2,8 @@ package com.fede.app.launcher;
 
 import com.fede.app.crypto.trading.manager.IKrakenManager;
 import com.fede.app.crypto.trading.manager.KrakenManagerImpl;
-import com.fede.app.crypto.trading.model.ClosedOrder;
-import com.fede.app.crypto.trading.model.OpenOrder;
+import com.fede.app.crypto.trading.model._private.ClosedOrder;
+import com.fede.app.crypto.trading.model._private.OpenOrder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.BeforeClass;

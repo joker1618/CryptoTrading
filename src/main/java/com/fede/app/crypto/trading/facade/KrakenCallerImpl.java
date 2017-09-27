@@ -1,6 +1,9 @@
 package com.fede.app.crypto.trading.facade;
 
-import com.fede.app.crypto.trading.model.*;
+import com.fede.app.crypto.trading.model._private.*;
+import com.fede.app.crypto.trading.model._public.*;
+import com.fede.app.crypto.trading.model._trading.AddOrderIn;
+import com.fede.app.crypto.trading.model._trading.AddOrderOut;
 import com.fede.app.crypto.trading.parser.JsonToModel;
 import com.fede.app.crypto.trading.util.Utils;
 import edu.self.kraken.api.KrakenApi;
@@ -195,4 +198,39 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseTradeVolume();
 	}
+
+	@Override
+	public AddOrderOut addOrder(AddOrderIn orderRequest) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("pair", orderRequest.getPairName());
+		apiParams.put("type", orderRequest.getOrderAction().label());
+		apiParams.put("ordertype", orderRequest.getOrderType().label());
+		apiParams.put("price", Utils.toString(orderRequest.getPrice()));
+		apiParams.put("volume", Utils.toString(orderRequest.getVolume()));
+		if(orderRequest.getPrice2() != null) {
+			apiParams.put("price2", Utils.toString(orderRequest.getPrice2()));
+		}
+		if(orderRequest.getLeverage() != null) {
+			apiParams.put("leverage", String.valueOf(orderRequest.getLeverage()));
+		}
+		if(!orderRequest.getOflags().isEmpty()) {
+			apiParams.put("oflags", Utils.join(orderRequest.getOflags(), ","));
+		}
+		if(orderRequest.getStarttm() != null) {
+			apiParams.put("starttm", orderRequest.getStarttm());
+		}
+		if(orderRequest.getExpiretm() != null) {
+			apiParams.put("expiretm", orderRequest.getExpiretm());
+		}
+		if(orderRequest.getUserRef() != null) {
+			apiParams.put("userref", orderRequest.getUserRef());
+		}
+		if(orderRequest.isValidate()) {
+			apiParams.put("validate", "yes");
+		}
+		String json = krakenApi.queryPrivate(KrakenApi.Method.ADD_ORDER, apiParams);
+		JsonToModel jm = new JsonToModel(json);
+		return jm.parseOrderOut();
+	}
+
 }

@@ -1,6 +1,10 @@
 package com.fede.app.crypto.trading.manager;
 
-import com.fede.app.crypto.trading.model.*;
+import com.fede.app.crypto.trading.model._private.AccountBalance;
+import com.fede.app.crypto.trading.model._private.ClosedOrder;
+import com.fede.app.crypto.trading.model._private.OpenOrder;
+import com.fede.app.crypto.trading.model._private.TradeBalance;
+import com.fede.app.crypto.trading.model._public.*;
 
 import java.util.List;
 import java.util.Map;

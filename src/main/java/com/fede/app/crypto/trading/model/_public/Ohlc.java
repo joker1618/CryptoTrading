@@ -1,4 +1,4 @@
-package com.fede.app.crypto.trading.model;
+package com.fede.app.crypto.trading.model._public;
 
 /**
  * Created by f.barbano on 16/09/2017.
