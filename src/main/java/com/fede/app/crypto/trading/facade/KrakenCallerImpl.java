@@ -112,6 +112,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 	public List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		long callTime = System.currentTimeMillis();
 		String json = krakenApi.queryPrivate(KrakenApi.Method.BALANCE);
+		System.out.println(json);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseAccountBalance(callTime);
 	}

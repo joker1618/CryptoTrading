@@ -2,7 +2,6 @@ package com.fede.app.crypto.trading.parser;
 
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
-import com.fede.app.crypto.trading.model._trading.AddOrderIn;
 import com.fede.app.crypto.trading.model._trading.AddOrderOut;
 import com.fede.app.crypto.trading.model.types.*;
 import com.fede.app.crypto.trading.util.StrUtils;
@@ -231,7 +230,7 @@ public class JsonToModel {
 			Double balance = Double.parseDouble(jsonValueToString(entry.getValue()));
 			AccountBalance ab = new AccountBalance();
 			ab.setCallTime(callTime);
-			ab.setAssetClass(assetClass);
+			ab.setAssetName(assetClass);
 			ab.setBalance(balance);
 			abList.add(ab);
 		});

@@ -214,7 +214,7 @@ public class ModelConverter {
 	public static String accountBalanceToString(AccountBalance accountBalance) {
 		return String.format("%d|%s|%s",
 			accountBalance.getCallTime(),
-			accountBalance.getAssetClass(),
+			accountBalance.getAssetName(),
 			Utils.toString(accountBalance.getBalance())
 		);
 	}
@@ -222,7 +222,7 @@ public class ModelConverter {
 		String[] split = StrUtils.splitAllFields(csvLine, "|", true);
 		AccountBalance accountBalance = new AccountBalance();
 		accountBalance.setCallTime(Long.parseLong(split[0]));
-		accountBalance.setAssetClass(split[1]);
+		accountBalance.setAssetName(split[1]);
 		accountBalance.setBalance(Utils.toDouble(split[2]));
 		return accountBalance;
 	}

@@ -50,7 +50,7 @@ public class ModelCompare {
 		return (s1, s2) -> {
 			CompareBuilder cp = new CompareBuilder();
 			cp.add(s1.getCallTime(), s2.getCallTime());
-			cp.add(s1.getAssetClass(), s2.getAssetClass());
+			cp.add(s1.getAssetName(), s2.getAssetName());
 			return cp.compare();
 		};
 	}

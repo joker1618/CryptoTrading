@@ -6,7 +6,7 @@ package com.fede.app.crypto.trading.model._private;
 public class AccountBalance {
 
 	private Long callTime;
-	private String assetClass;
+	private String assetName;
 	private Double balance;
 
 	@Override
@@ -17,14 +17,14 @@ public class AccountBalance {
 		AccountBalance that = (AccountBalance) o;
 
 		if (callTime != null ? !callTime.equals(that.callTime) : that.callTime != null) return false;
-		if (assetClass != null ? !assetClass.equals(that.assetClass) : that.assetClass != null) return false;
+		if (assetName != null ? !assetName.equals(that.assetName) : that.assetName != null) return false;
 		return balance != null ? balance.equals(that.balance) : that.balance == null;
 	}
 
 	@Override
 	public int hashCode() {
 		int result = callTime != null ? callTime.hashCode() : 0;
-		result = 31 * result + (assetClass != null ? assetClass.hashCode() : 0);
+		result = 31 * result + (assetName != null ? assetName.hashCode() : 0);
 		result = 31 * result + (balance != null ? balance.hashCode() : 0);
 		return result;
 	}
@@ -33,7 +33,7 @@ public class AccountBalance {
 	public String toString() {
 		return "AccountBalance{" +
 				   "callTime=" + callTime +
-				   ", assetClass='" + assetClass + '\'' +
+				   ", assetClass='" + assetName + '\'' +
 				   ", balance=" + balance +
 				   '}';
 	}
@@ -45,11 +45,11 @@ public class AccountBalance {
 	public void setCallTime(Long callTime) {
 		this.callTime = callTime;
 	}
-	public String getAssetClass() {
-		return assetClass;
+	public String getAssetName() {
+		return assetName;
 	}
-	public void setAssetClass(String assetClass) {
-		this.assetClass = assetClass;
+	public void setAssetName(String assetName) {
+		this.assetName = assetName;
 	}
 	public Double getBalance() {
 		return balance;
