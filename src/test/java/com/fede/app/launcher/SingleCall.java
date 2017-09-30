@@ -17,7 +17,11 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.lang.System.out;
 
 /**
  * Created by f.barbano on 25/09/2017.
@@ -47,6 +51,12 @@ public class SingleCall {
 		List<Asset> assets = krakenCaller.getAssets();
 		long endtm = System.currentTimeMillis();
 		printOut(assets, "ASSETS", starttm, endtm);
+
+		List<String> anames = Utils.map(assets, Asset::getAssetName);
+		anames.addAll(Utils.map(assets, Asset::getAltName));
+		out.println("\nAsset names");
+		anames.stream().distinct().sorted().forEach(out::println);
+
 	}
 
 	@Test
@@ -55,6 +65,19 @@ public class SingleCall {
 		List<AssetPair> assetPairs = krakenCaller.getAssetPairs();
 		long endtm = System.currentTimeMillis();
 		printOut(assetPairs, "ASSET PAIRS", starttm, endtm);
+
+		List<String> apnames = Utils.map(assetPairs, AssetPair::getPairName);
+		apnames.addAll(Utils.map(assetPairs, AssetPair::getAltName));
+		out.println("\nAsset pairs names");
+		apnames.stream().distinct().sorted().forEach(out::println);
+
+		List<String> apbase = Utils.map(assetPairs, AssetPair::getBase);
+		out.println("\nAsset pairs base");
+		apbase.stream().distinct().sorted().forEach(out::println);
+
+		List<String> apquote = Utils.map(assetPairs, AssetPair::getQuote);
+		out.println("\nAsset pairs quote");
+		apquote.stream().distinct().sorted().forEach(out::println);
 	}
 
 	@Test
@@ -182,7 +205,7 @@ public class SingleCall {
 
 
 	private void printOut(String format, Object... params) {
-		System.out.println(String.format(format, params));
+		out.println(String.format(format, params));
 	}
 	private void printOut(List<?> list, String title, long starttm, long endtm) {
 		printOut("%s", title);

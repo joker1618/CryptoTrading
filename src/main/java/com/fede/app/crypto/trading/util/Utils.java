@@ -42,8 +42,8 @@ public class Utils {
 	public static LocalDateTime fromMillis(long millis) {
 		return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
-	public static String toString(long sec, String pattern) {
-		return toString(fromSeconds(sec), pattern);
+	public static String toString(long millis, String pattern) {
+		return toString(fromMillis(millis), pattern);
 	}
 	public static String toString(LocalDateTime ldt, String pattern) {
 		return DateTimeFormatter.ofPattern(pattern).format(ldt);

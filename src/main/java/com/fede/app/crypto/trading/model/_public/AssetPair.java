@@ -200,7 +200,7 @@ public class AssetPair {
 
 		public Integer getVolume() {
 			return volume;
-		} 
+		}                                                              	
 		public void setVolume(Integer volume) {
 			this.volume = volume;
 		} 
@@ -227,6 +227,14 @@ public class AssetPair {
 			int result = volume != null ? volume.hashCode() : 0;
 			result = 31 * result + (percentFee != null ? percentFee.hashCode() : 0);
 			return result;
+		}
+
+		@Override
+		public String toString() {
+			return "FeeSchedule{" +
+					   "volume=" + volume +
+					   ", percentFee=" + percentFee +
+					   '}';
 		}
 	}
 }

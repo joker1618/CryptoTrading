@@ -12,9 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.json.*;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.fede.app.crypto.trading.model._public.AssetPair.FeeSchedule;
@@ -195,14 +193,27 @@ public class JsonToModel {
 
 		Long last = getLong(result, "last");
 
+		/*
+		Sometimes differents spread data have the same time, because it is expressed
+		in seconds and the spread can change more rapidly. When I found a duplicate time,
+		I add 1ms to the second.
+		 */
+		Set<Long> usedTimes = new TreeSet<>();
+
 		List<SpreadData> spreadDataList = new ArrayList<>();
 		result.getJsonArray(pairName).forEach(jv -> {
 			List<String> fields = getArrayString(jv.asJsonArray());
 			long time = Long.parseLong(fields.get(0));
 			if(time <= last) {
+				long ts = time * 1000L;
+				if(usedTimes.contains(ts)) {
+					ts += 1;
+				}
+				usedTimes.add(ts);
+
 				SpreadData spreadData = new SpreadData();
 				spreadData.setPairName(pairName);
-				spreadData.setTime(time * 1000L);
+				spreadData.setTime(ts);
 				spreadData.setBid(Double.parseDouble(fields.get(1)));
 				spreadData.setAsk(Double.parseDouble(fields.get(2)));
 				spreadDataList.add(spreadData);
