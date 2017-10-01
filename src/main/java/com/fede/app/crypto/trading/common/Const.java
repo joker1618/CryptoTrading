@@ -10,6 +10,12 @@ import java.util.Locale;
  */
 public class Const {
 
+	public static final Path CONFIG_FILEPATH = Paths.get("config/config.properties");
+
+
+
+
+	// REVIEW remove
 	public static final Path CSV_FOLDER = Paths.get("files", "data", "csv");
 
 	public static final String KRAKEN_KEY = "VRQ4Oe8ZNPbLEyjv26SlU7F5O8zR9DjXr07Q6EHf95ooaSszvOkISQTc";
