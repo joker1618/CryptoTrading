@@ -36,19 +36,6 @@ public class Utils {
 		return source.stream().filter(filter).map(mapper).collect(Collectors.toList());
 	}
 
-	public static LocalDateTime fromSeconds(long sec) {
-		return fromMillis(sec*1000);
-	}
-	public static LocalDateTime fromMillis(long millis) {
-		return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();
-	}
-	public static String toString(long millis, String pattern) {
-		return toString(fromMillis(millis), pattern);
-	}
-	public static String toString(LocalDateTime ldt, String pattern) {
-		return DateTimeFormatter.ofPattern(pattern).format(ldt);
-	}
-
 	public static String toString(Double d) {
 		if(d == null)	return "-";
 		return getNumberFormat().format(d);

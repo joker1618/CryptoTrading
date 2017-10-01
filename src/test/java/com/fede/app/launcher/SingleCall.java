@@ -5,6 +5,7 @@ import com.fede.app.crypto.trading.facade.IKrakenCaller;
 import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
+import com.fede.app.crypto.trading.util.DateUtils;
 import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -41,7 +42,7 @@ public class SingleCall {
 		Long serverTime = krakenCaller.getServerTime();
 		long endtm = System.currentTimeMillis();
 		printOut(serverTime+"");
-		printOut(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS").format(Utils.fromMillis(serverTime)));
+		printOut(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS").format(DateUtils.fromMillis(serverTime)));
 		printOut("\nElapsed: %.3f sec", ((double)(endtm-starttm)/1000));
 	}
 

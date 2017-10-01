@@ -4,6 +4,7 @@ import com.fede.app.crypto.trading.common.Const;
 import com.fede.app.crypto.trading.facade.IKrakenCaller;
 import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
 import com.fede.app.crypto.trading.model._public.Ticker;
+import com.fede.app.crypto.trading.util.DateUtils;
 import com.fede.app.crypto.trading.util.StrUtils;
 import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -47,7 +48,7 @@ public class CryptoTradingTest {
 	private Runnable downloadTickersRunnable() {
 		return () -> {
 			long start = System.currentTimeMillis();
-			printOut("%s\tStart downloading tickers", Utils.toString(start, "HH:mm:ss.SSS"));
+			printOut("%s\tStart downloading tickers", DateUtils.toString(start, "HH:mm:ss.SSS"));
 			try {
 				List<Ticker> tickers = krakenCaller.getTickers(Arrays.asList("XXBTZEUR", "XXBTZUSD", "BCHEUR", "BCHUSD", "EOSETH", "EOSXBT"));
 				long end = System.currentTimeMillis();
@@ -68,6 +69,6 @@ public class CryptoTradingTest {
 			printOut(s);
 		});
 		printOut("\nElapsed: %.3f sec", ((double)(endtm-starttm)/1000));
-		printOut("%s\t%s downloaded in %.3f sec", Utils.toString(endtm, "HH:mm:ss.SSS"), str, ((double)(endtm-starttm)/1000d));
+		printOut("%s\t%s downloaded in %.3f sec", DateUtils.toString(endtm, "HH:mm:ss.SSS"), str, ((double)(endtm-starttm)/1000d));
 	}
 }
