@@ -9,106 +9,72 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class LogFormatter extends Formatter {
 
 	private static final String DATE_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 	private static final String SEP = " - ";
 
-	private boolean showDate;
-	private boolean showMethod;
-	private boolean showClass;
 	private boolean simpleClassName;
-	private boolean showThread;
-	private boolean showLevel;
+	private boolean showThreadPool = false;		//review
 
 	private DateTimeFormatter dateTimeFormatter;
 
-	LogFormatter() {
-		this.showDate = true;
-		this.showMethod = true;
-		this.showClass = true;
-		this.simpleClassName = true;
-		this.showThread = true;
-		this.showLevel = true;
-		this.dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN);
-	}
-
-	public void setShowDate(boolean showDate) {
-		this.showDate = showDate;
-	}
-
-	public void setShowMethod(boolean showMethod) {
-		this.showMethod = showMethod;
-	}
-
-	public void setShowClass(boolean showClass) {
-		this.showClass = showClass;
-	}
-
-	public void setSimpleClassName(boolean simpleClassName) {
+	LogFormatter(boolean simpleClassName) {
 		this.simpleClassName = simpleClassName;
-	}
-
-	public void setShowThread(boolean showThread) {
-		this.showThread = showThread;
-	}
-
-	public void setShowLevel(boolean showLevel) {
-		this.showLevel = showLevel;
-	}
-
-	public void setDateTimeFormatter(DateTimeFormatter dateTimeFormatter) {
-		this.dateTimeFormatter = dateTimeFormatter;
+		this.dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN);
 	}
 
 	@Override
 	public String format(LogRecord record) {
-		String methodName = "";
 		String lineNumber = "";
 		Thread currentThread = Thread.currentThread();
 
-		if (showMethod || showClass) {
-			StackTraceElement[] stackTrace = currentThread.getStackTrace();
-			for (int i = 0; i < stackTrace.length && methodName.isEmpty(); i++) {
-				StackTraceElement elem = stackTrace[i];
-				if (elem.getClassName().startsWith(record.getLoggerName())) {
-					methodName = elem.getMethodName();
-					lineNumber = "(" + elem.getLineNumber() + ")";
-				}
+		StackTraceElement[] stackTrace = currentThread.getStackTrace();
+		for (int i = 0; i < stackTrace.length && lineNumber.isEmpty(); i++) {
+			StackTraceElement elem = stackTrace[i];
+			if (elem.getClassName().startsWith(record.getLoggerName())) {
+				lineNumber = "(" + elem.getLineNumber() + ")";
 			}
 		}
 
 		String message = super.formatMessage(record);
 
 		StringBuilder sb = new StringBuilder();
-		if (showDate) {
-			LocalDateTime ldt = DateUtils.fromMillis(record.getMillis());
-			sb.append(dateTimeFormatter.format(ldt)).append(SEP);
+
+		LocalDateTime ldt = DateUtils.fromMillis(record.getMillis());
+		sb.append(dateTimeFormatter.format(ldt)).append(SEP);
+
+		String loggerName;
+		if (simpleClassName) {
+			loggerName = record.getLoggerName().substring(record.getLoggerName().lastIndexOf(".") + 1);
+		} else {
+			loggerName = record.getLoggerName();
 		}
-		if (showMethod || showClass) {
-			String loggerName;
-			if (simpleClassName) {
-				loggerName = record.getLoggerName().substring(record.getLoggerName().lastIndexOf(".") + 1);
-			} else {
-				loggerName = record.getLoggerName();
+		sb.append(loggerName).append(lineNumber).append("\t").append(SEP);
+
+		String threadName;
+		String threadPool = "";
+		Pattern pattern = Pattern.compile("pool-(\\d)+-thread-(\\d)+");
+		Matcher matcher = pattern.matcher(currentThread.getName());
+		if(matcher.matches()) {
+			threadName = "thread";
+			if(showThreadPool) {
+				threadPool = String.format("-[%s.%s]", matcher.group(1), matcher.group(2));
 			}
-			sb.append(loggerName).append(lineNumber).append("\t").append(SEP);
-			if (showMethod) {
-				sb.append(methodName).append("\t").append(SEP);
-			}
+		} else {
+			threadName = currentThread.getName();
 		}
-		if (showThread) {
-			sb.append("<").append(currentThread.getName()).append(">");
-			sb.append("[").append(currentThread.getId()).append("]");
-			sb.append("\t").append(SEP);
-		}
-		if (showLevel) {
-			sb.append(String.format("%-7s\t", record.getLevel())).append(SEP);
-		}
+		sb.append("<").append(String.format("%s-%d%s", threadName, currentThread.getId(), threadPool)).append(">");
+		sb.append("\t").append(SEP);
+
+		sb.append(String.format("%-6s\t", record.getLevel())).append(SEP);
 
 		sb.append(message).append("\n");
 
 		return sb.toString();
 	}
+
 }

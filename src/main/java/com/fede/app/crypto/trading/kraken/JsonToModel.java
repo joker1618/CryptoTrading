@@ -1,4 +1,4 @@
-package com.fede.app.crypto.trading.parser;
+package com.fede.app.crypto.trading.kraken;
 
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
@@ -22,7 +22,7 @@ import static com.fede.app.crypto.trading.model._private.TradeVolume.FeeInfo;
 /**
  * Created by f.barbano on 13/09/2017.
  */
-public class JsonToModel {
+class JsonToModel {
 
 	private List<String> errors;
 	private JsonObject result;
@@ -52,13 +52,14 @@ public class JsonToModel {
 		return getTimestamp(result, "unixtime", 1000L);
 	}
 
-	public List<Asset> parseAssets() {
+	public List<Asset> parseAssets(Long callTime) {
 		if(containsErrors())	return null;
 
 		List<Asset> assetList = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			JsonObject jsonAsset = entry.getValue().asJsonObject();
 			Asset asset = new Asset();
+			asset.setCallTime(callTime);
 			asset.setAssetName(entry.getKey());
 			asset.setAClass(getString(jsonAsset, "aclass"));
 			asset.setAltName(getString(jsonAsset, "altname"));

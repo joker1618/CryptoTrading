@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 /**
  * Created by f.barbano on 01/10/2017.
  */
-class SimpleLogImpl implements SimpleLog {
+class SimpleLogImpl implements ISimpleLog {
 
 	private Logger logger;
 

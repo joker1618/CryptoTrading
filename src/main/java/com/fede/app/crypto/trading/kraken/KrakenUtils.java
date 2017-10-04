@@ -1,4 +1,4 @@
-package edu.self.kraken.api;
+package com.fede.app.crypto.trading.kraken;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

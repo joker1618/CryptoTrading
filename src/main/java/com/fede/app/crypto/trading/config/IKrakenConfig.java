@@ -1,6 +1,7 @@
 package com.fede.app.crypto.trading.config;
 
 import java.nio.file.Path;
+import java.util.logging.Level;
 
 /**
  * Created by f.barbano on 01/10/2017.
@@ -26,11 +27,15 @@ public interface IKrakenConfig {
 	String getDBPassword();
 
 	// CSV files config
-	Path getPathCsvAssets();
-	Path getPathCsvAssetPairs();
-	Path getPathCsvTickers();
-	Path getPathCsvSpreadData();
-	Path getPathCsvAccountBalance();
+	Path getCsvPathAssets();
+	Path getCsvPathAssetPairs();
+	Path getCsvPathTickers();
+	Path getCsvPathSpreadData();
+	Path getCsvPathAccountBalance();
 
+	// Logs config
+	Path getLogPathErrors();
+	Path getLogPathAll();
+	Level getLogLevelConsole();
 
 }

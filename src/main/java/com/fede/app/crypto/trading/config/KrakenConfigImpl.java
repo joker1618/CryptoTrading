@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
 
 import static com.fede.app.crypto.trading.config.PropKey.*;
 
@@ -63,6 +64,15 @@ public class KrakenConfigImpl implements IKrakenConfig {
 		// replace variables
 		// #var#  and  ${var}  allowed
 		replaceVariables(loaded);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("##########  CONFIGS  ##########\n");
+		configMap.forEach((k,v) -> sb.append(k).append(" = ").append(v).append("\n"));
+		sb.append("####################à##########");
+		return sb.toString();
 	}
 
 	@Override
@@ -126,28 +136,47 @@ public class KrakenConfigImpl implements IKrakenConfig {
 	}
 
 	@Override
-	public synchronized Path getPathCsvAssets() {
+	public synchronized Path getCsvPathAssets() {
 		return getPath(CSV_FOLDER, CSV_FILENAME_ASSETS);
 	}
 
 	@Override
-	public synchronized Path getPathCsvAssetPairs() {
+	public synchronized Path getCsvPathAssetPairs() {
 		return getPath(CSV_FOLDER, CSV_FILENAME_ASSET_PAIRS);
 	}
 
 	@Override
-	public synchronized Path getPathCsvTickers() {
+	public synchronized Path getCsvPathTickers() {
 		return getPath(CSV_FOLDER, CSV_FILENAME_TICKERS);
 	}
 
 	@Override
-	public synchronized Path getPathCsvSpreadData() {
+	public synchronized Path getCsvPathSpreadData() {
 		return getPath(CSV_FOLDER, CSV_FILENAME_SPREAD_DATA);
 	}
 
 	@Override
-	public synchronized Path getPathCsvAccountBalance() {
+	public synchronized Path getCsvPathAccountBalance() {
 		return getPath(CSV_FOLDER, CSV_FILENAME_ACCOUNT_BALANCE);
+	}
+
+	@Override
+	public Path getLogPathErrors() {
+		return getPath(LOGS_FOLDER, "errors.log");
+	}
+
+	@Override
+	public Path getLogPathAll() {
+		return getPath(LOGS_FOLDER, "all.log");
+	}
+
+	@Override
+	public Level getLogLevelConsole() {
+		try {
+			return Level.parse(getString(LOGS_CONSOLE_LEVEL));
+		} catch(IllegalArgumentException ex) {
+			return Level.ALL;
+		}
 	}
 
 
@@ -161,9 +190,9 @@ public class KrakenConfigImpl implements IKrakenConfig {
 		return Integer.parseInt(getString(propKey));
 	}
 	private Path getPath(String folderKey, String filenameKey) {
-		Path folder = Paths.get(getString(folderKey));
-		String filename = getString(filenameKey);
-		return folder.resolve(filename);
+		Path baseFolder = Paths.get(getString(BASE_FOLDER));
+		Path folder = baseFolder.resolve(getString(folderKey));
+		return folder.resolve(getString(filenameKey));
 	}
 
 	private void replaceVariables(Map<String, String> loaded) {

@@ -1,6 +1,4 @@
-package edu.self.kraken.api;
-
-import edu.self.kraken.api.KrakenApi.Method;
+package com.fede.app.crypto.trading.kraken;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -111,14 +109,14 @@ class ApiRequest {
      * @throws MalformedURLException if the request URL could not be created
      *         with the method name
      */
-    public String setMethod(Method method) throws MalformedURLException {
+    public String setMethod(ApiMethod method) throws MalformedURLException {
 
         if (method == null) {
             throw new IllegalArgumentException(ERROR_NULL_METHOD);
         }
 
-        isPublic = method.isPublic;
-        url = new URL((isPublic ? PUBLIC_URL : PRIVATE_URL) + method.name);
+        isPublic = method.isPublic();
+        url = new URL((isPublic ? PUBLIC_URL : PRIVATE_URL) + method.getName());
         return url.getPath();
     }
 

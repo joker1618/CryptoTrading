@@ -1,6 +1,7 @@
 package com.fede.app.crypto.trading.logger;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,7 +30,7 @@ public class LogService {
 		Arrays.stream(rootLogger.getHandlers()).forEach(rootLogger::removeHandler);
 
 		this.consoleHandler = new ConsoleHandler();
-		this.consoleHandler.setFormatter(new LogFormatter());
+		this.consoleHandler.setFormatter(new LogFormatter(true));
 
 		this.fileHandlerMap = new HashMap<>();
 
@@ -40,13 +41,13 @@ public class LogService {
 	}
 
 
-	public static SimpleLog getLogger(String loggerName) {
+	public static ISimpleLog getLogger(String loggerName) {
 		synchronized (INSTANCE) {
 			Logger logger = Logger.getLogger(loggerName);
 			return new SimpleLogImpl(logger);
 		}
 	}
-	public static SimpleLog getLogger(Class<?> clazz) {
+	public static ISimpleLog getLogger(Class<?> clazz) {
 		return getLogger(clazz.getName());
 	}
 
@@ -59,31 +60,27 @@ public class LogService {
 	public static void enableConsole(Level level) {
 		synchronized (INSTANCE) {
 			if(!INSTANCE.consoleEnabled) {
-				INSTANCE.rootLogger.addHandler(INSTANCE.consoleHandler);
 				INSTANCE.consoleEnabled = true;
+				INSTANCE.rootLogger.addHandler(INSTANCE.consoleHandler);
 			}
 			INSTANCE.consoleHandler.setLevel(level);
 		}
 	}
-	public static void disableConsole(Level level) {
+
+	public static void setConsoleLevel(Level level) {
 		synchronized (INSTANCE) {
-			if(INSTANCE.consoleEnabled) {
-				INSTANCE.rootLogger.removeHandler(INSTANCE.consoleHandler);
-				INSTANCE.consoleEnabled = false;
-			}
+			INSTANCE.consoleHandler.setLevel(level);
 		}
 	}
 
 	public static void addFileHandler(Path logFilePath, Level level) throws IOException {
 		synchronized (INSTANCE) {
-			FileHandler fh = INSTANCE.fileHandlerMap.get(logFilePath);
-			if(fh == null) {
-				fh = new FileHandler(logFilePath.toString(), true);
-				fh.setFormatter(new LogFormatter());
-				INSTANCE.fileHandlerMap.put(logFilePath, fh);
-				INSTANCE.rootLogger.addHandler(fh);
-			}
+			Files.createDirectories(logFilePath.getParent());
+			FileHandler fh = new FileHandler(logFilePath.toString(), true);
 			fh.setLevel(level);
+			fh.setFormatter(new LogFormatter(false));
+			INSTANCE.fileHandlerMap.put(logFilePath, fh);
+			INSTANCE.rootLogger.addHandler(fh);
 		}
 	}
 

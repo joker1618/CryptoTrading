@@ -1,12 +1,10 @@
-package com.fede.app.crypto.trading.facade;
+package com.fede.app.crypto.trading.kraken;
 
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
 import com.fede.app.crypto.trading.model._trading.AddOrderIn;
 import com.fede.app.crypto.trading.model._trading.AddOrderOut;
-import com.fede.app.crypto.trading.parser.JsonToModel;
 import com.fede.app.crypto.trading.util.Utils;
-import edu.self.kraken.api.KrakenApi;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -21,12 +19,8 @@ import java.util.*;
 public class KrakenCallerImpl implements IKrakenCaller {
 
 	private final KrakenApi krakenApi;
-	private final String krakenKey;
-	private final String krakenSecret;
 
 	public KrakenCallerImpl(String krakenKey, String krakenSecret) {
-		this.krakenKey = krakenKey;
-		this.krakenSecret = krakenSecret;
 		this.krakenApi = new KrakenApi();
 		this.krakenApi.setKey(krakenKey);
 		this.krakenApi.setSecret(krakenSecret);
@@ -34,21 +28,22 @@ public class KrakenCallerImpl implements IKrakenCaller {
 
 	@Override
 	public Long getServerTime() throws IOException {
-		String json = krakenApi.queryPublic(KrakenApi.Method.TIME);
+		String json = krakenApi.queryPublic(ApiMethod.TIME);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseServerTime();
 	}
 
 	@Override
 	public List<Asset> getAssets() throws IOException {
-		String json = krakenApi.queryPublic(KrakenApi.Method.ASSETS);
+		long callTime = System.currentTimeMillis();
+		String json = krakenApi.queryPublic(ApiMethod.ASSETS);
 		JsonToModel jm = new JsonToModel(json);
-		return jm.parseAssets();
+		return jm.parseAssets(callTime);
 	}
 
 	@Override
 	public List<AssetPair> getAssetPairs() throws IOException {
-		String json = krakenApi.queryPublic(KrakenApi.Method.ASSET_PAIRS);
+		String json = krakenApi.queryPublic(ApiMethod.ASSET_PAIRS);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseAssetPairs();
 	}
@@ -58,7 +53,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", Utils.join(pairNames));
 		long callTime = System.currentTimeMillis();
-		String json = krakenApi.queryPublic(KrakenApi.Method.TICKER, apiParams);
+		String json = krakenApi.queryPublic(ApiMethod.TICKER, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseTickers(callTime);
 	}
@@ -70,7 +65,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		if(since > 0) {
 			apiParams.put("since", String.valueOf(since));
 		}
-		String json = krakenApi.queryPublic(KrakenApi.Method.OHLC, apiParams);
+		String json = krakenApi.queryPublic(ApiMethod.OHLC, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOhlcs(pairName);
 	}
@@ -79,7 +74,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 	public List<MarketOrder> getOrderBook(String pairName) throws IOException {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", pairName);
-		String json = krakenApi.queryPublic(KrakenApi.Method.DEPTH, apiParams);
+		String json = krakenApi.queryPublic(ApiMethod.DEPTH, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOrderBook(pairName);
 	}
@@ -91,7 +86,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		if(since > 0) {
 			apiParams.put("since", String.valueOf(since));
 		}
-		String json = krakenApi.queryPublic(KrakenApi.Method.TRADES, apiParams);
+		String json = krakenApi.queryPublic(ApiMethod.TRADES, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseRecentTrades(pairName);
 	}
@@ -103,7 +98,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		if(since > 0) {
 			apiParams.put("since", String.valueOf(since));
 		}
-		String json = krakenApi.queryPublic(KrakenApi.Method.SPREAD, apiParams);
+		String json = krakenApi.queryPublic(ApiMethod.SPREAD, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseSpreadData(pairName);
 	}
@@ -111,7 +106,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 	@Override
 	public List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		long callTime = System.currentTimeMillis();
-		String json = krakenApi.queryPrivate(KrakenApi.Method.BALANCE);
+		String json = krakenApi.queryPrivate(ApiMethod.BALANCE);
 		System.out.println(json);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseAccountBalance(callTime);
@@ -124,7 +119,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 			apiParams.put("asset", baseAsset);
 		}
 		long callTime = System.currentTimeMillis();
-		String json = krakenApi.queryPrivate(KrakenApi.Method.TRADE_BALANCE, apiParams);
+		String json = krakenApi.queryPrivate(ApiMethod.TRADE_BALANCE, apiParams);
 		System.out.println(json);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseTradeBalance(callTime);
@@ -136,7 +131,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		if(includeTrades) {
 			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
 		}
-		String json = krakenApi.queryPrivate(KrakenApi.Method.OPEN_ORDERS, apiParams);
+		String json = krakenApi.queryPrivate(ApiMethod.OPEN_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOpenOrders();
 	}
@@ -147,7 +142,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		if(includeTrades) {
 			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
 		}
-		String json = krakenApi.queryPrivate(KrakenApi.Method.CLOSED_ORDERS, apiParams);
+		String json = krakenApi.queryPrivate(ApiMethod.CLOSED_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseClosedOrders();
 	}
@@ -159,7 +154,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		if(includeTrades) {
 			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
 		}
-		String json = krakenApi.queryPrivate(KrakenApi.Method.QUERY_ORDERS, apiParams);
+		String json = krakenApi.queryPrivate(ApiMethod.QUERY_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOrdersInfo();
 	}
@@ -178,12 +173,12 @@ public class KrakenCallerImpl implements IKrakenCaller {
 	@Override
 	public List<LedgerInfo> getLedgersInfo(Collection<String> ledgerIDs) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
 		Map<String, String> apiParams = new HashMap<>();
-		KrakenApi.Method kmethod;
+		ApiMethod kmethod;
 		if(!ledgerIDs.isEmpty()) {
 			apiParams.put("id", Utils.join(ledgerIDs, ","));
-			kmethod = KrakenApi.Method.QUERY_LEDGERS;
+			kmethod = ApiMethod.QUERY_LEDGERS;
 		} else {
-			kmethod = KrakenApi.Method.LEDGERS;
+			kmethod = ApiMethod.LEDGERS;
 		}
 		String json = krakenApi.queryPrivate(kmethod, apiParams);
 		JsonToModel jm = new JsonToModel(json);
@@ -195,7 +190,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", Utils.join(assetPairs, ","));
 		apiParams.put("fee-info", "true");
-		String json = krakenApi.queryPrivate(KrakenApi.Method.TRADE_VOLUME, apiParams);
+		String json = krakenApi.queryPrivate(ApiMethod.TRADE_VOLUME, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseTradeVolume();
 	}
@@ -229,7 +224,7 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		if(orderRequest.isValidate()) {
 			apiParams.put("validate", "yes");
 		}
-		String json = krakenApi.queryPrivate(KrakenApi.Method.ADD_ORDER, apiParams);
+		String json = krakenApi.queryPrivate(ApiMethod.ADD_ORDER, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOrderOut();
 	}

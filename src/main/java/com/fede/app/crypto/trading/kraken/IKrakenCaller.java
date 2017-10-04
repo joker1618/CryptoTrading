@@ -1,4 +1,4 @@
-package com.fede.app.crypto.trading.facade;
+package com.fede.app.crypto.trading.kraken;
 
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;

@@ -1,12 +1,10 @@
 package com.fede.app;
 
 import com.fede.app.crypto.trading.common.Const;
-import com.fede.app.crypto.trading.facade.IKrakenCaller;
-import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
+import com.fede.app.crypto.trading.kraken.IKrakenCaller;
+import com.fede.app.crypto.trading.kraken.KrakenCallerImpl;
 import com.fede.app.crypto.trading.model._public.Ticker;
 import com.fede.app.crypto.trading.util.DateUtils;
-import com.fede.app.crypto.trading.util.StrUtils;
-import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.BeforeClass;
@@ -15,7 +13,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -38,8 +35,8 @@ public class CryptoTradingTest {
 	@Test
 	public void testWithSleep() throws IOException, InterruptedException {
 		ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
-		ScheduledFuture<?> scheduledFuture = executor.scheduleAtFixedRate(downloadTickersRunnable(), 5, 10, TimeUnit.SECONDS);
-		while(!scheduledFuture.isCancelled()) {
+		ScheduledFuture<?> scheduledFuture = executor.scheduleAtFixedRate(downloadTickersRunnable(), 1, 5, TimeUnit.SECONDS);
+		while(!executor.isTerminated()) {
 			Thread.sleep(1000);
 		}
 		out.println("END");
@@ -50,7 +47,8 @@ public class CryptoTradingTest {
 			long start = System.currentTimeMillis();
 			printOut("%s\tStart downloading tickers", DateUtils.toString(start, "HH:mm:ss.SSS"));
 			try {
-				List<Ticker> tickers = krakenCaller.getTickers(Arrays.asList("XXBTZEUR", "XXBTZUSD", "BCHEUR", "BCHUSD", "EOSETH", "EOSXBT"));
+				List<Ticker> tickers = krakenCaller.getTickers(Arrays.asList("XXBTZEUR"));
+//				List<Ticker> tickers = krakenCaller.getTickers(Arrays.asList("XXBTZEUR", "XXBTZUSD", "BCHEUR", "BCHUSD", "EOSETH", "EOSXBT"));
 				long end = System.currentTimeMillis();
 				printOut(tickers, "Tickers", start, end);
 			} catch (IOException e) {
@@ -68,7 +66,7 @@ public class CryptoTradingTest {
 			String s = ToStringBuilder.reflectionToString(elem, ToStringStyle.SHORT_PREFIX_STYLE);
 			printOut(s);
 		});
-		printOut("\nElapsed: %.3f sec", ((double)(endtm-starttm)/1000));
-		printOut("%s\t%s downloaded in %.3f sec", DateUtils.toString(endtm, "HH:mm:ss.SSS"), str, ((double)(endtm-starttm)/1000d));
+		printOut("Elapsed: %.3f sec", ((double)(endtm-starttm)/1000));
+		printOut("%s\t%s downloaded in %.3f sec\n", DateUtils.toString(endtm, "HH:mm:ss.SSS"), str, ((double)(endtm-starttm)/1000d));
 	}
 }

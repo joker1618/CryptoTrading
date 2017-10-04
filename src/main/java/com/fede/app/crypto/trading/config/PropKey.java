@@ -8,6 +8,8 @@ class PropKey {
 	static final String API_KEY = "kraken.api.key";
 	static final String API_SECRET = "kraken.api.secret";
 
+	static final String BASE_FOLDER = "kraken.run.base.folder";
+
 	static final String RUN_DB_ENABLED = "kraken.run.dao.db.enabled";
 
 	static final String CALL_FIRST_DAY_START_ASSETS = "kraken.run.call.first.dayStart.assets";
@@ -16,7 +18,6 @@ class PropKey {
 	static final String CALL_RATE_ASSET_PAIRS = "kraken.run.call.rate.seconds.assetPairs";
 	static final String CALL_RATE_TICKERS = "kraken.run.call.rate.seconds.tickers";
 	static final String CALL_RATE_SPREAD_DATA = "kraken.run.call.rate.seconds.spreadData";
-
 
 	static final String DB_URL = "kraken.dao.db.URL";
 	static final String DB_USERNAME = "kraken.dao.db.username";
@@ -29,6 +30,8 @@ class PropKey {
 	static final String CSV_FILENAME_SPREAD_DATA = "kraken.dao.csv.spreadData.filename";
 	static final String CSV_FILENAME_ACCOUNT_BALANCE = "kraken.dao.csv.accountBalance.filename";
 
+	static final String LOGS_FOLDER = "kraken.logs.folder";
+	static final String LOGS_CONSOLE_LEVEL = "kraken.logs.console.level";
 
 
 

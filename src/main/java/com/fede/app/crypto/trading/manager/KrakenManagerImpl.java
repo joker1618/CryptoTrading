@@ -1,9 +1,9 @@
 package com.fede.app.crypto.trading.manager;
 
 import com.fede.app.crypto.trading.common.Const;
-import com.fede.app.crypto.trading.facade.IKrakenCaller;
+import com.fede.app.crypto.trading.kraken.IKrakenCaller;
 import com.fede.app.crypto.trading.facade.IKrakenProvider;
-import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
+import com.fede.app.crypto.trading.kraken.KrakenCallerImpl;
 import com.fede.app.crypto.trading.facade.KrakenProviderImpl;
 import com.fede.app.crypto.trading.model._private.AccountBalance;
 import com.fede.app.crypto.trading.model._private.ClosedOrder;

@@ -313,7 +313,7 @@ public class FileUtils {
 		}
 
 		Path outPath = Paths.get(newPath);
-		moveFile(targetPath, outPath, false);
+		moveFileSafely(targetPath, outPath);
 		return outPath;
 	}
 

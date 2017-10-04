@@ -1,8 +1,8 @@
 package com.fede.app.launcher;
 
 import com.fede.app.crypto.trading.common.Const;
-import com.fede.app.crypto.trading.facade.IKrakenCaller;
-import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
+import com.fede.app.crypto.trading.kraken.IKrakenCaller;
+import com.fede.app.crypto.trading.kraken.KrakenCallerImpl;
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
 import com.fede.app.crypto.trading.util.DateUtils;
@@ -18,9 +18,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
@@ -41,7 +39,8 @@ public class SingleCall {
 		long starttm = System.currentTimeMillis();
 		Long serverTime = krakenCaller.getServerTime();
 		long endtm = System.currentTimeMillis();
-		printOut(serverTime+"");
+		printOut("Call time:   %d", starttm);
+		printOut("Server time: %d", serverTime);
 		printOut(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS").format(DateUtils.fromMillis(serverTime)));
 		printOut("\nElapsed: %.3f sec", ((double)(endtm-starttm)/1000));
 	}

@@ -3,7 +3,7 @@ package com.fede.app.crypto.trading.logger;
 /**
  * Created by f.barbano on 01/10/2017.
  */
-public interface SimpleLog {
+public interface ISimpleLog {
 
 	void error(String mex, Object... params);
 	void warning(String mex, Object... params);

@@ -12,6 +12,7 @@ public class Const {
 
 	public static final Path CONFIG_FILEPATH = Paths.get("config/config.properties");
 
+	public static final String JDBC_DRIVER_CLASS = "com.mysql.jdbc.Driver";
 
 
 

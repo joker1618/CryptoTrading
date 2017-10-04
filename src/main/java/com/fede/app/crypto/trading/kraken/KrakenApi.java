@@ -1,4 +1,4 @@
-package edu.self.kraken.api;
+package com.fede.app.crypto.trading.kraken;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author nyg
  */
-public class KrakenApi {
+class KrakenApi {
     
     private static final String OTP = "otp";
     private static final String NONCE = "nonce";
@@ -32,7 +32,7 @@ public class KrakenApi {
      * @throws IllegalArgumentException if the API method is null
      * @throws IOException if the request could not be created or executed
      */
-    public String queryPublic(Method method, Map<String, String> parameters) throws IOException {
+    public String queryPublic(ApiMethod method, Map<String, String> parameters) throws IOException {
 
         ApiRequest request = new ApiRequest();
         request.setMethod(method);
@@ -51,7 +51,7 @@ public class KrakenApi {
      * @return the API response
      * @throws IOException if the request could not be created or executed
      */
-    public String queryPublic(Method method) throws IOException {
+    public String queryPublic(ApiMethod method) throws IOException {
         return queryPublic(method, null);
     }
 
@@ -67,7 +67,7 @@ public class KrakenApi {
      *         could not be found
      * @throws InvalidKeyException if the HMAC key is invalid
      */
-    public String queryPrivate(Method method, String otp, Map<String, String> parameters) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String queryPrivate(ApiMethod method, String otp, Map<String, String> parameters) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 
         ApiRequest request = new ApiRequest();
         request.setKey(key);
@@ -107,23 +107,23 @@ public class KrakenApi {
     }
 
     /**
-     * @see #queryPrivate(Method, String, Map)
+     * @see #queryPrivate(ApiMethod, String, Map)
      */
-    public String queryPrivate(Method method) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+    public String queryPrivate(ApiMethod method) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         return queryPrivate(method, null, null);
     }
 
     /**
-     * @see #queryPrivate(Method, String, Map)
+     * @see #queryPrivate(ApiMethod, String, Map)
      */
-    public String queryPrivate(Method method, String otp) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+    public String queryPrivate(ApiMethod method, String otp) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         return queryPrivate(method, otp, null);
     }
 
     /**
-     * @see #queryPrivate(Method, String, Map)
+     * @see #queryPrivate(ApiMethod, String, Map)
      */
-    public String queryPrivate(Method method, Map<String, String> parameters) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+    public String queryPrivate(ApiMethod method, Map<String, String> parameters) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         return queryPrivate(method, null, parameters);
     }
 
@@ -145,51 +145,4 @@ public class KrakenApi {
         this.secret = secret;
     }
 
-    /**
-     * Represents an API method.
-     *
-     * @author nyg
-     */
-    public enum Method {
-
-        /* Public methods */
-        TIME("Time", true),
-        ASSETS("Assets", true),
-        ASSET_PAIRS("AssetPairs", true),
-        TICKER("Ticker", true),
-        OHLC("OHLC", true),
-        DEPTH("Depth", true),
-        TRADES("Trades", true),
-        SPREAD("Spread", true),
-
-        /* Private methods */
-        BALANCE("Balance", false),
-        TRADE_BALANCE("TradeBalance", false),
-        OPEN_ORDERS("OpenOrders", false),
-        CLOSED_ORDERS("ClosedOrders", false),
-        QUERY_ORDERS("QueryOrders", false),
-        TRADES_HISTORY("TradesHistory", false),
-        QUERY_TRADES("QueryTrades", false),
-        OPEN_POSITIONS("OpenPositions", false),
-        LEDGERS("Ledgers", false),
-        QUERY_LEDGERS("QueryLedgers", false),
-        TRADE_VOLUME("TradeVolume", false),
-        ADD_ORDER("AddOrder", false),
-        CANCEL_ORDER("CancelOrder", false),
-        DEPOSIT_METHODS("DepositMethods", false),
-        DEPOSIT_ADDRESSES("DepositAddresses", false),
-        DEPOSIT_STATUS("DepositStatus", false),
-        WITHDRAW_INFO("WithdrawInfo", false),
-        WITHDRAW("Withdraw", false),
-        WITHDRAW_STATUS("WithdrawStatus", false),
-        WITHDRAW_CANCEL("WithdrawCancel", false),;
-
-        public final String name;
-        public final boolean isPublic;
-
-        Method(String name, boolean isPublic) {
-            this.name = name;
-            this.isPublic = isPublic;
-        }
-    }
 }
