@@ -1,7 +1,6 @@
 package com.fede.app.crypto.trading.util;
 
-import com.fede.app.crypto.trading.common.Const;
-
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -43,26 +42,48 @@ public class Utils {
 	public static LocalDateTime fromMillis(long millis) {
 		return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
-	public static String toString(long sec, String pattern) {
-		return toString(fromSeconds(sec), pattern);
+	public static String toString(long millis, String pattern) {
+		return toString(fromMillis(millis), pattern);
 	}
 	public static String toString(LocalDateTime ldt, String pattern) {
 		return DateTimeFormatter.ofPattern(pattern).format(ldt);
 	}
 
-	public static String toString(double d) {
-		synchronized (Const.NUMBER_FORMAT) {
-			return Const.NUMBER_FORMAT.format(d);
+	public static String toString(Double d) {
+		if(d == null)	return "-";
+		return getNumberFormat().format(d);
+	}
+	public static String toString(Integer num) {
+		if(num == null)	return "-";
+		return String.valueOf(num);
+	}
+	public static String toString(Long num) {
+		if(num == null)	return "-";
+		return String.valueOf(num);
+	}
+	public static Double toDouble(String str) {
+		if(str.equals("-"))	return null;
+
+		try {
+			return getNumberFormat().parse(str).doubleValue();
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
 		}
 	}
-	public static double toDouble(String str) {
-		synchronized (Const.NUMBER_FORMAT) {
-			try {
-				return Const.NUMBER_FORMAT.parse(str).doubleValue();
-			} catch (ParseException e) {
-				throw new RuntimeException(e);
-			}
-		}
+	public static Integer toInteger(String str) {
+		if(str.equals("-"))	return null;
+		return Integer.parseInt(str);
+	}
+	public static Long toLong(String str) {
+		if(str.equals("-"))	return null;
+		return Long.parseLong(str);
+	}
+	private static NumberFormat getNumberFormat() {
+		NumberFormat nf = NumberFormat.getNumberInstance(Locale.ENGLISH);
+		nf.setMinimumFractionDigits(1);
+		nf.setMaximumFractionDigits(12);
+		nf.setGroupingUsed(false);
+		return nf;
 	}
 
 	public static <V,K> Map<K,V> toMapSingle(Collection<V> source, Function<V,K> keyMapper) {

@@ -34,6 +34,14 @@
             <version>3.5</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.44</version>
+        </dependency>
+
+
         <!-- TEST -->
         <dependency>
             <groupId>junit</groupId>

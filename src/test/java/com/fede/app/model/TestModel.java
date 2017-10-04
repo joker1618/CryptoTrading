@@ -1,6 +1,6 @@
 package com.fede.app.model;
 
-import com.fede.app.crypto.trading.util.Utils;
+import com.fede.app.crypto.trading.parser.JsonToModel;
 import edu.self.kraken.api.KrakenApi;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,10 +30,9 @@ public class TestModel {
 	}
 
 	@Test
-	public void t() {
-		double v = Utils.toDouble("1505557371.1273");
-		out.println(v);
-		out.println((long)(v*1000));
+	public void testGetServerTime() throws IOException {
+		String response = api.queryPublic(KrakenApi.Method.TIME);
+		out.println(response);
 	}
 
 	/**
@@ -61,16 +61,26 @@ public class TestModel {
 	@Test
 	public void testGetAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
+		long callTime = System.currentTimeMillis();
 		String response = api.queryPrivate(KrakenApi.Method.BALANCE);
 		out.println(response);
-
+		JsonToModel jm = new JsonToModel(response);
+		jm.parseAccountBalance(callTime);
 	}
 
 	@Test
-	public void testGetTradeBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
-		Map<String, String> params = new HashMap<>();
-		String response = api.queryPrivate(KrakenApi.Method.TRADE_BALANCE);
-		out.println(response);
+	public void testGetTradeBalance()  {
+		Arrays.asList("BCH","DASH","EOS","GNO","KFEE","USDT","XDAO","XETC","XETH","XICN","XLTC","XMLN","XNMC","XREP","XXBT","XXDG","XXLM","XXMR","XXRP","XXVN","XZEC","ZCAD","ZEUR","ZGBP","ZJPY","ZKRW","ZUSD")
+			.forEach(asset -> {
+			try {
+				Map<String, String> params = new HashMap<>();
+				params.put("asset", asset);
+				String response = api.queryPrivate(KrakenApi.Method.TRADE_BALANCE, params);
+				out.println(String.format("%-6s%s", asset, response));
+			} catch(IOException | NoSuchAlgorithmException | InvalidKeyException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
 
 	}
 
@@ -79,13 +89,17 @@ public class TestModel {
 		Map<String, String> params = new HashMap<>();
 		String response = api.queryPrivate(KrakenApi.Method.OPEN_ORDERS);
 		out.println(response);
+		params.put("trades", "true");
+		response = api.queryPrivate(KrakenApi.Method.OPEN_ORDERS, params);
+		out.println(response);
 
-	}
+	}                                                                                                              	
 
 	@Test
 	public void testGetClosedOrders() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
-		String response = api.queryPrivate(KrakenApi.Method.CLOSED_ORDERS);
+		params.put("trades", "true");
+		String response = api.queryPrivate(KrakenApi.Method.CLOSED_ORDERS, params);
 		out.println(response);
 
 	}
@@ -93,7 +107,8 @@ public class TestModel {
 	@Test
 	public void testQueryOrdersInfo() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
-		params.put("txid", "O7FEMB-64FHC-UAPV77");  // transaction ID
+		params.put("txid", "O7FEMB-64FHC-UAPV77,OWXP77-XN33Z-YDODPJ");  // transaction ID  mandatory
+		params.put("trades", "true");
 		String response = api.queryPrivate(KrakenApi.Method.QUERY_ORDERS, params);
 		out.println(response);
 
@@ -102,6 +117,7 @@ public class TestModel {
 	@Test
 	public void testGetTradesHistory() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
+		params.put("trades", "true");  
 		String response = api.queryPrivate(KrakenApi.Method.TRADES_HISTORY);
 		out.println(response);
 
@@ -110,8 +126,9 @@ public class TestModel {
 	@Test
 	public void testQueryTradesInfo() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
-		params.put("txid", "TCPR7S-MCSPU-LBNXD6");		// trade id
-		String response = api.queryPrivate(KrakenApi.Method.QUERY_TRADES);
+		params.put("trades", "true");
+		params.put("txid", "TJPSMJ-OQ7AL-BEE5DK");		// trade id
+		String response = api.queryPrivate(KrakenApi.Method.QUERY_TRADES, params);
 		out.println(response);
 
 	}
@@ -119,8 +136,9 @@ public class TestModel {
 	@Test
 	public void testGetOpenPositions() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
-//		params.put("txid", "TCPR7S-MCSPU-LBNXD6");		// trade id
-		String response = api.queryPrivate(KrakenApi.Method.OPEN_POSITIONS);
+//		params.put("txid", "TCPR7S-MCSPU-LBNXD6");		// tx id    optional
+		params.put("docalcs", "true");     	// profit/loss calculations (optional. default = false)
+		String response = api.queryPrivate(KrakenApi.Method.OPEN_POSITIONS, params);
 		out.println(response);
 
 	}
@@ -137,9 +155,10 @@ public class TestModel {
 	@Test
 	public void testGetTradesVolume() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		Map<String, String> params = new HashMap<>();
-//		params.put("pair", "ZUSD");
-		params.put("fee-info", "yes");
-		String response = api.queryPrivate(KrakenApi.Method.TRADE_VOLUME);
+		// use pair and fee-info togheter to retrieve fee info
+		params.put("pair", "XXBTZEUR,XXBTZUSD");
+		params.put("fee-info", "true");
+		String response = api.queryPrivate(KrakenApi.Method.TRADE_VOLUME, params);
 		out.println(response);
 
 	}
