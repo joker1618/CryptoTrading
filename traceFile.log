@@ -1,0 +1,5 @@
+{"error":[],"result":{"descr":{"order":"sell 1.00000000 LTCEUR @ limit 120.00"},"txid":["OLHO5T-7V3JG-UOB2SO"]}}
+{"error":[],"result":{"count":1}}
+{"error":[],"result":{"descr":{"order":"sell 1.00000000 LTCEUR @ limit 120.00"},"txid":["OPAB6E-GOK2J-UDQCO7"]}}
+{"error":[],"result":{"count":1}}
+{"error":["EOrder:Insufficient funds"]}
