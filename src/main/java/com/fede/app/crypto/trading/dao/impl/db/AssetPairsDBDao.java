@@ -56,12 +56,15 @@ public class AssetPairsDBDao extends AbstractDBDao implements IAssetPairsDao {
 			inquiryTableAssetPairsFee(map);
 			inquiryTableAssetPairsLeverage(map);
 		}
-		return new ArrayList<>(map.values());
+		List<AssetPair> toRet = new ArrayList<>(map.values());
+		toRet.sort(Comparator.comparing(AssetPair::getPairName));
+		return toRet;
 	}
 
 	@Override
 	public void persistNewAssetPairs(Long callTime, List<AssetPair> newAssetPairs) {
 		List<AssetPair> actuals = getAssetPairs();
+
 		if(!actuals.equals(newAssetPairs)) {
 			logger.info("New asset pairs downloaded!");
 
@@ -76,7 +79,7 @@ public class AssetPairsDBDao extends AbstractDBDao implements IAssetPairsDao {
 			insertFeesAndLeverage(apMap, newAssetPairs);
 
 		} else {
-			logger.info("Assets downloaded are equals to the assets saved in DB: insert query not performed.");
+			logger.info("Asset pairs downloaded are equals to the assets saved in DB: insert query not performed.");
 		}
 	}
 

@@ -57,14 +57,13 @@ public class KrakenEngine {
 
 		// Before start, assets and assetPairs must be downloaded
 		// If kraken call fails, fallback to database data, if any
-//		retrieveAssetList();
+		retrieveAssetList();
 		retrieveAssetPairList();
 
-		if(1 == 1)	return ;
-		
 		// Now schedule fixed rate tasks (i.e. public calls to repeat)
 		LocalDateTime nextDayStart = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIDNIGHT);
 		long delay = (DateUtils.toMillis(nextDayStart) - System.currentTimeMillis()) / 1000L;
+		delay = 5L;
 
 		ScheduledExecutorService executorPublic = Executors.newScheduledThreadPool(4);
 		executorPublic.scheduleAtFixedRate(this::retrieveAssetList, delay, config.getCallSecondsRateAssets(), TimeUnit.SECONDS);

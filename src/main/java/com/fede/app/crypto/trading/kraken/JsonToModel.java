@@ -64,7 +64,7 @@ class JsonToModel {
 			asset.setDisplayDecimals(getInt(jsonAsset, "display_decimals"));
 			assetList.add(asset);
 		}
-
+		Collections.sort(assetList, Comparator.comparing(Asset::getAssetName));
 		return assetList;
 	}
 
@@ -92,6 +92,7 @@ class JsonToModel {
 			pair.setMarginStop(getInt(jsonPair, "margin_stop"));
 			assetPairs.add(pair);
 		}
+		Collections.sort(assetPairs, Comparator.comparing(AssetPair::getPairName));
 		return assetPairs;
 	}
 
@@ -342,6 +343,7 @@ class JsonToModel {
 				toRet.add(new FeeSchedule(vol, perc));
 			});
 		}
+		Collections.sort(toRet, Comparator.comparingInt(FeeSchedule::getVolume));
 		return toRet;
 	}
 
@@ -506,6 +508,8 @@ class JsonToModel {
 		return toRet;
 	}
 	private List<Integer> getArrayInt(JsonObject jObj, String key) {
-		return Utils.map(getArrayString(jObj, key), Integer::parseInt);
+		List<Integer> intList = Utils.map(getArrayString(jObj, key), Integer::parseInt);
+		Collections.sort(intList);
+		return intList;
 	}
 }
