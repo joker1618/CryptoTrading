@@ -4,10 +4,11 @@ import com.fede.app.crypto.trading.common.Const;
 import com.fede.app.crypto.trading.config.IKrakenConfig;
 import com.fede.app.crypto.trading.config.KrakenConfigImpl;
 import com.fede.app.crypto.trading.dao.impl.csv.AssetsCsvDao;
+import com.fede.app.crypto.trading.dao.impl.db.AssetPairsDBDao;
 import com.fede.app.crypto.trading.dao.impl.db.AssetsDBDao;
 import com.fede.app.crypto.trading.exception.TechnicalException;
-import com.fede.app.crypto.trading.kraken.IKrakenCaller;
-import com.fede.app.crypto.trading.kraken.KrakenCallerImpl;
+import com.fede.app.crypto.trading.kraken.IKrakenFacade;
+import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,12 +26,11 @@ public class KrakenRepoFactory {
 		if(config.isDBEnabled()) {
 			Connection conn = createDBConnection(config.getDBUrl(), config.getDBUsername(), config.getDBPassword());
 			krakenRepo.setAssetDao(new AssetsDBDao(conn));
+			krakenRepo.setAssetPairsDao(new AssetPairsDBDao(conn));
 		} else {
 			krakenRepo.setAssetDao(new AssetsCsvDao(config.getCsvPathAssets()));
 		}
 
-		IKrakenCaller krakenCaller = new KrakenCallerImpl(config.getKrakenApiKey(), config.getKrakenApiSecret());
-		krakenRepo.setKrakenCaller(krakenCaller);
 
 		return krakenRepo;
 	}

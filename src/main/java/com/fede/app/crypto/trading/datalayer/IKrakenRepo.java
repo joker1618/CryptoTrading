@@ -1,6 +1,7 @@
 package com.fede.app.crypto.trading.datalayer;
 
 import com.fede.app.crypto.trading.model._public.Asset;
+import com.fede.app.crypto.trading.model._public.AssetPair;
 
 import java.util.List;
 
@@ -10,7 +11,10 @@ import java.util.List;
 public interface IKrakenRepo {
 
 	List<Asset> getAssets();
-	List<Asset> getAssets(boolean forceCall);
+	void persistNewAssets(Long callTime, List<Asset> assets);
+
+	List<AssetPair> getAssetPairs();
+	void persistNewAssetPairs(Long callTime, List<AssetPair> assetPairs);
 
 
 }

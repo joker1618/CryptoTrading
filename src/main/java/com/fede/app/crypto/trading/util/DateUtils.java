@@ -16,6 +16,11 @@ public class DateUtils {
 	public static LocalDateTime fromMillis(long millis) {
 		return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
+
+	public static long toMillis(LocalDateTime ldt) {
+		return ldt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+	}
+
 	public static String toString(long millis, String pattern) {
 		return toString(fromMillis(millis), pattern);
 	}

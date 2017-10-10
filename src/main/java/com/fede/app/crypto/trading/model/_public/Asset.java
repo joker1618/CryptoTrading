@@ -7,7 +7,6 @@ package com.fede.app.crypto.trading.model._public;
  */
 public class Asset {
 
-	private Long callTime;
 	private String assetName;
 	private String aClass;
 	private String altName;
@@ -43,12 +42,6 @@ public class Asset {
 		return assetName;
 	}
 
-	public Long getCallTime() {
-		return callTime;
-	}
-	public void setCallTime(Long callTime) {
-		this.callTime = callTime;
-	}
 	public String getAssetName() {
 		return assetName;
 	}
@@ -67,12 +60,6 @@ public class Asset {
 	public void setAltName(String altName) {
 		this.altName = altName;
 	} 
-	public String getaClass() {
-		return aClass;
-	} 
-	public void setaClass(String aClass) {
-		this.aClass = aClass;
-	} 
 	public Integer getDecimals() {
 		return decimals;
 	} 
@@ -85,4 +72,5 @@ public class Asset {
 	public void setDisplayDecimals(Integer displayDecimals) {
 		this.displayDecimals = displayDecimals;
 	}
+
 }

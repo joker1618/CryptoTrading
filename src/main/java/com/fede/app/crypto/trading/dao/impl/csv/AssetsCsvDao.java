@@ -22,4 +22,9 @@ public class AssetsCsvDao implements IAssetsDao {
 		// TODO impl
 		return null;
 	}
+
+	@Override
+	public void persistNewAssets(Long callTime, List<Asset> newAssets) {
+		// TODO impl
+	}
 }

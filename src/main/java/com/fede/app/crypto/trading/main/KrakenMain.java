@@ -7,6 +7,7 @@ import com.fede.app.crypto.trading.logger.LogService;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by f.barbano on 01/10/2017.
@@ -24,7 +25,13 @@ public class KrakenMain {
 		LogService.addFileHandler(config.getLogPathAll(), Level.ALL);
 		LogService.addFileHandler(config.getLogPathErrors(), Level.SEVERE);
 
+		Logger.getLogger("").setLevel(Level.OFF);
+		Logger.getLogger("com.fede").setLevel(Level.ALL);
+
 		logger.config("\n%s", config);
+
+		KrakenEngine engine = new KrakenEngine();
+		engine.startKrakenEngine();
 
 	}
 

@@ -12,8 +12,6 @@ class PropKey {
 
 	static final String RUN_DB_ENABLED = "kraken.run.dao.db.enabled";
 
-	static final String CALL_FIRST_DAY_START_ASSETS = "kraken.run.call.first.dayStart.assets";
-	static final String CALL_FIRST_DAY_START_ASSET_PAIRS = "kraken.run.call.first.dayStart.assetPairs";
 	static final String CALL_RATE_ASSETS = "kraken.run.call.rate.seconds.assets";
 	static final String CALL_RATE_ASSET_PAIRS = "kraken.run.call.rate.seconds.assetPairs";
 	static final String CALL_RATE_TICKERS = "kraken.run.call.rate.seconds.tickers";

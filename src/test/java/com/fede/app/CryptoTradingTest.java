@@ -1,8 +1,8 @@
 package com.fede.app;
 
 import com.fede.app.crypto.trading.common.Const;
-import com.fede.app.crypto.trading.kraken.IKrakenCaller;
-import com.fede.app.crypto.trading.kraken.KrakenCallerImpl;
+import com.fede.app.crypto.trading.kraken.IKrakenFacade;
+import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
 import com.fede.app.crypto.trading.model._public.Ticker;
 import com.fede.app.crypto.trading.util.DateUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -24,11 +24,11 @@ import static java.lang.System.out;
  */
 public class CryptoTradingTest {
 
-	private static IKrakenCaller krakenCaller;
+	private static IKrakenFacade krakenCaller;
 
 	@BeforeClass
 	public static void beforeClass() {
-		krakenCaller = new KrakenCallerImpl(Const.KRAKEN_KEY, Const.KRAKEN_SECRET);
+		krakenCaller = new KrakenFacadeImpl(Const.KRAKEN_KEY, Const.KRAKEN_SECRET);
 	}
 
 
@@ -51,7 +51,7 @@ public class CryptoTradingTest {
 //				List<Ticker> tickers = krakenCaller.getTickers(Arrays.asList("XXBTZEUR", "XXBTZUSD", "BCHEUR", "BCHUSD", "EOSETH", "EOSXBT"));
 				long end = System.currentTimeMillis();
 				printOut(tickers, "Tickers", start, end);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
 			}

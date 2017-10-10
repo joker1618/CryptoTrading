@@ -1,9 +1,9 @@
 package com.fede.app.crypto.trading.manager;
 
 import com.fede.app.crypto.trading.common.Const;
-import com.fede.app.crypto.trading.kraken.IKrakenCaller;
+import com.fede.app.crypto.trading.kraken.IKrakenFacade;
 import com.fede.app.crypto.trading.facade.IKrakenProvider;
-import com.fede.app.crypto.trading.kraken.KrakenCallerImpl;
+import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
 import com.fede.app.crypto.trading.facade.KrakenProviderImpl;
 import com.fede.app.crypto.trading.model._private.AccountBalance;
 import com.fede.app.crypto.trading.model._private.ClosedOrder;
@@ -28,7 +28,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 
 	private static final IKrakenManager INSTANCE = new KrakenManagerImpl();
 
-	private final IKrakenCaller krakenCaller;
+	private final IKrakenFacade krakenCaller;
 	private final IKrakenProvider krakenProvider;
 
 	private Map<String, Asset> assetMap;
@@ -37,7 +37,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 
 
 	private KrakenManagerImpl() {
-		this.krakenCaller = new KrakenCallerImpl(Const.KRAKEN_KEY, Const.KRAKEN_SECRET);
+		this.krakenCaller = new KrakenFacadeImpl(Const.KRAKEN_KEY, Const.KRAKEN_SECRET);
 		this.krakenProvider = new KrakenProviderImpl(Const.CSV_FOLDER);
 	}
 
@@ -50,7 +50,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 	public long getServerTime() {
 		try {
 			return krakenCaller.getServerTime();
-		} catch (IOException ex) {
+		} catch (Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
 		}
@@ -77,7 +77,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 
 			return assetMap;
 
-		} catch(IOException ex) {
+		} catch(Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
 		}
@@ -104,7 +104,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 
 			return assetPairMap;
 
-		} catch(IOException ex) {
+		} catch(Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
 		}
@@ -124,7 +124,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 			krakenProvider.persistTickers(tickers);
 			return Utils.toMapSingle(tickers, Ticker::getPairName);
 
-		} catch(IOException ex) {
+		} catch(Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
 		}

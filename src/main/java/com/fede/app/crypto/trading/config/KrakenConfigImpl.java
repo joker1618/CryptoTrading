@@ -91,16 +91,6 @@ public class KrakenConfigImpl implements IKrakenConfig {
 	}
 
 	@Override
-	public synchronized boolean isCallMidnightStartAssets() {
-		return getBoolean(CALL_FIRST_DAY_START_ASSETS);
-	}
-
-	@Override
-	public synchronized boolean isCallMidnightStartAssetPairs() {
-		return getBoolean(CALL_FIRST_DAY_START_ASSET_PAIRS);
-	}
-
-	@Override
 	public synchronized int getCallSecondsRateAssets() {
 		return getInt(CALL_RATE_ASSETS);
 	}
@@ -162,12 +152,12 @@ public class KrakenConfigImpl implements IKrakenConfig {
 
 	@Override
 	public Path getLogPathErrors() {
-		return getPath(LOGS_FOLDER, "errors.log");
+		return getPath(LOGS_FOLDER).resolve("errors.log");
 	}
 
 	@Override
 	public Path getLogPathAll() {
-		return getPath(LOGS_FOLDER, "all.log");
+		return getPath(LOGS_FOLDER).resolve("all.log");
 	}
 
 	@Override
@@ -189,9 +179,12 @@ public class KrakenConfigImpl implements IKrakenConfig {
 	private int getInt(String propKey) {
 		return Integer.parseInt(getString(propKey));
 	}
-	private Path getPath(String folderKey, String filenameKey) {
+	private Path getPath(String key) {
 		Path baseFolder = Paths.get(getString(BASE_FOLDER));
-		Path folder = baseFolder.resolve(getString(folderKey));
+		return baseFolder.resolve(getString(key));
+	}
+	private Path getPath(String folderKey, String filenameKey) {
+		Path folder = getPath(folderKey);
 		return folder.resolve(getString(filenameKey));
 	}
 

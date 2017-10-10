@@ -1,8 +1,8 @@
 package com.fede.app.launcher;
 
 import com.fede.app.crypto.trading.common.Const;
-import com.fede.app.crypto.trading.kraken.IKrakenCaller;
-import com.fede.app.crypto.trading.kraken.KrakenCallerImpl;
+import com.fede.app.crypto.trading.kraken.IKrakenFacade;
+import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
 import com.fede.app.crypto.trading.util.DateUtils;
@@ -27,15 +27,15 @@ import static java.lang.System.out;
  */
 public class SingleCall {
 
-	private static IKrakenCaller krakenCaller;
+	private static IKrakenFacade krakenCaller;
 
 	@BeforeClass
 	public static void beforeClass() {
-		krakenCaller = new KrakenCallerImpl(Const.KRAKEN_KEY, Const.KRAKEN_SECRET);
+		krakenCaller = new KrakenFacadeImpl(Const.KRAKEN_KEY, Const.KRAKEN_SECRET);
 	}
 
 	@Test
-	public void testGetServerTime() throws IOException {
+	public void testGetServerTime() throws Exception {
 		long starttm = System.currentTimeMillis();
 		Long serverTime = krakenCaller.getServerTime();
 		long endtm = System.currentTimeMillis();
@@ -46,7 +46,7 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetAssets() throws IOException {
+	public void testGetAssets() throws Exception {
 		long starttm = System.currentTimeMillis();
 		List<Asset> assets = krakenCaller.getAssets();
 		long endtm = System.currentTimeMillis();
@@ -60,7 +60,7 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetAssetPairs() throws IOException {
+	public void testGetAssetPairs() throws Exception {
 		long starttm = System.currentTimeMillis();
 		List<AssetPair> assetPairs = krakenCaller.getAssetPairs();
 		long endtm = System.currentTimeMillis();
@@ -81,7 +81,7 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetTickers() throws IOException {
+	public void testGetTickers() throws Exception {
 		long starttm = System.currentTimeMillis();
 		List<String> pairs = Arrays.asList("XXBTZEUR,XXBTZUSD");
 		List<Ticker> tickers = krakenCaller.getTickers(pairs);

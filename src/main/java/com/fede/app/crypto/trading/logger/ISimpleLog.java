@@ -5,7 +5,9 @@ package com.fede.app.crypto.trading.logger;
  */
 public interface ISimpleLog {
 
+	void error(Throwable t);
 	void error(String mex, Object... params);
+	void error(Throwable t, String mex, Object... params);
 	void warning(String mex, Object... params);
 	void info(String mex, Object... params);
 	void config(String mex, Object... params);

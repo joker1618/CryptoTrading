@@ -1,5 +1,6 @@
 package com.fede.app.crypto.trading.model._public;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,13 @@ public class AssetPair {
 	private String feeVolumeCurrency;
 	private Integer marginCall;
 	private Integer marginStop;
+
+	public AssetPair() {
+		this.leverageBuy = new ArrayList<>();
+		this.leverageSell = new ArrayList<>();
+		this.fees = new ArrayList<>();
+		this.feesMaker = new ArrayList<>();
+	}
 
 	@Override
 	public boolean equals(Object o) {

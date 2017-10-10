@@ -25,7 +25,10 @@ public class LogService {
 
 
 	private LogService() {
-		this.rootLogger = Logger.getLogger("");
+		Logger.getLogger("").setLevel(Level.OFF);
+
+		this.rootLogger = Logger.getLogger("com.fede.app.crypto.trading");
+		this.rootLogger.setLevel(Level.ALL);
 		this.rootLogger.setUseParentHandlers(false);
 		Arrays.stream(rootLogger.getHandlers()).forEach(rootLogger::removeHandler);
 
@@ -42,10 +45,8 @@ public class LogService {
 
 
 	public static ISimpleLog getLogger(String loggerName) {
-		synchronized (INSTANCE) {
-			Logger logger = Logger.getLogger(loggerName);
-			return new SimpleLogImpl(logger);
-		}
+		Logger logger = Logger.getLogger(loggerName);
+		return new SimpleLogImpl(logger);
 	}
 	public static ISimpleLog getLogger(Class<?> clazz) {
 		return getLogger(clazz.getName());
@@ -63,12 +64,6 @@ public class LogService {
 				INSTANCE.consoleEnabled = true;
 				INSTANCE.rootLogger.addHandler(INSTANCE.consoleHandler);
 			}
-			INSTANCE.consoleHandler.setLevel(level);
-		}
-	}
-
-	public static void setConsoleLevel(Level level) {
-		synchronized (INSTANCE) {
 			INSTANCE.consoleHandler.setLevel(level);
 		}
 	}

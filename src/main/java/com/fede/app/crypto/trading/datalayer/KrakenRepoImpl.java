@@ -1,11 +1,10 @@
 package com.fede.app.crypto.trading.datalayer;
 
+import com.fede.app.crypto.trading.dao.IAssetPairsDao;
 import com.fede.app.crypto.trading.dao.IAssetsDao;
-import com.fede.app.crypto.trading.kraken.IKrakenCaller;
 import com.fede.app.crypto.trading.model._public.Asset;
+import com.fede.app.crypto.trading.model._public.AssetPair;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,57 +13,33 @@ import java.util.List;
 class KrakenRepoImpl implements IKrakenRepo {
 
 	private IAssetsDao assetDao;
-	private IKrakenCaller krakenCaller;
-
-	private List<Asset> assetList = new ArrayList<>();
+	private IAssetPairsDao assetPairsDao;
 
 	@Override
 	public List<Asset> getAssets() {
-		return getAssets(false);
+		return assetDao.getAssets();
 	}
 
 	@Override
-	public List<Asset> getAssets(boolean forceCall) {
-		if(!assetList.isEmpty() && !forceCall) {
-			return assetList;
-		}
-
-
-
-		try {
-			List<Asset> assets = krakenCaller.getAssets();
-//			if(assetList == null)
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+	public void persistNewAssets(Long callTime, List<Asset> assets) {
+		assetDao.persistNewAssets(callTime, assets);
 	}
-	private List<Asset> getAssets11111(boolean forceCall) throws IOException {
-		if(assetList != null && !forceCall) {
-			return assetList;
-		}
 
+	@Override
+	public List<AssetPair> getAssetPairs() {
+		return assetPairsDao.getAssetPairs();
+	}
 
-		List<Asset> daoList = assetDao.getAssets();
-		List<Asset> callList = krakenCaller.getAssets();
-
-		if(daoList.equals(callList)) {
-			assetList = daoList;
-		} else {
-//			sdsd
-		}
-
-
-
-		return null;
+	@Override
+	public void persistNewAssetPairs(Long callTime, List<AssetPair> assetPairs) {
+		assetPairsDao.persistNewAssetPairs(callTime, assetPairs);
 	}
 
 
 	void setAssetDao(IAssetsDao assetDao) {
 		this.assetDao = assetDao;
 	}
-	public void setKrakenCaller(IKrakenCaller krakenCaller) {
-		this.krakenCaller = krakenCaller;
+	void setAssetPairsDao(IAssetPairsDao assetPairsDao) {
+		this.assetPairsDao = assetPairsDao;
 	}
 }

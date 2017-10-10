@@ -1,5 +1,9 @@
 package com.fede.app.crypto.trading.kraken;
 
+import com.fede.app.crypto.trading.exception.KrakenCallException;
+import com.fede.app.crypto.trading.exception.KrakenResponseError;
+import com.fede.app.crypto.trading.logger.ISimpleLog;
+import com.fede.app.crypto.trading.logger.LogService;
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
 import com.fede.app.crypto.trading.model._trading.AddOrderIn;
@@ -16,45 +20,42 @@ import java.util.*;
 /**
  * Created by f.barbano on 15/09/2017.
  */
-public class KrakenCallerImpl implements IKrakenCaller {
+public class KrakenFacadeImpl implements IKrakenFacade {
+
+	private static final ISimpleLog logger = LogService.getLogger(KrakenFacadeImpl.class);
 
 	private final KrakenApi krakenApi;
 
-	public KrakenCallerImpl(String krakenKey, String krakenSecret) {
+	public KrakenFacadeImpl(String krakenKey, String krakenSecret) {
 		this.krakenApi = new KrakenApi();
 		this.krakenApi.setKey(krakenKey);
 		this.krakenApi.setSecret(krakenSecret);
 	}
 
 	@Override
-	public Long getServerTime() throws IOException {
-		String json = krakenApi.queryPublic(ApiMethod.TIME);
-		JsonToModel jm = new JsonToModel(json);
+	public Long getServerTime() throws KrakenResponseError, KrakenCallException {
+		JsonToModel jm = performPublicCall(ApiMethod.TIME, null);
 		return jm.parseServerTime();
 	}
 
 	@Override
-	public List<Asset> getAssets() throws IOException {
-		long callTime = System.currentTimeMillis();
-		String json = krakenApi.queryPublic(ApiMethod.ASSETS);
-		JsonToModel jm = new JsonToModel(json);
-		return jm.parseAssets(callTime);
+	public List<Asset> getAssets() throws KrakenResponseError, KrakenCallException {
+		JsonToModel jm = performPublicCall(ApiMethod.ASSETS, null);
+		return jm.parseAssets();
 	}
 
 	@Override
-	public List<AssetPair> getAssetPairs() throws IOException {
-		String json = krakenApi.queryPublic(ApiMethod.ASSET_PAIRS);
-		JsonToModel jm = new JsonToModel(json);
+	public List<AssetPair> getAssetPairs() throws KrakenResponseError, KrakenCallException {
+		JsonToModel jm = performPublicCall(ApiMethod.ASSET_PAIRS, null);
 		return jm.parseAssetPairs();
 	}
 
 	@Override
-	public List<Ticker> getTickers(Collection<String> pairNames) throws IOException {
+	public List<Ticker> getTickers(Collection<String> pairNames) throws KrakenResponseError, KrakenCallException {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", Utils.join(pairNames));
 		long callTime = System.currentTimeMillis();
-		String json = krakenApi.queryPublic(ApiMethod.TICKER, apiParams);
-		JsonToModel jm = new JsonToModel(json);
+		JsonToModel jm = performPublicCall(ApiMethod.TICKER, apiParams);
 		return jm.parseTickers(callTime);
 	}
 
@@ -229,4 +230,22 @@ public class KrakenCallerImpl implements IKrakenCaller {
 		return jm.parseOrderOut();
 	}
 
+
+	private JsonToModel performPublicCall(ApiMethod method, Map<String, String> apiParams) throws KrakenResponseError, KrakenCallException {
+		try {
+			logger.info("Performing public Kraken call for %s", method.getName());
+			String json = krakenApi.queryPublic(method, apiParams);
+			logger.config("JSON received --> %s", json);
+			JsonToModel jm = new JsonToModel(json);
+			if(jm.containsErrors()) {
+				logger.error("Kraken call return errors: %s", jm.getErrors());
+				throw new KrakenResponseError(method.getName(), jm.getErrors());
+			}
+			return jm;
+
+		} catch (IOException e) {
+			logger.error("%s", e);
+			throw new KrakenCallException(e, method.getName());
+		}
+	}
 }

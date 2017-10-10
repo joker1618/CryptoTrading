@@ -14,8 +14,6 @@ public interface IKrakenConfig {
 
 	// Run parameters
 	boolean isDBEnabled();
-	boolean isCallMidnightStartAssets();
-	boolean isCallMidnightStartAssetPairs();
 	int getCallSecondsRateAssets();
 	int getCallSecondsRateAssetPairs();
 	int getCallSecondsRateTickers();

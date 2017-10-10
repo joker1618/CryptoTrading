@@ -5,6 +5,10 @@ package com.fede.app.crypto.trading.exception;
  */
 public class TechnicalException extends RuntimeException {
 
+	public TechnicalException(Throwable cause) {
+		super(cause);
+	}
+
 	public TechnicalException(Throwable cause, String format, Object... params) {
 		super(String.format(format, params), cause);
 	}

@@ -1,5 +1,7 @@
 package com.fede.app.crypto.trading.kraken;
 
+import com.fede.app.crypto.trading.exception.KrakenCallException;
+import com.fede.app.crypto.trading.exception.KrakenResponseError;
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
 import com.fede.app.crypto.trading.model._trading.AddOrderIn;
@@ -15,15 +17,15 @@ import java.util.List;
 /**
  * Created by f.barbano on 15/09/2017.
  */
-public interface IKrakenCaller {
+public interface IKrakenFacade {
 
-	Long getServerTime() throws IOException;
+	Long getServerTime() throws KrakenResponseError, KrakenCallException;
 
-	List<Asset> getAssets() throws IOException;
+	List<Asset> getAssets() throws KrakenResponseError, KrakenCallException;
 
-	List<AssetPair> getAssetPairs() throws IOException;
+	List<AssetPair> getAssetPairs() throws KrakenResponseError, KrakenCallException;
 
-	List<Ticker> getTickers(Collection<String> pairNames) throws IOException;
+	List<Ticker> getTickers(Collection<String> pairNames) throws KrakenResponseError, KrakenCallException;
 
 	Pair<Long, List<Ohlc>> getOhlcs(String pairName, long since) throws IOException;
 

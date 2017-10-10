@@ -52,14 +52,11 @@ class JsonToModel {
 		return getTimestamp(result, "unixtime", 1000L);
 	}
 
-	public List<Asset> parseAssets(Long callTime) {
-		if(containsErrors())	return null;
-
+	public List<Asset> parseAssets() {
 		List<Asset> assetList = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			JsonObject jsonAsset = entry.getValue().asJsonObject();
 			Asset asset = new Asset();
-			asset.setCallTime(callTime);
 			asset.setAssetName(entry.getKey());
 			asset.setAClass(getString(jsonAsset, "aclass"));
 			asset.setAltName(getString(jsonAsset, "altname"));
@@ -72,8 +69,6 @@ class JsonToModel {
 	}
 
 	public List<AssetPair> parseAssetPairs() {
-		if(containsErrors())	return null;
-
 		List<AssetPair> assetPairs = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			AssetPair pair = new AssetPair();
@@ -101,8 +96,6 @@ class JsonToModel {
 	}
 
 	public List<Ticker> parseTickers(long callTime) {
-		if(containsErrors())	return null;
-
 		List<Ticker> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			JsonObject jt = entry.getValue().asJsonObject();
@@ -124,8 +117,6 @@ class JsonToModel {
 	}
 
 	public Pair<Long, List<Ohlc>> parseOhlcs(String pairName) {
-		if(containsErrors())	return null;
-
 		Long last = getLong(result, "last");
 
 		List<Ohlc> ohlcList = new ArrayList<>();
@@ -150,8 +141,6 @@ class JsonToModel {
 	}
 
 	public List<MarketOrder> parseOrderBook(String pairName) {
-		if(containsErrors())	return null;
-
 		JsonObject jobj = result.getJsonObject(pairName);
 		JsonArray asks = jobj.getJsonArray("asks");
 		JsonArray bids = jobj.getJsonArray("bids");
@@ -164,8 +153,6 @@ class JsonToModel {
 	}
 
 	public Pair<Long, List<RecentTrade>> parseRecentTrades(String pairName) {
-		if(containsErrors())	return null;
-
 		Long last = getLong(result, "last");
 
 		List<RecentTrade> tradeList = new ArrayList<>();
@@ -189,8 +176,6 @@ class JsonToModel {
 	}
 
 	public Pair<Long, List<SpreadData>> parseSpreadData(String pairName) {
-		if(containsErrors())	return null;
-
 		Long last = getLong(result, "last");
 
 		/*
@@ -223,8 +208,6 @@ class JsonToModel {
 	}
 
 	public List<AccountBalance> parseAccountBalance(long callTime) {
-		if(containsErrors())	return null;
-
 		List<AccountBalance> abList = new ArrayList<>();
 		result.entrySet().forEach(entry -> {
 			String assetClass = entry.getKey();
@@ -240,8 +223,6 @@ class JsonToModel {
 	}
 
 	public TradeBalance parseTradeBalance(long callTime) {
-		if(containsErrors())	return null;
-
 		TradeBalance tb = new TradeBalance();
 		tb.setCallTime(callTime);
 		tb.setEquivBalance(getDouble(result, "eb"));
@@ -258,8 +239,6 @@ class JsonToModel {
 	}
 
 	public List<OpenOrder> parseOpenOrders() {
-		if(containsErrors())	return null;
-
 		List<OpenOrder> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.getJsonObject("open").entrySet()) {
 			JsonObject jtx = entry.getValue().asJsonObject();
@@ -271,8 +250,6 @@ class JsonToModel {
 	}
 
 	public List<ClosedOrder> parseClosedOrders() {
-		if(containsErrors())	return null;
-
 		List<ClosedOrder> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.getJsonObject("closed").entrySet()) {
 			JsonObject jtx = entry.getValue().asJsonObject();
@@ -286,8 +263,6 @@ class JsonToModel {
 	}
 
 	public List<OrderInfo> parseOrdersInfo() {
-		if(containsErrors())	return null;
-
 		List<OrderInfo> toRet = new ArrayList<>();
 		for(Map.Entry<String, JsonValue> entry : result.entrySet()) {
 			JsonObject jtx = entry.getValue().asJsonObject();
@@ -299,16 +274,12 @@ class JsonToModel {
 	}
 
 	public List<OpenPosition> parseOpenPositions() {
-		if(containsErrors())	return null;
-
 		List<OpenPosition> toRet = new ArrayList<>();
 		// TODO impl when an example will be found
 		return toRet;
 	}
 
 	public List<LedgerInfo> parseLedgersInfo() {
-		if(containsErrors())	return null;
-
 		List<LedgerInfo> toRet = new ArrayList<>();
 		JsonObject jledger = result.containsKey("ledger") ? result.getJsonObject("ledger") : result;
 		if(jledger != null) {
@@ -323,8 +294,6 @@ class JsonToModel {
 	}
 
 	public TradeVolume parseTradeVolume() {
-		if(containsErrors())	return null;
-
 		TradeVolume tv = new TradeVolume();
 		tv.setCurrency(getString(result, "currency"));
 		tv.setVolume(getDouble(result, "volume"));
@@ -334,8 +303,6 @@ class JsonToModel {
 	}
 
 	public AddOrderOut parseOrderOut() {
-		if(containsErrors())	return null;
-
 		AddOrderOut out = new AddOrderOut();
 		JsonObject jdescr = result.getJsonObject("descr");
 		if(jdescr != null) {
