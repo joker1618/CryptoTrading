@@ -18,7 +18,7 @@ public interface IKrakenProvider {
 	void persistAssetPairs(List<AssetPair> assetPairs) throws IOException;
 	List<AssetPair> readAssetPairs() throws IOException;
 
-	void persistTickers(List<Ticker> tickers) throws IOException;
+	void persistTickers(List<Ticker> tickerOLDS) throws IOException;
 	List<Ticker> readTickers(String pairName) throws IOException;
 
 	void persistOrderBook(List<MarketOrder> marketOrders) throws IOException;

@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 /**
  * Created by f.barbano on 01/10/2017.
@@ -41,8 +42,8 @@ public class KrakenEngine {
 	private IKrakenRepo krakenRepo;
 	private IKrakenFacade krakenFacade;
 
-	private List<Asset> assetList;
-	private List<AssetPair> assetPairList;
+	private final List<Asset> assetList;
+	private final List<AssetPair> assetPairList;
 
 	public KrakenEngine() {
 		this.config = KrakenConfigImpl.getInstance();
@@ -62,12 +63,13 @@ public class KrakenEngine {
 
 		// Now schedule fixed rate tasks (i.e. public calls to repeat)
 		LocalDateTime nextDayStart = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIDNIGHT);
-		long delay = (DateUtils.toMillis(nextDayStart) - System.currentTimeMillis()) / 1000L;
-		delay = 5L;
+		long delayUntilMidnight = (DateUtils.toMillis(nextDayStart) - System.currentTimeMillis()) / 1000L;
+		long delayDownload = 5L;
 
 		ScheduledExecutorService executorPublic = Executors.newScheduledThreadPool(4);
-		executorPublic.scheduleAtFixedRate(this::retrieveAssetList, delay, config.getCallSecondsRateAssets(), TimeUnit.SECONDS);
-		executorPublic.scheduleAtFixedRate(this::retrieveAssetPairList, delay, config.getCallSecondsRateAssetPairs(), TimeUnit.SECONDS);
+//		executorPublic.scheduleAtFixedRate(this::retrieveAssetList, delayUntilMidnight, config.getCallSecondsRateAssets(), TimeUnit.SECONDS);
+//		executorPublic.scheduleAtFixedRate(this::retrieveAssetPairList, delayUntilMidnight, config.getCallSecondsRateAssetPairs(), TimeUnit.SECONDS);
+		executorPublic.scheduleAtFixedRate(this::downloadTickers, delayDownload, config.getCallSecondsRateTickers(), TimeUnit.SECONDS);
 
 		logger.info("Public Kraken calls scheduled");
 
@@ -127,35 +129,23 @@ public class KrakenEngine {
 		}
 	}
 
-	private void downloadTickers() throws KrakenResponseError, KrakenCallException {
-		List<String> assetPairNames = getAssetPairNames();
-		List<Ticker> tickers = krakenFacade.getTickers(assetPairNames);
-
-		synchronized (assetPairList) {
-			this.assetPairList.clear();
-
-			try {
-				long callTime = System.currentTimeMillis();
-				this.assetPairList.addAll(krakenFacade.getAssetPairs());
-				krakenRepo.persistNewAssetPairs(callTime, assetPairList);
-
-			} catch (KrakenResponseError ex) {
-				logger.error(ex);
-				throw new TechnicalException(ex);
-			} catch (KrakenCallException e) {
-				logger.warning("Kraken call exception received [%s]. Fallback to DB...", e.getMessage());
-				this.assetPairList.addAll(krakenRepo.getAssetPairs());
-				if (assetPairList.isEmpty()) {
-					logger.error(e);
-					throw new TechnicalException(e);
-				}
-			}
+	private void downloadTickers() {
+		try {
+			List<String> assetPairNames = getAssetPairNames(false);
+			List<Ticker> tickers = krakenFacade.getTickers(assetPairNames);
+			long callTime = System.currentTimeMillis();
+			krakenRepo.persistNewTickers(callTime, tickers);
+			
+		} catch (KrakenResponseError | KrakenCallException ex) {
+			logger.error(ex);
+			throw new TechnicalException(ex);
 		}
 	}
 
-	private List<String> getAssetPairNames() {
+	private List<String> getAssetPairNames(boolean maintainDotD) {
 		synchronized (assetPairList) {
-			return Utils.map(assetPairList, AssetPair::getPairName);
+			Predicate<AssetPair> filter = ap -> maintainDotD || !ap.getPairName().endsWith(".d");
+			return Utils.filterAndMap(assetPairList, filter, AssetPair::getPairName);
 		}
 	}
 

@@ -100,7 +100,7 @@ public class ModelConverter {
 			tickerVolumeToString(ticker.getTradesNumber()),
 			tickerVolumeToString(ticker.getLow()),
 			tickerVolumeToString(ticker.getHigh()),
-			Utils.toString(ticker.getTodayOpeningPrice())
+			Utils.toString(ticker.getOpeningPrice())
 		);
 	}
 	public static Ticker stringToTicker(String csvLine) {
@@ -116,7 +116,7 @@ public class ModelConverter {
 		ticker.setTradesNumber(stringToTickerVolume(split[7]));
 		ticker.setLow(stringToTickerVolume(split[8]));
 		ticker.setHigh(stringToTickerVolume(split[9]));
-		ticker.setTodayOpeningPrice(Utils.toDouble(split[10]));
+		ticker.setOpeningPrice(Utils.toDouble(split[10]));
 		return ticker;
 	}
 

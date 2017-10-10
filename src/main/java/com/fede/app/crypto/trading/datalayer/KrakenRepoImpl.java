@@ -2,9 +2,12 @@ package com.fede.app.crypto.trading.datalayer;
 
 import com.fede.app.crypto.trading.dao.IAssetPairsDao;
 import com.fede.app.crypto.trading.dao.IAssetsDao;
+import com.fede.app.crypto.trading.dao.ITickersDao;
 import com.fede.app.crypto.trading.model._public.Asset;
 import com.fede.app.crypto.trading.model._public.AssetPair;
+import com.fede.app.crypto.trading.model._public.Ticker;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,6 +17,7 @@ class KrakenRepoImpl implements IKrakenRepo {
 
 	private IAssetsDao assetDao;
 	private IAssetPairsDao assetPairsDao;
+	private ITickersDao tickersDao;
 
 	@Override
 	public List<Asset> getAssets() {
@@ -35,11 +39,19 @@ class KrakenRepoImpl implements IKrakenRepo {
 		assetPairsDao.persistNewAssetPairs(callTime, assetPairs);
 	}
 
+	@Override
+	public void persistNewTickers(Long callTime, Collection<Ticker> tickers) {
+		tickersDao.persistNewTickers(callTime, tickers);
+	}
+
 
 	void setAssetDao(IAssetsDao assetDao) {
 		this.assetDao = assetDao;
 	}
 	void setAssetPairsDao(IAssetPairsDao assetPairsDao) {
 		this.assetPairsDao = assetPairsDao;
+	}
+	public void setTickersDao(ITickersDao tickersDao) {
+		this.tickersDao = tickersDao;
 	}
 }

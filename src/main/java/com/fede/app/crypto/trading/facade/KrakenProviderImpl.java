@@ -125,8 +125,8 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	}
 
 	@Override
-	public void persistTickers(List<Ticker> tickers) throws IOException {
-		Map<String, List<Ticker>> map = Utils.toMap(tickers, Ticker::getPairName);
+	public void persistTickers(List<Ticker> tickerOLDS) throws IOException {
+		Map<String, List<Ticker>> map = Utils.toMap(tickerOLDS, Ticker::getPairName);
 		for(Map.Entry<String, List<Ticker>> entry : map.entrySet()) {
 			Path outPath = getPath(FILENAME_TICKERS, entry.getKey());
 			List<String> lines = Utils.map(entry.getValue(), ModelConverter::tickerToString);
@@ -137,13 +137,13 @@ public class KrakenProviderImpl implements IKrakenProvider {
 	@Override
 	public List<Ticker> readTickers(String pairName) throws IOException {
 		Path path = getPath(FILENAME_TICKERS, pairName);
-		List<Ticker> tickerList = new ArrayList<>();
+		List<Ticker> tickerOLDList = new ArrayList<>();
 		if(Files.exists(path)) {
 			List<String> lines = Files.readAllLines(path, ENCODING);
 			lines.removeIf(HEADER_TICKERS::equals);
-			tickerList = Utils.map(lines, ModelConverter::stringToTicker);
+			tickerOLDList = Utils.map(lines, ModelConverter::stringToTicker);
 		}
-		return tickerList;
+		return tickerOLDList;
 	}
 
 	@Override

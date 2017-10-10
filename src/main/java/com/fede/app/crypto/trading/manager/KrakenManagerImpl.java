@@ -120,9 +120,9 @@ public class KrakenManagerImpl implements IKrakenManager {
 			Set<String> pairNames = assetPairMap.keySet();
 
 			// download from kraken website
-			List<Ticker> tickers = krakenCaller.getTickers(pairNames);
-			krakenProvider.persistTickers(tickers);
-			return Utils.toMapSingle(tickers, Ticker::getPairName);
+			List<Ticker> tickerOLDS = krakenCaller.getTickers(pairNames);
+			krakenProvider.persistTickers(tickerOLDS);
+			return Utils.toMapSingle(tickerOLDS, Ticker::getPairName);
 
 		} catch(Exception ex) {
 			// TODO manage

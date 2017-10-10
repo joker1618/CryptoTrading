@@ -111,9 +111,10 @@ class JsonToModel {
 			ticker.setTradesNumber(parseTickerVolume(jt, "t"));
 			ticker.setLow(parseTickerVolume(jt, "l"));
 			ticker.setHigh(parseTickerVolume(jt, "h"));
-			ticker.setTodayOpeningPrice(getDouble(jt, "o"));
+			ticker.setOpeningPrice(getDouble(jt, "o"));
 			toRet.add(ticker);
 		}
+		toRet.sort(Comparator.comparing(Ticker::getPairName));
 		return toRet;
 	}
 

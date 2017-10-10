@@ -15,7 +15,7 @@ public class Ticker  {
 	private TickerVolume tradesNumber;
 	private TickerVolume low;
 	private TickerVolume high;
-	private Double todayOpeningPrice;
+	private Double openingPrice;
 
 	@Override
 	public boolean equals(Object o) {
@@ -24,7 +24,7 @@ public class Ticker  {
 
 		Ticker ticker = (Ticker) o;
 
-		if (callTime != null ? !callTime.equals(ticker.callTime) : ticker.callTime != null) return false;
+		//if (callTime != null ? !callTime.equals(ticker.callTime) : ticker.callTime != null) return false;
 		if (pairName != null ? !pairName.equals(ticker.pairName) : ticker.pairName != null) return false;
 		if (ask != null ? !ask.equals(ticker.ask) : ticker.ask != null) return false;
 		if (bid != null ? !bid.equals(ticker.bid) : ticker.bid != null) return false;
@@ -37,7 +37,7 @@ public class Ticker  {
 			return false;
 		if (low != null ? !low.equals(ticker.low) : ticker.low != null) return false;
 		if (high != null ? !high.equals(ticker.high) : ticker.high != null) return false;
-		return todayOpeningPrice != null ? todayOpeningPrice.equals(ticker.todayOpeningPrice) : ticker.todayOpeningPrice == null;
+		return openingPrice != null ? openingPrice.equals(ticker.openingPrice) : ticker.openingPrice == null;
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class Ticker  {
 		result = 31 * result + (tradesNumber != null ? tradesNumber.hashCode() : 0);
 		result = 31 * result + (low != null ? low.hashCode() : 0);
 		result = 31 * result + (high != null ? high.hashCode() : 0);
-		result = 31 * result + (todayOpeningPrice != null ? todayOpeningPrice.hashCode() : 0);
+		result = 31 * result + (openingPrice != null ? openingPrice.hashCode() : 0);
 		return result;
 	}
 
@@ -122,11 +122,11 @@ public class Ticker  {
 	public void setHigh(TickerVolume high) {
 		this.high = high;
 	}
-	public Double getTodayOpeningPrice() {
-		return todayOpeningPrice;
+	public Double getOpeningPrice() {
+		return openingPrice;
 	}
-	public void setTodayOpeningPrice(Double todayOpeningPrice) {
-		this.todayOpeningPrice = todayOpeningPrice;
+	public void setOpeningPrice(Double openingPrice) {
+		this.openingPrice = openingPrice;
 	}
 
 	public static class TickerPrice {
@@ -149,14 +149,6 @@ public class Ticker  {
 			int result = price != null ? price.hashCode() : 0;
 			result = 31 * result + (lotVolume != null ? lotVolume.hashCode() : 0);
 			return result;
-		}
-
-		@Override
-		public String toString() {
-			return "TickerPrice{" +
-					   "price=" + price +
-					   ", lotVolume=" + lotVolume +
-					   '}';
 		}
 
 		public Double getPrice() {
@@ -194,15 +186,6 @@ public class Ticker  {
 			return result;
 		}
 
-		@Override
-		public String toString() {
-			return "TickerWholePrice{" +
-					   "price=" + price +
-					   ", lotVolume=" + lotVolume +
-					   ", wholeLotVolume=" + wholeLotVolume +
-					   '}';
-		}
-
 		public Integer getWholeLotVolume() {
 			return wholeLotVolume;
 		}
@@ -220,10 +203,10 @@ public class Ticker  {
 			if (this == o) return true;
 			if (!(o instanceof TickerVolume)) return false;
 
-			TickerVolume that = (TickerVolume) o;
+			TickerVolume volume = (TickerVolume) o;
 
-			if (today != null ? !today.equals(that.today) : that.today != null) return false;
-			return last24Hours != null ? last24Hours.equals(that.last24Hours) : that.last24Hours == null;
+			if (today != null ? !today.equals(volume.today) : volume.today != null) return false;
+			return last24Hours != null ? last24Hours.equals(volume.last24Hours) : volume.last24Hours == null;
 		}
 
 		@Override
@@ -231,14 +214,6 @@ public class Ticker  {
 			int result = today != null ? today.hashCode() : 0;
 			result = 31 * result + (last24Hours != null ? last24Hours.hashCode() : 0);
 			return result;
-		}
-
-		@Override
-		public String toString() {
-			return "TickerVolume{" +
-					   "today=" + today +
-					   ", last24Hours=" + last24Hours +
-					   '}';
 		}
 
 		public Double getToday() {

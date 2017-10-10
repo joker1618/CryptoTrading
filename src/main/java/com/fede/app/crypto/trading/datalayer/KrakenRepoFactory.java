@@ -6,6 +6,7 @@ import com.fede.app.crypto.trading.config.KrakenConfigImpl;
 import com.fede.app.crypto.trading.dao.impl.csv.AssetsCsvDao;
 import com.fede.app.crypto.trading.dao.impl.db.AssetPairsDBDao;
 import com.fede.app.crypto.trading.dao.impl.db.AssetsDBDao;
+import com.fede.app.crypto.trading.dao.impl.db.TickersDBDao;
 import com.fede.app.crypto.trading.exception.TechnicalException;
 import com.fede.app.crypto.trading.kraken.IKrakenFacade;
 import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
@@ -27,6 +28,7 @@ public class KrakenRepoFactory {
 			Connection conn = createDBConnection(config.getDBUrl(), config.getDBUsername(), config.getDBPassword());
 			krakenRepo.setAssetDao(new AssetsDBDao(conn));
 			krakenRepo.setAssetPairsDao(new AssetPairsDBDao(conn));
+			krakenRepo.setTickersDao(new TickersDBDao(conn));
 		} else {
 			krakenRepo.setAssetDao(new AssetsCsvDao(config.getCsvPathAssets()));
 		}
