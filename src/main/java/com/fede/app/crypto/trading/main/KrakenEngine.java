@@ -73,7 +73,7 @@ public class KrakenEngine {
 		executorPublic.scheduleAtFixedRate(this::retrieveAssetList, delayUntilMidnight, config.getCallSecondsRateAssets(), TimeUnit.SECONDS);
 		executorPublic.scheduleAtFixedRate(this::retrieveAssetPairList, delayUntilMidnight, config.getCallSecondsRateAssetPairs(), TimeUnit.SECONDS);
 		executorPublic.scheduleAtFixedRate(this::downloadTickers, delayDownload, config.getCallSecondsRateTickers(), TimeUnit.SECONDS);
-		executorPublic.scheduleAtFixedRate(this::downloadSpreadData, delayDownload, config.getCallSecondsRateSpreadData(), TimeUnit.SECONDS);
+//		executorPublic.scheduleAtFixedRate(this::downloadSpreadData, delayDownload, config.getCallSecondsRateSpreadData(), TimeUnit.SECONDS);
 
 		logger.info("Public Kraken calls scheduled");
 

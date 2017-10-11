@@ -5,6 +5,7 @@ import com.fede.app.crypto.trading.exception.TechnicalException;
 import com.fede.app.crypto.trading.logger.ISimpleLog;
 import com.fede.app.crypto.trading.logger.LogService;
 import com.fede.app.crypto.trading.model._public.Ticker;
+import com.fede.app.crypto.trading.util.DateUtils;
 import com.fede.app.crypto.trading.util.Utils;
 
 import java.sql.Connection;
@@ -28,7 +29,7 @@ public class TickersDBDao extends AbstractDBDao implements ITickersDao {
 	private static final String Q_INSERT_NEW = "INSERT INTO TICKERS (CALL_TIME, PAIR_NAME, ASK_PRICE, ASK_WHOLE_LOT_VOLUME, ASK_LOT_VOLUME, BID_PRICE, " +
 											   "BID_WHOLE_LOT_VOLUME, BID_LOT_VOLUME, LAST_CLOSED_PRICE, LAST_CLOSED_LOT_VOLUME, VOLUME_TODAY, VOLUME_LAST_24, " +
 											   "VOLUME_WEIGHTED_AVERAGE_TODAY, VOLUME_WEIGHTED_AVERAGE_LAST_24, NUMBER_TRADES_TODAY, NUMBER_TRADES_LAST_24, LOW_TODAY, " +
-											   "LOW_LAST_24, HIGH_TODAY, HIGH_LAST_24, OPENING_PRICE) VALUES @TICKER_LIST@";
+											   "LOW_LAST_24, HIGH_TODAY, HIGH_LAST_24, OPENING_PRICE, GRAFANA_TIME) VALUES @TICKER_LIST@";
 
 	private static final String PH_TICKER_LIST = "@TICKER_LIST@";
 
@@ -136,7 +137,7 @@ public class TickersDBDao extends AbstractDBDao implements ITickersDao {
 	}
 
 	private String tickerToValues(Long callTime, Ticker ticker) {
-		return String.format("(%d, '%s', %s, %d, %s, %s, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+		return String.format("(%d, '%s', %s, %d, %s, %s, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
 			callTime,
 			ticker.getPairName(),
 			Utils.toString(ticker.getAsk().getPrice()),
@@ -157,7 +158,8 @@ public class TickersDBDao extends AbstractDBDao implements ITickersDao {
 			Utils.toString(ticker.getLow().getLast24Hours()),
 			Utils.toString(ticker.getHigh().getToday()),
 			Utils.toString(ticker.getHigh().getLast24Hours()),
-			Utils.toString(ticker.getOpeningPrice())
+			Utils.toString(ticker.getOpeningPrice()),
+			DateUtils.toString(callTime, "yyyyMMddHHmmss")
 		);
 	}
 }
