@@ -208,7 +208,7 @@ public class KrakenManagerImpl implements IKrakenManager {
 			krakenProvider.persistSpreadLast(pairName, spreads.getKey());
 			return spreadDataList;
 
-		} catch(IOException ex) {
+		} catch(Exception ex) {
 			// TODO manage
 			throw new RuntimeException(ex);
 		}

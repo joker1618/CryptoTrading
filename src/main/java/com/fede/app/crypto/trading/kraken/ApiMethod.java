@@ -5,7 +5,7 @@ package com.fede.app.crypto.trading.kraken;
  *
  * @author nyg
  */
-enum ApiMethod {
+public enum ApiMethod {
 
 	/* Public methods */
 	TIME("Time", true),

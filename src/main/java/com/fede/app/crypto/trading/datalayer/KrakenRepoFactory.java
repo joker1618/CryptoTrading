@@ -4,9 +4,7 @@ import com.fede.app.crypto.trading.common.Const;
 import com.fede.app.crypto.trading.config.IKrakenConfig;
 import com.fede.app.crypto.trading.config.KrakenConfigImpl;
 import com.fede.app.crypto.trading.dao.impl.csv.AssetsCsvDao;
-import com.fede.app.crypto.trading.dao.impl.db.AssetPairsDBDao;
-import com.fede.app.crypto.trading.dao.impl.db.AssetsDBDao;
-import com.fede.app.crypto.trading.dao.impl.db.TickersDBDao;
+import com.fede.app.crypto.trading.dao.impl.db.*;
 import com.fede.app.crypto.trading.exception.TechnicalException;
 import com.fede.app.crypto.trading.kraken.IKrakenFacade;
 import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
@@ -29,6 +27,8 @@ public class KrakenRepoFactory {
 			krakenRepo.setAssetDao(new AssetsDBDao(conn));
 			krakenRepo.setAssetPairsDao(new AssetPairsDBDao(conn));
 			krakenRepo.setTickersDao(new TickersDBDao(conn));
+			krakenRepo.setLastCallTimeDao(new LastCallTimeDBDao(conn));
+			krakenRepo.setSpreadDataDao(new SpreadDataDBDao(conn));
 		} else {
 			krakenRepo.setAssetDao(new AssetsCsvDao(config.getCsvPathAssets()));
 		}

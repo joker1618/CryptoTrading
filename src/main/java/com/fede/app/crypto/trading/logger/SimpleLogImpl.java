@@ -16,7 +16,7 @@ class SimpleLogImpl implements ISimpleLog {
 
 	@Override
 	public void error(Throwable t) {
-		logger.log(Level.SEVERE, "", t);
+		logger.log(Level.SEVERE, t.toString(), t);
 	}
 	@Override
 	public synchronized void error(String mex, Object... params) {

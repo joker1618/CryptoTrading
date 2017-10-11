@@ -93,14 +93,13 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 	}
 
 	@Override
-	public Pair<Long, List<SpreadData>> getSpreadData(String pairName, long since) throws IOException {
+	public Pair<Long, List<SpreadData>> getSpreadData(String pairName, Long since) throws KrakenResponseError, KrakenCallException {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", pairName);
-		if(since > 0) {
+		if(since != null && since > 0) {
 			apiParams.put("since", String.valueOf(since));
 		}
-		String json = krakenApi.queryPublic(ApiMethod.SPREAD, apiParams);
-		JsonToModel jm = new JsonToModel(json);
+		JsonToModel jm = performPublicCall(ApiMethod.SPREAD, apiParams);
 		return jm.parseSpreadData(pairName);
 	}
 

@@ -7,28 +7,31 @@ import com.fede.app.crypto.trading.datalayer.KrakenRepoFactory;
 import com.fede.app.crypto.trading.exception.KrakenCallException;
 import com.fede.app.crypto.trading.exception.KrakenResponseError;
 import com.fede.app.crypto.trading.exception.TechnicalException;
+import com.fede.app.crypto.trading.kraken.ApiMethod;
 import com.fede.app.crypto.trading.kraken.IKrakenFacade;
 import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
 import com.fede.app.crypto.trading.logger.ISimpleLog;
 import com.fede.app.crypto.trading.logger.LogService;
 import com.fede.app.crypto.trading.model._public.Asset;
 import com.fede.app.crypto.trading.model._public.AssetPair;
+import com.fede.app.crypto.trading.model._public.SpreadData;
 import com.fede.app.crypto.trading.model._public.Ticker;
 import com.fede.app.crypto.trading.util.DateUtils;
 import com.fede.app.crypto.trading.util.Utils;
+import org.apache.commons.lang3.text.StrBuilder;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
+
+import static com.fede.app.crypto.trading.dao.ILastCallTimeDao.LastCallDescr;
+
 
 /**
  * Created by f.barbano on 01/10/2017.
@@ -67,9 +70,10 @@ public class KrakenEngine {
 		long delayDownload = 5L;
 
 		ScheduledExecutorService executorPublic = Executors.newScheduledThreadPool(4);
-//		executorPublic.scheduleAtFixedRate(this::retrieveAssetList, delayUntilMidnight, config.getCallSecondsRateAssets(), TimeUnit.SECONDS);
-//		executorPublic.scheduleAtFixedRate(this::retrieveAssetPairList, delayUntilMidnight, config.getCallSecondsRateAssetPairs(), TimeUnit.SECONDS);
+		executorPublic.scheduleAtFixedRate(this::retrieveAssetList, delayUntilMidnight, config.getCallSecondsRateAssets(), TimeUnit.SECONDS);
+		executorPublic.scheduleAtFixedRate(this::retrieveAssetPairList, delayUntilMidnight, config.getCallSecondsRateAssetPairs(), TimeUnit.SECONDS);
 		executorPublic.scheduleAtFixedRate(this::downloadTickers, delayDownload, config.getCallSecondsRateTickers(), TimeUnit.SECONDS);
+		executorPublic.scheduleAtFixedRate(this::downloadSpreadData, delayDownload, config.getCallSecondsRateSpreadData(), TimeUnit.SECONDS);
 
 		logger.info("Public Kraken calls scheduled");
 
@@ -129,24 +133,47 @@ public class KrakenEngine {
 		}
 	}
 
+	private List<String> getAssetPairNames(boolean maintainDotD) {
+		synchronized (assetPairList) {
+			Predicate<AssetPair> filter = ap -> maintainDotD || !ap.getPairName().endsWith(".d");
+			return Utils.filterAndMap(assetPairList, filter, AssetPair::getPairName);
+		}
+	}
+
 	private void downloadTickers() {
 		try {
 			List<String> assetPairNames = getAssetPairNames(false);
 			List<Ticker> tickers = krakenFacade.getTickers(assetPairNames);
 			long callTime = System.currentTimeMillis();
 			krakenRepo.persistNewTickers(callTime, tickers);
-			
+
 		} catch (KrakenResponseError | KrakenCallException ex) {
 			logger.error(ex);
 			throw new TechnicalException(ex);
 		}
 	}
 
-	private List<String> getAssetPairNames(boolean maintainDotD) {
-		synchronized (assetPairList) {
-			Predicate<AssetPair> filter = ap -> maintainDotD || !ap.getPairName().endsWith(".d");
-			return Utils.filterAndMap(assetPairList, filter, AssetPair::getPairName);
-		}
+	private void downloadSpreadData() {
+		List<String> assetPairNames = getAssetPairNames(false);
+		Map<String, Long> lastMap = Collections.synchronizedMap(krakenRepo.getLastCallTimes(ApiMethod.SPREAD));
+
+		List<LastCallDescr> lastTimeList = Collections.synchronizedList(new ArrayList<>());
+		List<SpreadData> spreadDataList = Collections.synchronizedList(new ArrayList<>());
+
+		// Call Kraken
+		assetPairNames.parallelStream().forEach(ap -> {
+			try {
+				Pair<Long, List<SpreadData>> sd = krakenFacade.getSpreadData(ap, lastMap.get(ap));
+				lastTimeList.add(new LastCallDescr(ap, ApiMethod.SPREAD.getName(), sd.getKey()));
+				spreadDataList.addAll(sd.getValue());
+			} catch (KrakenResponseError | KrakenCallException e) {
+				logger.error(e, "Error while downloading spread data for %s", ap);
+			}
+		});
+
+		// Persist data
+		krakenRepo.persistLastCallTimes(lastTimeList);
+		krakenRepo.persistSpreadData(spreadDataList);
 	}
 
 }

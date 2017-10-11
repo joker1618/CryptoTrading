@@ -193,7 +193,7 @@ class JsonToModel {
 			long time = Long.parseLong(fields.get(0));
 			if(time <= last) {
 				long ts = time * 1000L;
-				if(usedTimes.contains(ts)) {
+				while(usedTimes.contains(ts)) {
 					ts += 1;
 				}
 				usedTimes.add(ts);
@@ -206,6 +206,7 @@ class JsonToModel {
 				spreadDataList.add(spreadData);
 			}
 		});
+		spreadDataList.sort(Comparator.comparing(SpreadData::getPairName));
 		return Pair.of(last, spreadDataList);
 	}
 

@@ -117,7 +117,7 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetSpreadData() throws IOException {
+	public void testGetSpreadData() throws Exception {
 		long starttm = System.currentTimeMillis();
 		String pair = "XXBTZEUR";
 		Pair<Long, List<SpreadData>> spreads = krakenCaller.getSpreadData(pair, 0L);

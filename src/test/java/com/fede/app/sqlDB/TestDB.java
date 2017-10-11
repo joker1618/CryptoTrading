@@ -1,23 +1,18 @@
 package com.fede.app.sqlDB;
 
 import com.fede.app.crypto.trading.common.Const;
-import com.fede.app.crypto.trading.dao.ITickersDao;
-import com.fede.app.crypto.trading.dao.impl.db.TickersDBDao;
+import com.fede.app.crypto.trading.dao.ILastCallTimeDao;
+import com.fede.app.crypto.trading.dao.impl.db.LastCallTimeDBDao;
 import com.fede.app.crypto.trading.exception.KrakenCallException;
 import com.fede.app.crypto.trading.exception.KrakenResponseError;
 import com.fede.app.crypto.trading.exception.TechnicalException;
 import com.fede.app.crypto.trading.kraken.IKrakenFacade;
 import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
-import com.fede.app.crypto.trading.main.KrakenEngine;
-import com.fede.app.crypto.trading.model._public.Ticker;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
 
 import static java.lang.System.out;
 
@@ -32,19 +27,14 @@ public class TestDB {
 
 
 	@Test
-	public void testTickersDao() throws KrakenResponseError, KrakenCallException {
-		try {
-			List<Ticker> fromWeb = krakenFacade.getTickers(Arrays.asList("BCHEUR"));
-//			List<Ticker> fromWeb = krakenFacade.getTickers(Arrays.asList("BCHEUR", "BCHUSD", "BCHXBT", "DASHEUR", "DASHUSD", "DASHXBT", "EOSETH", "EOSXBT", "GNOETH", "GNOXBT", "USDTZUSD", "XETCXETH", "XETCXXBT", "XETCZEUR", "XETCZUSD", "XETHXXBT", "XETHZCAD", "XETHZEUR", "XETHZGBP", "XETHZJPY", "XETHZUSD", "XICNXETH", "XICNXXBT", "XLTCXXBT", "XLTCZEUR", "XLTCZUSD", "XMLNXETH", "XMLNXXBT", "XREPXETH", "XREPXXBT", "XREPZEUR", "XXBTZCAD", "XXBTZEUR", "XXBTZGBP", "XXBTZJPY", "XXBTZUSD", "XXDGXXBT", "XXLMXXBT", "XXMRXXBT", "XXMRZEUR", "XXMRZUSD", "XXRPXXBT", "XXRPZEUR", "XXRPZUSD", "XZECXXBT", "XZECZEUR", "XZECZUSD"));
-			ITickersDao tickersDao = new TickersDBDao(CONN);
-			tickersDao.persistNewTickers(5L, fromWeb);
-			List<Ticker> fromDB = tickersDao.getTickers();
-			out.println(fromWeb.equals(fromDB));
-		} catch (KrakenResponseError krakenResponseError) {
-			krakenResponseError.printStackTrace();
-		} catch (KrakenCallException e) {
-			e.printStackTrace();
-		}
+	public void testDao() throws KrakenResponseError, KrakenCallException {
+//		ILastCallTimeDao dao = new LastCallTimeDBDao(CONN);
+//		dao.persistLastCallTimes("elem1", "m1", 34L);
+//		dao.persistLastCallTimes("elem2", "m1", 60L);
+//		dao.persistLastCallTimes("elem1", "m1", 666L);
+//		out.println(dao.getLastCallTime("elem1", "m1"));
+//		out.println(dao.getLastCallTime("elem2", "m1"));
+//		out.println(dao.getLastCallTime("elem3", "m1"));
 	}
 
 	private static Connection createDBConnection() {

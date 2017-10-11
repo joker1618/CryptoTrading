@@ -33,7 +33,7 @@ public interface IKrakenFacade {
 
 	Pair<Long, List<RecentTrade>> getRecentTrades(String pairName, long since) throws IOException;
 
-	Pair<Long, List<SpreadData>> getSpreadData(String pairName, long since) throws IOException;
+	Pair<Long, List<SpreadData>> getSpreadData(String pairName, Long since) throws KrakenResponseError, KrakenCallException;
 
 	List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 

@@ -18,45 +18,6 @@ public class Ticker  {
 	private Double openingPrice;
 
 	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof Ticker)) return false;
-
-		Ticker ticker = (Ticker) o;
-
-		//if (callTime != null ? !callTime.equals(ticker.callTime) : ticker.callTime != null) return false;
-		if (pairName != null ? !pairName.equals(ticker.pairName) : ticker.pairName != null) return false;
-		if (ask != null ? !ask.equals(ticker.ask) : ticker.ask != null) return false;
-		if (bid != null ? !bid.equals(ticker.bid) : ticker.bid != null) return false;
-		if (lastTradeClosed != null ? !lastTradeClosed.equals(ticker.lastTradeClosed) : ticker.lastTradeClosed != null)
-			return false;
-		if (volume != null ? !volume.equals(ticker.volume) : ticker.volume != null) return false;
-		if (weightedAverageVolume != null ? !weightedAverageVolume.equals(ticker.weightedAverageVolume) : ticker.weightedAverageVolume != null)
-			return false;
-		if (tradesNumber != null ? !tradesNumber.equals(ticker.tradesNumber) : ticker.tradesNumber != null)
-			return false;
-		if (low != null ? !low.equals(ticker.low) : ticker.low != null) return false;
-		if (high != null ? !high.equals(ticker.high) : ticker.high != null) return false;
-		return openingPrice != null ? openingPrice.equals(ticker.openingPrice) : ticker.openingPrice == null;
-	}
-
-	@Override
-	public int hashCode() {
-		int result = callTime != null ? callTime.hashCode() : 0;
-		result = 31 * result + (pairName != null ? pairName.hashCode() : 0);
-		result = 31 * result + (ask != null ? ask.hashCode() : 0);
-		result = 31 * result + (bid != null ? bid.hashCode() : 0);
-		result = 31 * result + (lastTradeClosed != null ? lastTradeClosed.hashCode() : 0);
-		result = 31 * result + (volume != null ? volume.hashCode() : 0);
-		result = 31 * result + (weightedAverageVolume != null ? weightedAverageVolume.hashCode() : 0);
-		result = 31 * result + (tradesNumber != null ? tradesNumber.hashCode() : 0);
-		result = 31 * result + (low != null ? low.hashCode() : 0);
-		result = 31 * result + (high != null ? high.hashCode() : 0);
-		result = 31 * result + (openingPrice != null ? openingPrice.hashCode() : 0);
-		return result;
-	}
-
-	@Override
 	public String toString() {
 		return pairName;
 	}
@@ -133,24 +94,6 @@ public class Ticker  {
 		protected Double price;
 		protected Double lotVolume;
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (!(o instanceof TickerPrice)) return false;
-
-			TickerPrice that = (TickerPrice) o;
-
-			if (price != null ? !price.equals(that.price) : that.price != null) return false;
-			return lotVolume != null ? lotVolume.equals(that.lotVolume) : that.lotVolume == null;
-		}
-
-		@Override
-		public int hashCode() {
-			int result = price != null ? price.hashCode() : 0;
-			result = 31 * result + (lotVolume != null ? lotVolume.hashCode() : 0);
-			return result;
-		}
-
 		public Double getPrice() {
 			return price;
 		} 
@@ -168,24 +111,6 @@ public class Ticker  {
 	public static class TickerWholePrice extends TickerPrice {
 		protected Integer wholeLotVolume;
 
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (!(o instanceof TickerWholePrice)) return false;
-			if (!super.equals(o)) return false;
-
-			TickerWholePrice that = (TickerWholePrice) o;
-
-			return wholeLotVolume != null ? wholeLotVolume.equals(that.wholeLotVolume) : that.wholeLotVolume == null;
-		}
-
-		@Override
-		public int hashCode() {
-			int result = super.hashCode();
-			result = 31 * result + (wholeLotVolume != null ? wholeLotVolume.hashCode() : 0);
-			return result;
-		}
-
 		public Integer getWholeLotVolume() {
 			return wholeLotVolume;
 		}
@@ -197,24 +122,6 @@ public class Ticker  {
 	public static class TickerVolume {
 		private Double today;
 		private Double last24Hours;
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (!(o instanceof TickerVolume)) return false;
-
-			TickerVolume volume = (TickerVolume) o;
-
-			if (today != null ? !today.equals(volume.today) : volume.today != null) return false;
-			return last24Hours != null ? last24Hours.equals(volume.last24Hours) : volume.last24Hours == null;
-		}
-
-		@Override
-		public int hashCode() {
-			int result = today != null ? today.hashCode() : 0;
-			result = 31 * result + (last24Hours != null ? last24Hours.hashCode() : 0);
-			return result;
-		}
 
 		public Double getToday() {
 			return today;
