@@ -5,7 +5,7 @@ package com.fede.app.crypto.trading.kraken;
  *
  * @author nyg
  */
-public enum ApiMethod {
+public enum KrakenMethod {
 
 	/* Public methods */
 	TIME("Time", true),
@@ -42,7 +42,7 @@ public enum ApiMethod {
 	private final String name;
 	private final boolean isPublic;
 
-	ApiMethod(String name, boolean isPublic) {
+	KrakenMethod(String name, boolean isPublic) {
 		this.name = name;
 		this.isPublic = isPublic;
 	}

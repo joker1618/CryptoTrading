@@ -34,19 +34,19 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 
 	@Override
 	public Long getServerTime() throws KrakenResponseError, KrakenCallException {
-		JsonToModel jm = performPublicCall(ApiMethod.TIME, null);
+		JsonToModel jm = performPublicCall(KrakenMethod.TIME, null);
 		return jm.parseServerTime();
 	}
 
 	@Override
 	public List<Asset> getAssets() throws KrakenResponseError, KrakenCallException {
-		JsonToModel jm = performPublicCall(ApiMethod.ASSETS, null);
+		JsonToModel jm = performPublicCall(KrakenMethod.ASSETS, null);
 		return jm.parseAssets();
 	}
 
 	@Override
 	public List<AssetPair> getAssetPairs() throws KrakenResponseError, KrakenCallException {
-		JsonToModel jm = performPublicCall(ApiMethod.ASSET_PAIRS, null);
+		JsonToModel jm = performPublicCall(KrakenMethod.ASSET_PAIRS, null);
 		return jm.parseAssetPairs();
 	}
 
@@ -55,9 +55,24 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", Utils.join(pairNames));
 		long callTime = System.currentTimeMillis();
-		JsonToModel jm = performPublicCall(ApiMethod.TICKER, apiParams);
+		JsonToModel jm = performPublicCall(KrakenMethod.TICKER, apiParams);
 		return jm.parseTickers(callTime);
 	}
+
+	@Override
+	public Pair<Long, List<SpreadData>> getSpreadData(String pairName, Long since) throws KrakenResponseError, KrakenCallException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("pair", pairName);
+		if(since != null && since > 0) {
+			apiParams.put("since", String.valueOf(since));
+		}
+		JsonToModel jm = performPublicCall(KrakenMethod.SPREAD, apiParams);
+		return jm.parseSpreadData(pairName);
+	}
+
+
+	////////////////////////////////////// Deprecated methods below /////////////////////////////////////////////////////////////////////
+
 
 	@Override
 	public Pair<Long, List<Ohlc>> getOhlcs(String pairName, long since) throws IOException {
@@ -66,7 +81,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		if(since > 0) {
 			apiParams.put("since", String.valueOf(since));
 		}
-		String json = krakenApi.queryPublic(ApiMethod.OHLC, apiParams);
+		String json = krakenApi.queryPublic(KrakenMethod.OHLC, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOhlcs(pairName);
 	}
@@ -75,7 +90,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 	public List<MarketOrder> getOrderBook(String pairName) throws IOException {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", pairName);
-		String json = krakenApi.queryPublic(ApiMethod.DEPTH, apiParams);
+		String json = krakenApi.queryPublic(KrakenMethod.DEPTH, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOrderBook(pairName);
 	}
@@ -87,26 +102,15 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		if(since > 0) {
 			apiParams.put("since", String.valueOf(since));
 		}
-		String json = krakenApi.queryPublic(ApiMethod.TRADES, apiParams);
+		String json = krakenApi.queryPublic(KrakenMethod.TRADES, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseRecentTrades(pairName);
 	}
 
 	@Override
-	public Pair<Long, List<SpreadData>> getSpreadData(String pairName, Long since) throws KrakenResponseError, KrakenCallException {
-		Map<String, String> apiParams = new HashMap<>();
-		apiParams.put("pair", pairName);
-		if(since != null && since > 0) {
-			apiParams.put("since", String.valueOf(since));
-		}
-		JsonToModel jm = performPublicCall(ApiMethod.SPREAD, apiParams);
-		return jm.parseSpreadData(pairName);
-	}
-
-	@Override
 	public List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		long callTime = System.currentTimeMillis();
-		String json = krakenApi.queryPrivate(ApiMethod.BALANCE);
+		String json = krakenApi.queryPrivate(KrakenMethod.BALANCE);
 		System.out.println(json);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseAccountBalance(callTime);
@@ -119,7 +123,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 			apiParams.put("asset", baseAsset);
 		}
 		long callTime = System.currentTimeMillis();
-		String json = krakenApi.queryPrivate(ApiMethod.TRADE_BALANCE, apiParams);
+		String json = krakenApi.queryPrivate(KrakenMethod.TRADE_BALANCE, apiParams);
 		System.out.println(json);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseTradeBalance(callTime);
@@ -131,7 +135,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		if(includeTrades) {
 			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
 		}
-		String json = krakenApi.queryPrivate(ApiMethod.OPEN_ORDERS, apiParams);
+		String json = krakenApi.queryPrivate(KrakenMethod.OPEN_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOpenOrders();
 	}
@@ -142,7 +146,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		if(includeTrades) {
 			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
 		}
-		String json = krakenApi.queryPrivate(ApiMethod.CLOSED_ORDERS, apiParams);
+		String json = krakenApi.queryPrivate(KrakenMethod.CLOSED_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseClosedOrders();
 	}
@@ -154,7 +158,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		if(includeTrades) {
 			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
 		}
-		String json = krakenApi.queryPrivate(ApiMethod.QUERY_ORDERS, apiParams);
+		String json = krakenApi.queryPrivate(KrakenMethod.QUERY_ORDERS, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOrdersInfo();
 	}
@@ -173,12 +177,12 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 	@Override
 	public List<LedgerInfo> getLedgersInfo(Collection<String> ledgerIDs) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
 		Map<String, String> apiParams = new HashMap<>();
-		ApiMethod kmethod;
+		KrakenMethod kmethod;
 		if(!ledgerIDs.isEmpty()) {
 			apiParams.put("id", Utils.join(ledgerIDs, ","));
-			kmethod = ApiMethod.QUERY_LEDGERS;
+			kmethod = KrakenMethod.QUERY_LEDGERS;
 		} else {
-			kmethod = ApiMethod.LEDGERS;
+			kmethod = KrakenMethod.LEDGERS;
 		}
 		String json = krakenApi.queryPrivate(kmethod, apiParams);
 		JsonToModel jm = new JsonToModel(json);
@@ -190,7 +194,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", Utils.join(assetPairs, ","));
 		apiParams.put("fee-info", "true");
-		String json = krakenApi.queryPrivate(ApiMethod.TRADE_VOLUME, apiParams);
+		String json = krakenApi.queryPrivate(KrakenMethod.TRADE_VOLUME, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseTradeVolume();
 	}
@@ -224,26 +228,29 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		if(orderRequest.isValidate()) {
 			apiParams.put("validate", "yes");
 		}
-		String json = krakenApi.queryPrivate(ApiMethod.ADD_ORDER, apiParams);
+		String json = krakenApi.queryPrivate(KrakenMethod.ADD_ORDER, apiParams);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseOrderOut();
 	}
 
 
-	private JsonToModel performPublicCall(ApiMethod method, Map<String, String> apiParams) throws KrakenResponseError, KrakenCallException {
+	private JsonToModel performPublicCall(KrakenMethod method, Map<String, String> apiParams) throws KrakenResponseError, KrakenCallException {
 		try {
-			logger.info("Performing public Kraken call for %s", method.getName());
+			String subMex = String.format("Kraken call, method %s", method.getName());
+			long start = System.currentTimeMillis();
+			logger.info("%s: start", subMex);
 			String json = krakenApi.queryPublic(method, apiParams);
-			logger.config("JSON received --> %s", json);
+			logger.info("%s: elapsed %d ms", subMex, (System.currentTimeMillis()-start));
+			logger.fine("JSON received --> %s", json);
 			JsonToModel jm = new JsonToModel(json);
 			if(jm.containsErrors()) {
-				logger.error("Kraken call return errors: %s", jm.getErrors());
+				logger.error("Kraken public call for method %s return errors: %s", method.getName(), jm.getErrors());
 				throw new KrakenResponseError(method.getName(), jm.getErrors());
 			}
 			return jm;
 
 		} catch (IOException e) {
-			logger.error("%s", e);
+			logger.error(e);
 			throw new KrakenCallException(e, method.getName());
 		}
 	}

@@ -10,6 +10,7 @@ import java.util.List;
 public interface IAssetsDao {
 
 	List<Asset> getAssets();
-	void persistNewAssets(Long callTime, List<Asset> newAssets);
+	
+	void persistAssets(Long callTime, List<Asset> newAssets);
 
 }

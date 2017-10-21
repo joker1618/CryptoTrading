@@ -1,5 +1,8 @@
 package com.fede.app.crypto.trading.logger;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,16 +18,16 @@ class SimpleLogImpl implements ISimpleLog {
 	}
 
 	@Override
-	public void error(Throwable t) {
-		logger.log(Level.SEVERE, t.toString(), t);
+	public synchronized void error(Throwable t) {
+		error(t, null);
 	}
 	@Override
 	public synchronized void error(String mex, Object... params) {
-		logger.log(Level.SEVERE, String.format(mex, params));
+		error(null, mex, params);
 	}
 	@Override
-	public void error(Throwable t, String mex, Object... params) {
-		logger.log(Level.SEVERE, String.format(mex, params), t);
+	public synchronized void error(Throwable t, String mex, Object... params) {
+		logThrowable(t, Level.SEVERE, mex, params);
 	}
 	@Override
 	public synchronized void warning(String mex, Object... params) {
@@ -49,6 +52,26 @@ class SimpleLogImpl implements ISimpleLog {
 	@Override
 	public synchronized void finest(String mex, Object... params) {
 		logger.log(Level.FINEST, String.format(mex, params));
+	}
+
+
+	private void logThrowable(Throwable t, Level level, String mex, Object... params) {
+		StringBuilder sb = new StringBuilder();
+		if(StringUtils.isNotBlank(mex)) {
+			sb.append(String.format(mex, params)).append("\n");
+		}
+		sb.append(toStringStackTrace(t));
+		logger.log(level, sb.toString());
+	}
+	private String toStringStackTrace(Throwable t) {
+		StringBuilder sb = new StringBuilder();
+		Throwable selected = t;
+		while (selected != null) {
+			sb.append(selected).append("\n");
+			Arrays.stream(selected.getStackTrace()).forEach(el -> sb.append("\tat ").append(el).append("\n"));
+			selected = selected.getCause();
+		}
+		return sb.toString().trim();
 	}
 
 }

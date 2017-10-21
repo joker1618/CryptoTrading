@@ -6,14 +6,16 @@ import java.util.logging.Level;
 /**
  * Created by f.barbano on 01/10/2017.
  */
-public interface IKrakenConfig {
+public interface ICryptoConfig {
+
+	// Configs
+	boolean isLogsEnabled();
 
 	// Api token
 	String getKrakenApiKey();
 	String getKrakenApiSecret();
 
 	// Run parameters
-	boolean isDBEnabled();
 	int getCallSecondsRateAssets();
 	int getCallSecondsRateAssetPairs();
 	int getCallSecondsRateTickers();
@@ -23,17 +25,5 @@ public interface IKrakenConfig {
 	String getDBUrl();
 	String getDBUsername();
 	String getDBPassword();
-
-	// CSV files config
-	Path getCsvPathAssets();
-	Path getCsvPathAssetPairs();
-	Path getCsvPathTickers();
-	Path getCsvPathSpreadData();
-	Path getCsvPathAccountBalance();
-
-	// Logs config
-	Path getLogPathErrors();
-	Path getLogPathAll();
-	Level getLogLevelConsole();
 
 }

@@ -1,11 +1,14 @@
 package com.fede.app.crypto.trading.logger;
 
+import com.fede.app.crypto.trading.common.Const;
+import com.fede.app.crypto.trading.config.CryptoConfigImpl;
+import com.fede.app.crypto.trading.config.ICryptoConfig;
+import com.fede.app.crypto.trading.exception.TechnicalException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -18,27 +21,35 @@ public class LogService {
 
 	private static final LogService INSTANCE = new LogService();
 
-	private final Logger rootLogger;
-	private final ConsoleHandler consoleHandler;
-	private boolean consoleEnabled;
-	private Map<Path, FileHandler> fileHandlerMap;
+	private final ICryptoConfig config = CryptoConfigImpl.getInstance();
 
 
 	private LogService() {
 		Logger.getLogger("").setLevel(Level.OFF);
 
-		this.rootLogger = Logger.getLogger("com.fede.app.crypto.trading");
-		this.rootLogger.setLevel(Level.ALL);
-		this.rootLogger.setUseParentHandlers(false);
+		Logger rootLogger = Logger.getLogger("com.fede.app.crypto.trading");
+		rootLogger.setLevel(Level.ALL);
+		rootLogger.setUseParentHandlers(false);
 		Arrays.stream(rootLogger.getHandlers()).forEach(rootLogger::removeHandler);
 
-		this.consoleHandler = new ConsoleHandler();
-		this.consoleHandler.setFormatter(new LogFormatter(true));
+		ConsoleHandler consoleHandler = new ConsoleHandler();
+		consoleHandler.setFormatter(new LogFormatter(true));
+		consoleHandler.setLevel(Level.INFO);
+		rootLogger.addHandler(consoleHandler);
 
-		this.fileHandlerMap = new HashMap<>();
+		List<FileHandler> fileHandlers = new ArrayList<>();
+		if(config.isLogsEnabled()) {
+			FileHandler fhAll = getFileHandler(Const.LOG_ALL_PATH, Level.ALL);
+			rootLogger.addHandler(fhAll);
+			fileHandlers.add(fhAll);
+
+			FileHandler fhWarn = getFileHandler(Const.LOG_WARN_PATH, Level.WARNING);
+			rootLogger.addHandler(fhWarn);
+			fileHandlers.add(fhWarn);
+		}
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			fileHandlerMap.values().forEach(FileHandler::close);
+			fileHandlers.forEach(FileHandler::close);
 			consoleHandler.close();
 		}));
 	}
@@ -52,30 +63,15 @@ public class LogService {
 		return getLogger(clazz.getName());
 	}
 
-	public static void setLogLevel(Level level) {
-		synchronized (INSTANCE) {
-			INSTANCE.rootLogger.setLevel(level);
-		}
-	}
-
-	public static void enableConsole(Level level) {
-		synchronized (INSTANCE) {
-			if(!INSTANCE.consoleEnabled) {
-				INSTANCE.consoleEnabled = true;
-				INSTANCE.rootLogger.addHandler(INSTANCE.consoleHandler);
-			}
-			INSTANCE.consoleHandler.setLevel(level);
-		}
-	}
-
-	public static void addFileHandler(Path logFilePath, Level level) throws IOException {
-		synchronized (INSTANCE) {
+	private FileHandler getFileHandler(Path logFilePath, Level level) {
+		try {
 			Files.createDirectories(logFilePath.getParent());
 			FileHandler fh = new FileHandler(logFilePath.toString(), true);
 			fh.setLevel(level);
 			fh.setFormatter(new LogFormatter(false));
-			INSTANCE.fileHandlerMap.put(logFilePath, fh);
-			INSTANCE.rootLogger.addHandler(fh);
+			return fh;
+		} catch(IOException ex) {
+			throw new TechnicalException(ex);
 		}
 	}
 

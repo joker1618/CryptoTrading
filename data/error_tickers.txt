@@ -1,0 +1,11 @@
+2017-10-11 21:38:10.051 - KrakenFacadeImpl(235)  - <thread-15>   - INFO          - Performing public Kraken call for Ticker
+2017-10-11 21:38:12.002 - TickersDBDao(123)      - <thread-15>   - INFO          - 47 new tickers inserted (callTime = 1507750691968)
+2017-10-11 21:38:30.051 - KrakenFacadeImpl(235)  - <thread-15>   - INFO          - Performing public Kraken call for Ticker
+2017-10-11 21:38:31.287 - TickersDBDao(123)      - <thread-15>   - INFO          - 47 new tickers inserted (callTime = 1507750711258)
+2017-10-11 21:38:50.051 - KrakenFacadeImpl(235)  - <thread-15>   - INFO          - Performing public Kraken call for Ticker
+2017-10-11 21:38:51.362 - TickersDBDao(123)      - <thread-15>   - INFO          - 47 new tickers inserted (callTime = 1507750731327)
+2017-10-11 21:39:10.051 - KrakenFacadeImpl(235)  - <thread-15>   - INFO          - Performing public Kraken call for Ticker
+2017-10-11 21:39:11.403 - TickersDBDao(123)      - <thread-15>   - INFO          - 47 new tickers inserted (callTime = 1507750751369)
+2017-10-11 21:39:30.055 - KrakenFacadeImpl(235)  - <thread-15>   - INFO          - Performing public Kraken call for Ticker
+2017-10-11 21:39:51.063 - KrakenFacadeImpl(246)  - <thread-15>   - SEVERE        - java.net.ConnectException: Connection timed out: connect
+2017-10-11 21:39:51.064 - KrakenEngine(151)      - <thread-15>   - SEVERE        - com.fede.app.crypto.trading.exception.KrakenCallException: Method call: Ticker

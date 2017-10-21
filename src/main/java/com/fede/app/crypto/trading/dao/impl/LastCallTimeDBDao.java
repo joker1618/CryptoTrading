@@ -1,4 +1,4 @@
-package com.fede.app.crypto.trading.dao.impl.db;
+package com.fede.app.crypto.trading.dao.impl;
 
 import com.fede.app.crypto.trading.dao.ILastCallTimeDao;
 import com.fede.app.crypto.trading.exception.TechnicalException;
@@ -18,6 +18,8 @@ import java.util.Map;
  * Created by f.barbano on 11/10/2017.
  */
 public class LastCallTimeDBDao extends AbstractDBDao implements ILastCallTimeDao {
+
+	// review all
 
 	private static final ISimpleLog logger = LogService.getLogger(LastCallTimeDBDao.class);
 

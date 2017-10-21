@@ -1,4 +1,4 @@
-package com.fede.app.crypto.trading.dao.impl.db;
+package com.fede.app.crypto.trading.dao.impl;
 
 import com.fede.app.crypto.trading.dao.ITickersDao;
 import com.fede.app.crypto.trading.exception.TechnicalException;
@@ -116,24 +116,8 @@ public class TickersDBDao extends AbstractDBDao implements ITickersDao {
 	public void persistNewTickers(Long callTime, Collection<Ticker> tickers) {
 		String values = Utils.join(tickers, ",", t -> tickerToValues(callTime, t));
 		String query = Q_INSERT_NEW.replace(PH_TICKER_LIST, values);
-		PreparedStatement ps = null;
-
-		try {
-			ps = connection.prepareStatement(query);
-			int numInsert = ps.executeUpdate();
-			logger.info("%d new tickers inserted (callTime = %d)", numInsert, callTime);
-
-		} catch (SQLException e) {
-			logger.error(e);
-			throw new TechnicalException(e);
-		} finally {
-			try {
-				if (ps != null && !ps.isClosed()) 	ps.close();
-			} catch (SQLException e) {
-				logger.error(e, "Unable to close JDBC statement");
-				throw new TechnicalException(e, "Unable to close JDBC statements");
-			}
-		}
+		int numInsert = super.performUpdate(query);
+		logger.info("Insert %d new tickers", numInsert);
 	}
 
 	private String tickerToValues(Long callTime, Ticker ticker) {

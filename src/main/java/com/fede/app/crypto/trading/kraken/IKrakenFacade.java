@@ -27,31 +27,46 @@ public interface IKrakenFacade {
 
 	List<Ticker> getTickers(Collection<String> pairNames) throws KrakenResponseError, KrakenCallException;
 
-	Pair<Long, List<Ohlc>> getOhlcs(String pairName, long since) throws IOException;
-
-	List<MarketOrder> getOrderBook(String pairName) throws IOException;
-
-	Pair<Long, List<RecentTrade>> getRecentTrades(String pairName, long since) throws IOException;
-
 	Pair<Long, List<SpreadData>> getSpreadData(String pairName, Long since) throws KrakenResponseError, KrakenCallException;
 
+
+
+	@Deprecated
+	Pair<Long, List<Ohlc>> getOhlcs(String pairName, long since) throws IOException;
+
+	@Deprecated
+	List<MarketOrder> getOrderBook(String pairName) throws IOException;
+
+	@Deprecated
+	Pair<Long, List<RecentTrade>> getRecentTrades(String pairName, long since) throws IOException;
+
+	@Deprecated
 	List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 
+	@Deprecated
 	TradeBalance getTradeBalance(String baseAsset) throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 
+	@Deprecated
 	List<OpenOrder> getOpenOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
+	@Deprecated
 	List<ClosedOrder> getClosedOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
+	@Deprecated
 	List<OrderInfo> getOrdersInfo(Collection<String> tradeIDs, boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
+	@Deprecated
 	List<OpenPosition> getOpenPositions(Collection<String> tradeIDs) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
+	@Deprecated
 	List<LedgerInfo> getLedgersInfo() throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
+	@Deprecated
 	List<LedgerInfo> getLedgersInfo(Collection<String> ledgerIDs) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
+	@Deprecated
 	TradeVolume getTradeVolume(Collection<String> assetPairs) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
+	@Deprecated
 	AddOrderOut addOrder(AddOrderIn orderRequest) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 }

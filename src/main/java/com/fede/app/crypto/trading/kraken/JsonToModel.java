@@ -14,10 +14,10 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static com.fede.app.crypto.trading.model._public.AssetPair.FeeSchedule;
 import static com.fede.app.crypto.trading.model._private.OpenOrder.OrderDescr;
-import static com.fede.app.crypto.trading.model._public.Ticker.*;
 import static com.fede.app.crypto.trading.model._private.TradeVolume.FeeInfo;
+import static com.fede.app.crypto.trading.model._public.AssetPair.FeeSchedule;
+import static com.fede.app.crypto.trading.model._public.Ticker.*;
 
 /**
  * Created by f.barbano on 13/09/2017.
@@ -64,7 +64,7 @@ class JsonToModel {
 			asset.setDisplayDecimals(getInt(jsonAsset, "display_decimals"));
 			assetList.add(asset);
 		}
-		Collections.sort(assetList, Comparator.comparing(Asset::getAssetName));
+		assetList.sort(Comparator.comparing(Asset::getAssetName));
 		return assetList;
 	}
 

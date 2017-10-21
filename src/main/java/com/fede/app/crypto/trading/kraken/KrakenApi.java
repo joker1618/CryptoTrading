@@ -32,9 +32,9 @@ class KrakenApi {
      * @throws IllegalArgumentException if the API method is null
      * @throws IOException if the request could not be created or executed
      */
-    public String queryPublic(ApiMethod method, Map<String, String> parameters) throws IOException {
+    public String queryPublic(KrakenMethod method, Map<String, String> parameters) throws IOException {
 
-        ApiRequest request = new ApiRequest();
+        KrakenRequest request = new KrakenRequest();
         request.setMethod(method);
 
         if (parameters != null) {
@@ -51,7 +51,7 @@ class KrakenApi {
      * @return the API response
      * @throws IOException if the request could not be created or executed
      */
-    public String queryPublic(ApiMethod method) throws IOException {
+    public String queryPublic(KrakenMethod method) throws IOException {
         return queryPublic(method, null);
     }
 
@@ -67,9 +67,9 @@ class KrakenApi {
      *         could not be found
      * @throws InvalidKeyException if the HMAC key is invalid
      */
-    public String queryPrivate(ApiMethod method, String otp, Map<String, String> parameters) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String queryPrivate(KrakenMethod method, String otp, Map<String, String> parameters) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 
-        ApiRequest request = new ApiRequest();
+        KrakenRequest request = new KrakenRequest();
         request.setKey(key);
 
         // clone parameter map
@@ -107,23 +107,23 @@ class KrakenApi {
     }
 
     /**
-     * @see #queryPrivate(ApiMethod, String, Map)
+     * @see #queryPrivate(KrakenMethod, String, Map)
      */
-    public String queryPrivate(ApiMethod method) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+    public String queryPrivate(KrakenMethod method) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         return queryPrivate(method, null, null);
     }
 
     /**
-     * @see #queryPrivate(ApiMethod, String, Map)
+     * @see #queryPrivate(KrakenMethod, String, Map)
      */
-    public String queryPrivate(ApiMethod method, String otp) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+    public String queryPrivate(KrakenMethod method, String otp) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         return queryPrivate(method, otp, null);
     }
 
     /**
-     * @see #queryPrivate(ApiMethod, String, Map)
+     * @see #queryPrivate(KrakenMethod, String, Map)
      */
-    public String queryPrivate(ApiMethod method, Map<String, String> parameters) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+    public String queryPrivate(KrakenMethod method, Map<String, String> parameters) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
         return queryPrivate(method, null, parameters);
     }
 

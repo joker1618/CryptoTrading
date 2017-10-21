@@ -1,10 +1,11 @@
-package com.fede.app.crypto.trading.dao.impl.db;
+package com.fede.app.crypto.trading.dao.impl;
 
 import com.fede.app.crypto.trading.dao.IAssetsDao;
 import com.fede.app.crypto.trading.exception.TechnicalException;
 import com.fede.app.crypto.trading.logger.ISimpleLog;
 import com.fede.app.crypto.trading.logger.LogService;
 import com.fede.app.crypto.trading.model._public.Asset;
+import com.fede.app.crypto.trading.util.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,9 +21,9 @@ public class AssetsDBDao extends AbstractDBDao implements IAssetsDao {
 
 	private static final ISimpleLog logger = LogService.getLogger(AssetsDBDao.class);
 
-	private static final String Q_GET_VALIDS = "SELECT * FROM ASSETS WHERE EXPIRE_TIME = 0";
+	private static final String Q_GET_VALID_ASSETS = "SELECT ASSET_NAME, A_CLASS, ALT_NAME, DECIMALS, DISPLAY_DECIMALS FROM ASSETS WHERE EXPIRE_TIME = 0 ORDER BY ASSET_NAME";
 	private static final String Q_UPDATE_EXPIRE_TIME = "UPDATE ASSETS SET EXPIRE_TIME = ? WHERE EXPIRE_TIME = 0";
-	private static final String Q_INSERT_NEW = "INSERT INTO ASSETS (ASSET_NAME, A_CLASS, ALT_NAME, DECIMALS, DISPLAY_DECIMALS, START_TIME, EXPIRE_TIME) VALUES @ASSET_LIST@";
+	private static final String Q_INSERT_ASSETS = "INSERT INTO ASSETS (ASSET_NAME, A_CLASS, ALT_NAME, DECIMALS, DISPLAY_DECIMALS, START_TIME, EXPIRE_TIME) VALUES @ASSET_LIST@";
 
 	private static final String PH_ASSET_LIST = "@ASSET_LIST@";
 
@@ -32,7 +33,7 @@ public class AssetsDBDao extends AbstractDBDao implements IAssetsDao {
 
 	@Override
 	public List<Asset> getAssets() {
-		try (PreparedStatement ps = connection.prepareStatement(Q_GET_VALIDS);
+		try (PreparedStatement ps = connection.prepareStatement(Q_GET_VALID_ASSETS);
 			 ResultSet rs = ps.executeQuery()){
 
 			List<Asset> assets = new ArrayList<>();
@@ -56,48 +57,15 @@ public class AssetsDBDao extends AbstractDBDao implements IAssetsDao {
 	}
 
 	@Override
-	public void persistNewAssets(Long callTime, List<Asset> newAssets) {
-		List<Asset> actualAssets = getAssets();
-		if(!actualAssets.equals(newAssets)) {
-			logger.info("New assets downloaded!");
-
-			PreparedStatement ps = null;
-
-			try {
-				ps = connection.prepareStatement(Q_UPDATE_EXPIRE_TIME);
-				ps.setLong(1, callTime);
-				int numUpdated = ps.executeUpdate();
-				ps.close();
-				if(numUpdated > 0) {
-					logger.info("%d assets updated: expire time changed from 0 to %d", numUpdated, callTime);
-				}
-
-				StringBuilder sb = new StringBuilder();
-				for (Asset asset : newAssets) {
-					if (sb.length() > 0) sb.append(",");
-					sb.append(assetToValues(asset, callTime));
-				}
-				String query = Q_INSERT_NEW.replace(PH_ASSET_LIST, sb.toString());
-				ps = connection.prepareStatement(query);
-				int numInsert = ps.executeUpdate();
-				logger.info("%d new assets inserted in DB", numInsert);
-
-			} catch (SQLException e) {
-				logger.error(e);
-				throw new TechnicalException(e);
-			} finally {
-				try {
-					if (ps != null && !ps.isClosed()) 	ps.close();
-				} catch (SQLException e) {
-					logger.error(e, "Unable to close JDBC statement");
-					throw new TechnicalException(e, "Unable to close JDBC statements");
-				}
-			}
-
-		} else {
-			logger.info("Assets downloaded are equals to the assets saved in DB: insert query not performed.");
-		}
-
+	public void persistAssets(Long callTime, List<Asset> newAssets) {
+		// Update expire time of actual valid assets
+		int numUpdated = super.performUpdate(Q_UPDATE_EXPIRE_TIME, callTime);
+		logger.fine("Updated expire time for %d assets (from 0 to %d)", numUpdated, callTime);
+		// Insert new assets
+		String strValues = Utils.join(newAssets, ",", a -> assetToValues(a, callTime));
+		String query = Q_INSERT_ASSETS.replace(PH_ASSET_LIST, strValues);
+		int numInsert = super.performUpdate(query);
+		logger.fine("Insert %d new assets (callTime=%d)", numInsert, callTime);
 	}
 
 	private String assetToValues(Asset asset, Long callTime) {

@@ -1,7 +1,6 @@
 package com.fede.app.crypto.trading.dao;
 
 import com.fede.app.crypto.trading.model._public.SpreadData;
-import com.fede.app.crypto.trading.model._public.Ticker;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,7 +10,10 @@ import java.util.List;
  */
 public interface ISpreadDataDao {
 
+	// review all
+
 	List<SpreadData> getSpreadData();
+	
 	void persistNewSpreadData(Collection<SpreadData> spreadData);
 
 }

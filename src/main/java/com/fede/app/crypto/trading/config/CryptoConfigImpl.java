@@ -7,36 +7,34 @@ import org.apache.commons.lang3.StringUtils;
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.io.*;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Level;
 
 import static com.fede.app.crypto.trading.config.PropKey.*;
 
 /**
  * Created by f.barbano on 01/10/2017.
  */
-public class KrakenConfigImpl implements IKrakenConfig {
+public class CryptoConfigImpl implements ICryptoConfig {
 
-	private static final IKrakenConfig INSTANCE = new KrakenConfigImpl();
+	private static final ICryptoConfig INSTANCE = new CryptoConfigImpl();
 	
 	private static final String KEY_SEP = "=";
 	private static final String COMMENT_START = "#";
 	
 	private Map<String, String> configMap;
 
-	private KrakenConfigImpl() {
+	private CryptoConfigImpl() {
 		this.configMap = new HashMap<>();
 		try {
-			loadConfigFile(Const.CONFIG_FILEPATH);
+			loadConfigFile(Const.CONFIG_PATH);
 		} catch (IOException ex) {
-			throw new TechnicalException(ex, "Unable to load properties from path [%s]", Const.CONFIG_FILEPATH.toAbsolutePath());
+			throw new TechnicalException(ex, "Unable to load properties from path [%s]", Const.CONFIG_PATH.toAbsolutePath());
 		}
 	}
 	
-	public static synchronized IKrakenConfig getInstance() {
+	public static synchronized ICryptoConfig getInstance() {
 		return INSTANCE;
 	}
 
@@ -76,6 +74,11 @@ public class KrakenConfigImpl implements IKrakenConfig {
 	}
 
 	@Override
+	public boolean isLogsEnabled() {
+		return getBoolean(LOGS_ENABLED);
+	}
+
+	@Override
 	public synchronized String getKrakenApiKey() {
 		return getString(API_KEY);
 	}
@@ -83,11 +86,6 @@ public class KrakenConfigImpl implements IKrakenConfig {
 	@Override
 	public synchronized String getKrakenApiSecret() {
 		return getString(API_SECRET);
-	}
-
-	@Override
-	public synchronized boolean isDBEnabled() {
-		return getBoolean(RUN_DB_ENABLED);
 	}
 
 	@Override
@@ -125,50 +123,6 @@ public class KrakenConfigImpl implements IKrakenConfig {
 		return getString(DB_PASSWORD);
 	}
 
-	@Override
-	public synchronized Path getCsvPathAssets() {
-		return getPath(CSV_FOLDER, CSV_FILENAME_ASSETS);
-	}
-
-	@Override
-	public synchronized Path getCsvPathAssetPairs() {
-		return getPath(CSV_FOLDER, CSV_FILENAME_ASSET_PAIRS);
-	}
-
-	@Override
-	public synchronized Path getCsvPathTickers() {
-		return getPath(CSV_FOLDER, CSV_FILENAME_TICKERS);
-	}
-
-	@Override
-	public synchronized Path getCsvPathSpreadData() {
-		return getPath(CSV_FOLDER, CSV_FILENAME_SPREAD_DATA);
-	}
-
-	@Override
-	public synchronized Path getCsvPathAccountBalance() {
-		return getPath(CSV_FOLDER, CSV_FILENAME_ACCOUNT_BALANCE);
-	}
-
-	@Override
-	public Path getLogPathErrors() {
-		return getPath(LOGS_FOLDER).resolve("errors.log");
-	}
-
-	@Override
-	public Path getLogPathAll() {
-		return getPath(LOGS_FOLDER).resolve("all.log");
-	}
-
-	@Override
-	public Level getLogLevelConsole() {
-		try {
-			return Level.parse(getString(LOGS_CONSOLE_LEVEL));
-		} catch(IllegalArgumentException ex) {
-			return Level.ALL;
-		}
-	}
-
 
 	private String getString(String propKey) {
 		return configMap.get(propKey);
@@ -178,14 +132,6 @@ public class KrakenConfigImpl implements IKrakenConfig {
 	}
 	private int getInt(String propKey) {
 		return Integer.parseInt(getString(propKey));
-	}
-	private Path getPath(String key) {
-		Path baseFolder = Paths.get(getString(BASE_FOLDER));
-		return baseFolder.resolve(getString(key));
-	}
-	private Path getPath(String folderKey, String filenameKey) {
-		Path folder = getPath(folderKey);
-		return folder.resolve(getString(filenameKey));
 	}
 
 	private void replaceVariables(Map<String, String> loaded) {

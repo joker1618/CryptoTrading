@@ -1,7 +1,6 @@
 package com.fede.app.crypto.trading.exception;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by f.barbano on 04/10/2017.

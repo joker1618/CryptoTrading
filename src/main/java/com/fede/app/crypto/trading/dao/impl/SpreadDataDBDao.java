@@ -1,4 +1,4 @@
-package com.fede.app.crypto.trading.dao.impl.db;
+package com.fede.app.crypto.trading.dao.impl;
 
 import com.fede.app.crypto.trading.dao.ISpreadDataDao;
 import com.fede.app.crypto.trading.exception.TechnicalException;
@@ -19,6 +19,9 @@ import java.util.List;
  * Created by f.barbano on 10/10/2017.
  */
 public class SpreadDataDBDao extends AbstractDBDao implements ISpreadDataDao {
+
+	// review all
+
 
 	private static final ISimpleLog logger = LogService.getLogger(SpreadDataDBDao.class);
 

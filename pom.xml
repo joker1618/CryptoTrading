@@ -68,7 +68,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.fede.app.crypto.trading.main.KrakenMain</mainClass>
+                            <mainClass>com.fede.app.crypto.trading.main.CryptoMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -12,7 +12,7 @@ import java.util.Map.Entry;
  *
  * @author nyg
  */
-class ApiRequest {
+class KrakenRequest {
 
     private static final String ERROR_NULL_METHOD = "The API method can't be null.";
     private static final String ERROR_NULL_SIGNATURE = "The signature can't be null.";
@@ -109,7 +109,7 @@ class ApiRequest {
      * @throws MalformedURLException if the request URL could not be created
      *         with the method name
      */
-    public String setMethod(ApiMethod method) throws MalformedURLException {
+    public String setMethod(KrakenMethod method) throws MalformedURLException {
 
         if (method == null) {
             throw new IllegalArgumentException(ERROR_NULL_METHOD);
