@@ -26,7 +26,7 @@ NOTES
     - OHLC max 12 h indietro
     - RecentTrades max 3,5 h indietro
     - SpreadData max 20 min indietro
-    ASK -> why alcuni spread data sono ripetuti? (forse perché cambiano in meno di 1sec, ma il timestamp è espresso in secondi)
+    ASK -> why alcuni spread data sono ripetuti? (forse perché cambiano in meno di 1sec, ma il timestamp  è espresso in secondi)
     N -> per ogni timestamp riporta la differenza tra il prezzo della domanda ed il prezzo dell'offerta.
 
 PIANTA TODO LIST
