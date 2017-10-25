@@ -1,10 +1,13 @@
 package com.fede.app.launcher;
 
 import com.fede.app.crypto.trading.common.Const;
-import com.fede.app.crypto.trading.facade.IKrakenCaller;
-import com.fede.app.crypto.trading.facade.KrakenCallerImpl;
+import com.fede.app.crypto.trading.dao.IAssetsDao;
+import com.fede.app.crypto.trading.dao.impl.AssetsDBDao;
+import com.fede.app.crypto.trading.kraken.IKrakenFacade;
+import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
 import com.fede.app.crypto.trading.model._private.*;
 import com.fede.app.crypto.trading.model._public.*;
+import com.fede.app.crypto.trading.util.DateUtils;
 import com.fede.app.crypto.trading.util.Utils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -15,11 +18,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.System.out;
 
@@ -28,27 +31,42 @@ import static java.lang.System.out;
  */
 public class SingleCall {
 
-	private static IKrakenCaller krakenCaller;
+	private static final String JDBC_DRIVER_CLASS = "com.mysql.jdbc.Driver";
+	private static final String DB_URL = "jdbc:mysql://localhost:3306/CRYPTO_TRADING";
+	private static final String USERNAME = "user";
+	private static final String PASSWORD = "user";
+
+	private static IKrakenFacade krakenFacade;
+	private static IAssetsDao assetsDao;
 
 	@BeforeClass
 	public static void beforeClass() {
-		krakenCaller = new KrakenCallerImpl(Const.KRAKEN_KEY, Const.KRAKEN_SECRET);
+		krakenFacade = new KrakenFacadeImpl(Const.KRAKEN_KEY, Const.KRAKEN_SECRET);
+		try {
+			Class.forName(JDBC_DRIVER_CLASS);
+			Connection connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+			assetsDao = new AssetsDBDao(connection);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Test
-	public void testGetServerTime() throws IOException {
+	public void testGetServerTime() throws Exception {
 		long starttm = System.currentTimeMillis();
-		Long serverTime = krakenCaller.getServerTime();
+		Long serverTime = krakenFacade.getServerTime();
 		long endtm = System.currentTimeMillis();
-		printOut(serverTime+"");
-		printOut(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS").format(Utils.fromMillis(serverTime)));
+		printOut("Call time:   %d", starttm);
+		printOut("Server time: %d", serverTime);
+		printOut(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.SSS").format(DateUtils.fromMillis(serverTime)));
 		printOut("\nElapsed: %.3f sec", ((double)(endtm-starttm)/1000));
 	}
 
 	@Test
-	public void testGetAssets() throws IOException {
+	public void testGetAssetsCallOnly() throws Exception {
 		long starttm = System.currentTimeMillis();
-		List<Asset> assets = krakenCaller.getAssets();
+		List<Asset> assets = krakenFacade.getAssets();
 		long endtm = System.currentTimeMillis();
 		printOut(assets, "ASSETS", starttm, endtm);
 
@@ -60,9 +78,24 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetAssetPairs() throws IOException {
+	public void testGetAssets() throws Exception {
 		long starttm = System.currentTimeMillis();
-		List<AssetPair> assetPairs = krakenCaller.getAssetPairs();
+
+		List<Asset> assets12 = assetsDao.getAssets();
+		List<Asset> assets = krakenFacade.getAssets();
+
+//		assetsDao.updateAssets(starttm, assets);
+//
+//		List<Asset> a2 = assetsDao.getAssets();
+
+		out.println(assets.equals(assets12));
+
+	}
+
+	@Test
+	public void testGetAssetPairs() throws Exception {
+		long starttm = System.currentTimeMillis();
+		List<AssetPair> assetPairs = krakenFacade.getAssetPairs();
 		long endtm = System.currentTimeMillis();
 		printOut(assetPairs, "ASSET PAIRS", starttm, endtm);
 
@@ -81,10 +114,10 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetTickers() throws IOException {
+	public void testGetTickers() throws Exception {
 		long starttm = System.currentTimeMillis();
 		List<String> pairs = Arrays.asList("XXBTZEUR,XXBTZUSD");
-		List<Ticker> tickers = krakenCaller.getTickers(pairs);
+		List<Ticker> tickers = krakenFacade.getTickers(pairs);
 		long endtm = System.currentTimeMillis();
 		printOut(tickers, String.format("TICKERS for %s", tickers), starttm, endtm);
 	}
@@ -93,7 +126,7 @@ public class SingleCall {
 	public void testGetOhlc() throws IOException {
 		long starttm = System.currentTimeMillis();
 		String pair = "XXBTZEUR";
-		Pair<Long, List<Ohlc>> ohlcs = krakenCaller.getOhlcs(pair, 0L);
+		Pair<Long, List<Ohlc>> ohlcs = krakenFacade.getOhlcs(pair, 0L);
 		long endtm = System.currentTimeMillis();
 		printOut(ohlcs.getValue(), String.format("OHLC for %s\nLast: %d", pair, ohlcs.getKey()), starttm, endtm);
 	}
@@ -102,7 +135,7 @@ public class SingleCall {
 	public void testGetOrderBook() throws IOException {
 		long starttm = System.currentTimeMillis();
 		String pair = "XXBTZEUR";
-		List<MarketOrder> orderBook = krakenCaller.getOrderBook(pair);
+		List<MarketOrder> orderBook = krakenFacade.getOrderBook(pair);
 		long endtm = System.currentTimeMillis();
 		printOut(orderBook, String.format("OrderBook for %s", pair), starttm, endtm);
 	}
@@ -111,16 +144,16 @@ public class SingleCall {
 	public void testGetRecentTrades() throws IOException {
 		long starttm = System.currentTimeMillis();
 		String pair = "XXBTZEUR";
-		Pair<Long, List<RecentTrade>> trades = krakenCaller.getRecentTrades(pair, 0L);
+		Pair<Long, List<RecentTrade>> trades = krakenFacade.getRecentTrades(pair, 0L);
 		long endtm = System.currentTimeMillis();
 		printOut(trades.getValue(), String.format("Recent trades for %s\nLast: %d", pair, trades.getKey()), starttm, endtm);
 	}
 
 	@Test
-	public void testGetSpreadData() throws IOException {
+	public void testGetSpreadData() throws Exception {
 		long starttm = System.currentTimeMillis();
 		String pair = "XXBTZEUR";
-		Pair<Long, List<SpreadData>> spreads = krakenCaller.getSpreadData(pair, 0L);
+		Pair<Long, List<SpreadData>> spreads = krakenFacade.getSpreadData(pair, 0L);
 		long endtm = System.currentTimeMillis();
 		printOut(spreads.getValue(), String.format("Spread data for %s\nLast: %d", pair, spreads.getKey()), starttm, endtm);
 	}
@@ -128,7 +161,7 @@ public class SingleCall {
 	@Test
 	public void testGetAccountBalance() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		long starttm = System.currentTimeMillis();
-		List<AccountBalance> ab = krakenCaller.getAccountBalance();
+		List<AccountBalance> ab = krakenFacade.getAccountBalance();
 		long endtm = System.currentTimeMillis();
 		printOut(ab, "ACCOUNT BALANCE", starttm, endtm);
 	}
@@ -137,7 +170,7 @@ public class SingleCall {
 	public void testGetTradesBalance() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		long starttm = System.currentTimeMillis();
 		String pair = "EUR";
-		TradeBalance tb = krakenCaller.getTradeBalance(pair);
+		TradeBalance tb = krakenFacade.getTradeBalance(pair);
 		long endtm = System.currentTimeMillis();
 		printOut("%s\t%s", pair, ToStringBuilder.reflectionToString(tb, ToStringStyle.SHORT_PREFIX_STYLE));
 		printOut("\nElapsed: %.3f sec", ((double)(endtm-starttm)/1000));
@@ -146,7 +179,7 @@ public class SingleCall {
 	@Test
 	public void testGetOpenOrders() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		long starttm = System.currentTimeMillis();
-		List<OpenOrder> openOrders = krakenCaller.getOpenOrders(true);
+		List<OpenOrder> openOrders = krakenFacade.getOpenOrders(true);
 		long endtm = System.currentTimeMillis();
 		printOut(openOrders, "OPEN ORDERS", starttm, endtm);
 	}
@@ -154,7 +187,7 @@ public class SingleCall {
 	@Test
 	public void testGetClosedOrders() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		long starttm = System.currentTimeMillis();
-		List<ClosedOrder> closedOrders = krakenCaller.getClosedOrders(true);
+		List<ClosedOrder> closedOrders = krakenFacade.getClosedOrders(true);
 		long endtm = System.currentTimeMillis();
 		printOut(closedOrders, "CLOSED ORDERS", starttm, endtm);
 	}
@@ -163,7 +196,7 @@ public class SingleCall {
 	public void testGetOrdersInfo() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		List<String> tradeIDs = Arrays.asList("O7FEMB-64FHC-UAPV77", "OWXP77-XN33Z-YDODPJ");
 		long starttm = System.currentTimeMillis();
-		List<OrderInfo> ordersInfo = krakenCaller.getOrdersInfo(tradeIDs, true);
+		List<OrderInfo> ordersInfo = krakenFacade.getOrdersInfo(tradeIDs, true);
 		long endtm = System.currentTimeMillis();
 		printOut(ordersInfo, String.format("ORDERS INFO for %s", tradeIDs), starttm, endtm);
 	}
@@ -176,7 +209,7 @@ public class SingleCall {
 	@Test
 	public void testGetLedgersInfo() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		long starttm = System.currentTimeMillis();
-		List<LedgerInfo> ledgers = krakenCaller.getLedgersInfo();
+		List<LedgerInfo> ledgers = krakenFacade.getLedgersInfo();
 		long endtm = System.currentTimeMillis();
 		printOut(ledgers, "LEDGERS INFO", starttm, endtm);
 	}
@@ -185,7 +218,7 @@ public class SingleCall {
 	public void testQueryLedgers() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		List<String> ledgerIDs = Arrays.asList("L6UNG4-HICDP-QBVUN2","LUBAH5-KEADB-YEDSMR","LYUH2V-YGORX-VPJFPX");
 		long starttm = System.currentTimeMillis();
-		List<LedgerInfo> ledgersInfo = krakenCaller.getLedgersInfo(ledgerIDs);
+		List<LedgerInfo> ledgersInfo = krakenFacade.getLedgersInfo(ledgerIDs);
 		long endtm = System.currentTimeMillis();
 		printOut(ledgersInfo, String.format("LEDGERS INFO for %s", ledgerIDs), starttm, endtm);
 	}
@@ -194,7 +227,7 @@ public class SingleCall {
 	public void testTradeVolume() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		List<String> pairs = Arrays.asList("XXBTZUSD", "XXBTZEUR");
 		long starttm = System.currentTimeMillis();
-		TradeVolume tradeVolume = krakenCaller.getTradeVolume(pairs);
+		TradeVolume tradeVolume = krakenFacade.getTradeVolume(pairs);
 		long endtm = System.currentTimeMillis();
 		printOut(Arrays.asList(tradeVolume), String.format("TRADE VOLUME for %s", pairs), starttm, endtm);
 	}

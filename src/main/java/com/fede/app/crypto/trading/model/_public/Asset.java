@@ -42,7 +42,6 @@ public class Asset {
 		return assetName;
 	}
 
-
 	public String getAssetName() {
 		return assetName;
 	}
@@ -61,12 +60,6 @@ public class Asset {
 	public void setAltName(String altName) {
 		this.altName = altName;
 	} 
-	public String getaClass() {
-		return aClass;
-	} 
-	public void setaClass(String aClass) {
-		this.aClass = aClass;
-	} 
 	public Integer getDecimals() {
 		return decimals;
 	} 
@@ -79,4 +72,5 @@ public class Asset {
 	public void setDisplayDecimals(Integer displayDecimals) {
 		this.displayDecimals = displayDecimals;
 	}
+
 }
