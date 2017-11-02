@@ -3,6 +3,8 @@ package com.fede.app.launcher;
 import com.fede.app.crypto.trading.common.Const;
 import com.fede.app.crypto.trading.dao.IAssetsDao;
 import com.fede.app.crypto.trading.dao.impl.AssetsDBDao;
+import com.fede.app.crypto.trading.exception.KrakenCallException;
+import com.fede.app.crypto.trading.exception.KrakenResponseError;
 import com.fede.app.crypto.trading.kraken.IKrakenFacade;
 import com.fede.app.crypto.trading.kraken.KrakenFacadeImpl;
 import com.fede.app.crypto.trading.model._private.*;
@@ -177,7 +179,7 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetOpenOrders() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+	public void testGetOpenOrders() throws IOException, InvalidKeyException, NoSuchAlgorithmException, KrakenResponseError, KrakenCallException {
 		long starttm = System.currentTimeMillis();
 		List<OpenOrder> openOrders = krakenFacade.getOpenOrders(true);
 		long endtm = System.currentTimeMillis();
@@ -185,7 +187,7 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetClosedOrders() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+	public void testGetClosedOrders() throws IOException, InvalidKeyException, NoSuchAlgorithmException, KrakenResponseError, KrakenCallException {
 		long starttm = System.currentTimeMillis();
 		List<ClosedOrder> closedOrders = krakenFacade.getClosedOrders(true);
 		long endtm = System.currentTimeMillis();
@@ -193,7 +195,7 @@ public class SingleCall {
 	}
 
 	@Test
-	public void testGetOrdersInfo() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+	public void testGetOrdersInfo() throws IOException, InvalidKeyException, NoSuchAlgorithmException, KrakenResponseError, KrakenCallException {
 		List<String> tradeIDs = Arrays.asList("O7FEMB-64FHC-UAPV77", "OWXP77-XN33Z-YDODPJ");
 		long starttm = System.currentTimeMillis();
 		List<OrderInfo> ordersInfo = krakenFacade.getOrdersInfo(tradeIDs, true);

@@ -9,6 +9,9 @@ public class TechnicalException extends RuntimeException {
 		super(cause);
 	}
 
+	public TechnicalException(String format, Object... params) {
+		super(String.format(format, params));
+	}
 	public TechnicalException(Throwable cause, String format, Object... params) {
 		super(String.format(format, params), cause);
 	}

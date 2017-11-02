@@ -7,6 +7,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
+
 /**
  * Created by f.barbano on 14/09/2017.
  */
@@ -95,4 +99,85 @@ public class Utils {
 		return map;
 	}
 
+	public static String humanElapsed(long elapsed, boolean showMilli) {
+		WTime td = new WTime(elapsed);
+
+		String strMilli = showMilli ? String.format(".%03d", td.getMilli()) : "";
+
+		if(td.getHour() > 0) {
+			return String.format("%02d:%02d:%02d%s", td.getHour(), td.getMinute(), td.getSecond(), strMilli);
+		} else if(td.getMinute() > 0) {
+			return String.format("%02d:%02d%s", td.getMinute(), td.getSecond(), strMilli);
+		} else {
+			return String.format("%d%s", td.getSecond(), strMilli);
+		}
+	}
+
+
+	private static class WTime {
+
+		private long totalMillis;
+
+		private long day;
+		private long hour;
+		private long minute;
+		private long second;
+		private long milli;
+
+
+		public WTime() {
+			this(System.currentTimeMillis());
+		}
+
+		public WTime(long totalMillis) {
+			this.totalMillis = totalMillis;
+			this.milli = totalMillis % 1000;
+
+			long rem = (totalMillis - this.milli) / 1000;
+
+			long daySec = DAYS.getDuration().getSeconds();
+			this.day = rem / daySec;
+			rem -= daySec * this.day;
+
+			long hourSec = HOURS.getDuration().getSeconds();
+			this.hour = rem / hourSec;
+			rem -= hourSec * this.hour;
+
+			long minuteSec = MINUTES.getDuration().getSeconds();
+			this.minute = rem / minuteSec;
+			rem -= minuteSec * this.minute;
+
+			this.second =  rem;
+		}
+
+		/* GETTERS and SETTERS */
+		public long getTotalMillis() {
+			return totalMillis;
+		}
+		public long getDay() {
+			return day;
+		}
+		public long getHour() {
+			return hour;
+		}
+		public long getMinute() {
+			return minute;
+		}
+		public long getSecond() {
+			return second;
+		}
+		public long getMilli() {
+			return milli;
+		}
+		public long getTotalHour() {
+			return hour + 24 * day;
+		}
+		public long getTotalMinute() {
+			return minute + 60 * getTotalHour();
+		}
+		public long getTotalSecond() {
+			return second + 60 * getTotalMinute();
+		}
+
+	}
 }

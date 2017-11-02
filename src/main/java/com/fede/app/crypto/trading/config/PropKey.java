@@ -19,4 +19,7 @@ class PropKey {
 	static final String DB_USERNAME = "kraken.dao.db.username";
 	static final String DB_PASSWORD = "kraken.dao.db.password";
 
+	static final String FEES_BUY_PERCENTAGE = "kraken.trading.fees.percentage.buy";
+	static final String FEES_SELL_PERCENTAGE = "kraken.trading.fees.percentage.sell";
+
 }

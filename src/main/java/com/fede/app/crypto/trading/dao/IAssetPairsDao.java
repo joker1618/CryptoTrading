@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface IAssetPairsDao {
 
-	List<AssetPair> getAssetPairs();
+	List<AssetPair> getAssetPairs(boolean discardDotD);
 
 	void persistAssetPairs(Long callTime, List<AssetPair> newAssetPairs);
 

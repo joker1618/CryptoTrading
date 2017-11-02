@@ -19,6 +19,8 @@ import java.util.List;
  */
 public interface IKrakenFacade {
 
+	/* Public methods */
+
 	Long getServerTime() throws KrakenResponseError, KrakenCallException;
 
 	List<Asset> getAssets() throws KrakenResponseError, KrakenCallException;
@@ -29,7 +31,18 @@ public interface IKrakenFacade {
 
 	Pair<Long, List<SpreadData>> getSpreadData(String pairName, Long since) throws KrakenResponseError, KrakenCallException;
 
+	/* Private methods */
 
+	AddOrderOut addOrder(AddOrderIn orderRequest) throws KrakenResponseError, KrakenCallException;
+
+	List<OpenOrder> getOpenOrders(boolean includeTrades) throws KrakenResponseError, KrakenCallException;
+
+	List<ClosedOrder> getClosedOrders(boolean includeTrades) throws KrakenResponseError, KrakenCallException;
+
+	List<OrderInfo> getOrdersInfo(Collection<String> tradeIDs, boolean includeTrades) throws KrakenResponseError, KrakenCallException;
+
+
+	/* Deprecated, to review */
 
 	@Deprecated
 	Pair<Long, List<Ohlc>> getOhlcs(String pairName, long since) throws IOException;
@@ -47,15 +60,6 @@ public interface IKrakenFacade {
 	TradeBalance getTradeBalance(String baseAsset) throws IOException, NoSuchAlgorithmException, InvalidKeyException;
 
 	@Deprecated
-	List<OpenOrder> getOpenOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
-
-	@Deprecated
-	List<ClosedOrder> getClosedOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
-
-	@Deprecated
-	List<OrderInfo> getOrdersInfo(Collection<String> tradeIDs, boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
-
-	@Deprecated
 	List<OpenPosition> getOpenPositions(Collection<String> tradeIDs) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
 	@Deprecated
@@ -67,6 +71,4 @@ public interface IKrakenFacade {
 	@Deprecated
 	TradeVolume getTradeVolume(Collection<String> assetPairs) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 
-	@Deprecated
-	AddOrderOut addOrder(AddOrderIn orderRequest) throws NoSuchAlgorithmException, InvalidKeyException, IOException;
 }

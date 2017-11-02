@@ -123,6 +123,16 @@ public class CryptoConfigImpl implements ICryptoConfig {
 		return getString(DB_PASSWORD);
 	}
 
+	@Override
+	public double getPercentageBuyFee() {
+		return getDouble(FEES_BUY_PERCENTAGE);
+	}
+
+	@Override
+	public double getPercentageSellFee() {
+		return getDouble(FEES_SELL_PERCENTAGE);
+	}
+
 
 	private String getString(String propKey) {
 		return configMap.get(propKey);
@@ -132,6 +142,9 @@ public class CryptoConfigImpl implements ICryptoConfig {
 	}
 	private int getInt(String propKey) {
 		return Integer.parseInt(getString(propKey));
+	}
+	private double getDouble(String propKey) {
+		return Double.parseDouble(getString(propKey));
 	}
 
 	private void replaceVariables(Map<String, String> loaded) {

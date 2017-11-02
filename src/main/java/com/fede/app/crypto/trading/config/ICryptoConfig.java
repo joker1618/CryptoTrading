@@ -26,4 +26,7 @@ public interface ICryptoConfig {
 	String getDBUsername();
 	String getDBPassword();
 
+	// Trading fees config
+	double getPercentageBuyFee();
+	double getPercentageSellFee();
 }

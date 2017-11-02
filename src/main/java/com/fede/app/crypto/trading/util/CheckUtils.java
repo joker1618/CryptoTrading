@@ -27,4 +27,13 @@ public class CheckUtils {
 
 		return true;
 	}
+
+	public static boolean isInteger(String str) {
+		try {
+			new Integer(str);
+			return true;
+		} catch(NumberFormatException e) {
+			return false;
+		}
+	}
 }

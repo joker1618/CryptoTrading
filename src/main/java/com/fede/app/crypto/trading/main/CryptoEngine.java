@@ -31,11 +31,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by f.barbano on 01/10/2017.
  */
-public class CryptoEngine {
+class CryptoEngine {
 
 	private static final ISimpleLog logger = LogService.getLogger(CryptoEngine.class);
 
-	private final ICryptoConfig config;
+	private final ICryptoConfig config = CryptoConfigImpl.getInstance();
 
 	private ICryptoModel model;
 	private IKrakenFacade krakenFacade;
@@ -43,8 +43,7 @@ public class CryptoEngine {
 //	private final List<Asset> assetList;
 	private final List<String> assetPairNames;
 
-	public CryptoEngine() {
-		this.config = CryptoConfigImpl.getInstance();
+	CryptoEngine() {
 		this.model = CryptoModelFactory.getModel();
 		this.krakenFacade = new KrakenFacadeImpl(config.getKrakenApiKey(), config.getKrakenApiSecret());
 //		this.assetList = Collections.synchronizedList(new ArrayList<>());
@@ -63,9 +62,10 @@ public class CryptoEngine {
 		LocalDateTime nextDayStart = LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIDNIGHT);
 		long delayUntilMidnight = (DateUtils.toMillis(nextDayStart) - System.currentTimeMillis()) / 1000L;
 
+		logger.info("################## %s", Thread.currentThread().getName());
 		ScheduledExecutorService executorPublic = Executors.newScheduledThreadPool(4);
-		executorPublic.scheduleAtFixedRate(this::updateAssets, 5, config.getCallSecondsRateAssets(), TimeUnit.SECONDS);
-		executorPublic.scheduleAtFixedRate(this::updateAssetPairs, 5, config.getCallSecondsRateAssetPairs(), TimeUnit.SECONDS);
+		executorPublic.scheduleAtFixedRate(this::updateAssets, delayUntilMidnight, config.getCallSecondsRateAssets(), TimeUnit.SECONDS);
+		executorPublic.scheduleAtFixedRate(this::updateAssetPairs, delayUntilMidnight, config.getCallSecondsRateAssetPairs(), TimeUnit.SECONDS);
 		executorPublic.scheduleAtFixedRate(this::downloadTickers, 5, config.getCallSecondsRateTickers(), TimeUnit.SECONDS);
 //		executorPublic.scheduleAtFixedRate(this::downloadSpreadData, delayDownload, config.getCallSecondsRateSpreadData(), TimeUnit.SECONDS);
 
@@ -103,7 +103,7 @@ public class CryptoEngine {
 			logger.info("Asset pairs %s", (changed ? "updated" : "not changed"));
 			if(changed || assetPairNames.isEmpty()) {
 				synchronized (assetPairNames) {
-					List<String> names = Utils.filterAndMap(model.getAssetPairs(), ap -> !ap.getPairName().endsWith(".d"), AssetPair::getPairName);
+					List<String> names = Utils.map(model.getAssetPairs(true), AssetPair::getPairName);
 					assetPairNames.clear();
 					assetPairNames.addAll(names);
 				}
@@ -124,8 +124,8 @@ public class CryptoEngine {
 
 	private void downloadTickers() {
 		try {
-			List<Ticker> tickers = krakenFacade.getTickers(getAssetPairNames());
 			long callTime = System.currentTimeMillis();
+			List<Ticker> tickers = krakenFacade.getTickers(getAssetPairNames());
 			model.persistTickers(callTime, tickers);
 			logger.info("%d new tickers downloaded", tickers.size());
 

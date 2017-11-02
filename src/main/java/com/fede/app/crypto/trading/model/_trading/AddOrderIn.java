@@ -48,15 +48,10 @@ public class AddOrderIn {
  // 	close[price2] = secondary price
 
 
-	public AddOrderIn(String pairName, OrderAction orderAction, OrderType orderType, Double volume) {
-		this(pairName, orderAction, orderType ,volume, null);
-	}
-
-	public AddOrderIn(String pairName, OrderAction orderAction, OrderType orderType, Double price, Double volume) {
+	AddOrderIn(String pairName, OrderAction orderAction, OrderType orderType, Double volume) {
 		this.pairName = pairName;
 		this.orderAction = orderAction;
 		this.orderType = orderType;
-		this.price = price;
 		this.volume = volume;
 	}
 

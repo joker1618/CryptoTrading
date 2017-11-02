@@ -22,7 +22,7 @@ abstract class AbstractDBDao {
 		this.connection = connection;
 	}
 
-	protected int performUpdate(String query, Object... params) {
+	protected synchronized int performUpdate(String query, Object... params) {
 		PreparedStatement ps = null;
 
 		try {
@@ -31,7 +31,8 @@ abstract class AbstractDBDao {
 				int idx = 1;
 				for (Object param : params) {
 					if (param instanceof Long) ps.setLong(idx, (Long) param);
-					else if (param instanceof Integer) ps.setInt(idx, (Integer) param);
+					else if (param instanceof Integer) 	ps.setInt(idx, (Integer) param);
+					else if (param instanceof Double) 	ps.setDouble(idx, (Double) param);
 					else if (param instanceof BigDecimal) ps.setBigDecimal(idx, (BigDecimal) param);
 					else ps.setString(idx, (String) param);
 					idx++;

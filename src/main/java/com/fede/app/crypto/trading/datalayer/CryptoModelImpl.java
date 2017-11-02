@@ -7,10 +7,7 @@ import com.fede.app.crypto.trading.model._public.Asset;
 import com.fede.app.crypto.trading.model._public.AssetPair;
 import com.fede.app.crypto.trading.model._public.Ticker;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -39,14 +36,14 @@ class CryptoModelImpl implements ICryptoModel {
 	}
 
 	@Override
-	public List<AssetPair> getAssetPairs() {
-		return assetPairsDao.getAssetPairs();
+	public List<AssetPair> getAssetPairs(boolean discardDotD) {
+		return assetPairsDao.getAssetPairs(discardDotD);
 	}
 
 	@Override
 	public boolean updateAssetPairs(Long callTime, List<AssetPair> assetPairs) {
 		List<AssetPair> other = assetPairs.stream().sorted(Comparator.comparing(AssetPair::getPairName)).collect(Collectors.toList());
-		if(getAssetPairs().equals(other))	return false;
+		if(getAssetPairs(false).equals(other))	return false;
 		assetPairsDao.persistAssetPairs(callTime, other);
 		return true;
 	}
@@ -55,6 +52,12 @@ class CryptoModelImpl implements ICryptoModel {
 	public void persistTickers(Long callTime, Collection<Ticker> tickers) {
 		tickersDao.persistNewTickers(callTime, tickers);
 	}
+
+	@Override
+	public Ticker retrieveAskPriceAndAverage(String tickerName) {
+		return tickersDao.retrieveAskPriceAndAverage(tickerName);
+	}
+
 
 //	@Override
 //	public Map<String, Long> getLastCallTimes(KrakenMethod method) {

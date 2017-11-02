@@ -30,4 +30,5 @@ public class Const {
 		NUMBER_FORMAT.setMaximumFractionDigits(12);
 		NUMBER_FORMAT.setGroupingUsed(false);
 	}
+
 }

@@ -6,6 +6,7 @@ import com.fede.app.crypto.trading.model._public.Ticker;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -16,10 +17,11 @@ public interface ICryptoModel {
 	List<Asset> getAssets();
 	boolean updateAssets(Long callTime, List<Asset> assets);
 
-	List<AssetPair> getAssetPairs();
+	List<AssetPair> getAssetPairs(boolean discardDotD);
 	boolean updateAssetPairs(Long callTime, List<AssetPair> assetPairs);
 
 	void persistTickers(Long callTime, Collection<Ticker> tickers);
+	Ticker retrieveAskPriceAndAverage(String tickerName);
 
 //	Map<String, Long> getLastCallTimes(KrakenMethod method);
 //	void persistLastCallTimes(Collection<LastCallDescr> lastCallTimes);

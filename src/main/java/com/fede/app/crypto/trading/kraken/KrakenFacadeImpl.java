@@ -34,19 +34,19 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 
 	@Override
 	public Long getServerTime() throws KrakenResponseError, KrakenCallException {
-		JsonToModel jm = performPublicCall(KrakenMethod.TIME, null);
+		JsonToModel jm = performKrakenCall(KrakenMethod.TIME, null);
 		return jm.parseServerTime();
 	}
 
 	@Override
 	public List<Asset> getAssets() throws KrakenResponseError, KrakenCallException {
-		JsonToModel jm = performPublicCall(KrakenMethod.ASSETS, null);
+		JsonToModel jm = performKrakenCall(KrakenMethod.ASSETS, null);
 		return jm.parseAssets();
 	}
 
 	@Override
 	public List<AssetPair> getAssetPairs() throws KrakenResponseError, KrakenCallException {
-		JsonToModel jm = performPublicCall(KrakenMethod.ASSET_PAIRS, null);
+		JsonToModel jm = performKrakenCall(KrakenMethod.ASSET_PAIRS, null);
 		return jm.parseAssetPairs();
 	}
 
@@ -55,7 +55,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		Map<String, String> apiParams = new HashMap<>();
 		apiParams.put("pair", Utils.join(pairNames));
 		long callTime = System.currentTimeMillis();
-		JsonToModel jm = performPublicCall(KrakenMethod.TICKER, apiParams);
+		JsonToModel jm = performKrakenCall(KrakenMethod.TICKER, apiParams);
 		return jm.parseTickers(callTime);
 	}
 
@@ -66,9 +66,77 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		if(since != null && since > 0) {
 			apiParams.put("since", String.valueOf(since));
 		}
-		JsonToModel jm = performPublicCall(KrakenMethod.SPREAD, apiParams);
+		JsonToModel jm = performKrakenCall(KrakenMethod.SPREAD, apiParams);
 		return jm.parseSpreadData(pairName);
 	}
+
+	@Override
+	public AddOrderOut addOrder(AddOrderIn orderRequest) throws KrakenResponseError, KrakenCallException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("pair", orderRequest.getPairName());
+		apiParams.put("type", orderRequest.getOrderAction().label());
+		apiParams.put("ordertype", orderRequest.getOrderType().label());
+		apiParams.put("volume", Utils.toString(orderRequest.getVolume()));
+		if(orderRequest.getPrice() != null) {
+			apiParams.put("price", Utils.toString(orderRequest.getPrice()));
+		}
+		if(orderRequest.getPrice2() != null) {
+			apiParams.put("price2", Utils.toString(orderRequest.getPrice2()));
+		}
+		if(orderRequest.getLeverage() != null) {
+			apiParams.put("leverage", String.valueOf(orderRequest.getLeverage()));
+		}
+		if(!orderRequest.getOflags().isEmpty()) {
+			apiParams.put("oflags", Utils.join(orderRequest.getOflags(), ","));
+		}
+		if(orderRequest.getStarttm() != null) {
+			apiParams.put("starttm", orderRequest.getStarttm());
+		}
+		if(orderRequest.getExpiretm() != null) {
+			apiParams.put("expiretm", orderRequest.getExpiretm());
+		}
+		if(orderRequest.getUserRef() != null) {
+			apiParams.put("userref", orderRequest.getUserRef());
+		}
+		if(orderRequest.isValidate()) {
+			apiParams.put("validate", "yes");
+		}
+
+		JsonToModel jm = performKrakenCall(KrakenMethod.ADD_ORDER, apiParams);
+		return jm.parseOrderOut();
+	}
+
+	@Override
+	public List<OpenOrder> getOpenOrders(boolean includeTrades) throws KrakenResponseError, KrakenCallException {
+		Map<String, String> apiParams = new HashMap<>();
+		if(includeTrades) {
+			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
+		}
+		JsonToModel jm = performKrakenCall(KrakenMethod.OPEN_ORDERS, apiParams);
+		return jm.parseOpenOrders();
+	}
+
+	@Override
+	public List<ClosedOrder> getClosedOrders(boolean includeTrades) throws KrakenResponseError, KrakenCallException {
+		Map<String, String> apiParams = new HashMap<>();
+		if(includeTrades) {
+			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
+		}
+		JsonToModel jm = performKrakenCall(KrakenMethod.CLOSED_ORDERS, apiParams);
+		return jm.parseClosedOrders();
+	}
+
+	@Override
+	public List<OrderInfo> getOrdersInfo(Collection<String> tradeIDs, boolean includeTrades) throws KrakenResponseError, KrakenCallException {
+		Map<String, String> apiParams = new HashMap<>();
+		apiParams.put("txid", Utils.join(tradeIDs, ","));
+		if(includeTrades) {
+			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
+		}
+		JsonToModel jm = performKrakenCall(KrakenMethod.QUERY_ORDERS, apiParams);
+		return jm.parseOrdersInfo();
+	}
+
 
 
 	////////////////////////////////////// Deprecated methods below /////////////////////////////////////////////////////////////////////
@@ -111,7 +179,6 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 	public List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		long callTime = System.currentTimeMillis();
 		String json = krakenApi.queryPrivate(KrakenMethod.BALANCE);
-		System.out.println(json);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseAccountBalance(callTime);
 	}
@@ -127,40 +194,6 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		System.out.println(json);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseTradeBalance(callTime);
-	}
-
-	@Override
-	public List<OpenOrder> getOpenOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
-		Map<String, String> apiParams = new HashMap<>();
-		if(includeTrades) {
-			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
-		}
-		String json = krakenApi.queryPrivate(KrakenMethod.OPEN_ORDERS, apiParams);
-		JsonToModel jm = new JsonToModel(json);
-		return jm.parseOpenOrders();
-	}
-
-	@Override
-	public List<ClosedOrder> getClosedOrders(boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
-		Map<String, String> apiParams = new HashMap<>();
-		if(includeTrades) {
-			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
-		}
-		String json = krakenApi.queryPrivate(KrakenMethod.CLOSED_ORDERS, apiParams);
-		JsonToModel jm = new JsonToModel(json);
-		return jm.parseClosedOrders();
-	}
-
-	@Override
-	public List<OrderInfo> getOrdersInfo(Collection<String> tradeIDs, boolean includeTrades) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
-		Map<String, String> apiParams = new HashMap<>();
-		apiParams.put("txid", Utils.join(tradeIDs, ","));
-		if(includeTrades) {
-			apiParams.put("trades", "true");	// include related trade IDs (default is 'false')
-		}
-		String json = krakenApi.queryPrivate(KrakenMethod.QUERY_ORDERS, apiParams);
-		JsonToModel jm = new JsonToModel(json);
-		return jm.parseOrdersInfo();
 	}
 
 	@Override
@@ -199,57 +232,23 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 		return jm.parseTradeVolume();
 	}
 
-	@Override
-	public AddOrderOut addOrder(AddOrderIn orderRequest) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
-		Map<String, String> apiParams = new HashMap<>();
-		apiParams.put("pair", orderRequest.getPairName());
-		apiParams.put("type", orderRequest.getOrderAction().label());
-		apiParams.put("ordertype", orderRequest.getOrderType().label());
-		apiParams.put("price", Utils.toString(orderRequest.getPrice()));
-		apiParams.put("volume", Utils.toString(orderRequest.getVolume()));
-		if(orderRequest.getPrice2() != null) {
-			apiParams.put("price2", Utils.toString(orderRequest.getPrice2()));
-		}
-		if(orderRequest.getLeverage() != null) {
-			apiParams.put("leverage", String.valueOf(orderRequest.getLeverage()));
-		}
-		if(!orderRequest.getOflags().isEmpty()) {
-			apiParams.put("oflags", Utils.join(orderRequest.getOflags(), ","));
-		}
-		if(orderRequest.getStarttm() != null) {
-			apiParams.put("starttm", orderRequest.getStarttm());
-		}
-		if(orderRequest.getExpiretm() != null) {
-			apiParams.put("expiretm", orderRequest.getExpiretm());
-		}
-		if(orderRequest.getUserRef() != null) {
-			apiParams.put("userref", orderRequest.getUserRef());
-		}
-		if(orderRequest.isValidate()) {
-			apiParams.put("validate", "yes");
-		}
-		String json = krakenApi.queryPrivate(KrakenMethod.ADD_ORDER, apiParams);
-		JsonToModel jm = new JsonToModel(json);
-		return jm.parseOrderOut();
-	}
 
-
-	private JsonToModel performPublicCall(KrakenMethod method, Map<String, String> apiParams) throws KrakenResponseError, KrakenCallException {
+	private JsonToModel performKrakenCall(KrakenMethod method, Map<String, String> apiParams) throws KrakenResponseError, KrakenCallException {
 		try {
 			String subMex = String.format("Kraken call, method %s", method.getName());
 			long start = System.currentTimeMillis();
 			logger.info("%s: start", subMex);
-			String json = krakenApi.queryPublic(method, apiParams);
+			String json = method.isPublic() ? krakenApi.queryPublic(method, apiParams) : krakenApi.queryPrivate(method, apiParams);
 			logger.info("%s: elapsed %d ms", subMex, (System.currentTimeMillis()-start));
 			logger.fine("JSON received --> %s", json);
 			JsonToModel jm = new JsonToModel(json);
 			if(jm.containsErrors()) {
-				logger.error("Kraken public call for method %s return errors: %s", method.getName(), jm.getErrors());
+				logger.error("Kraken call for method %s return errors: %s", method.getName(), jm.getErrors());
 				throw new KrakenResponseError(method.getName(), jm.getErrors());
 			}
 			return jm;
 
-		} catch (IOException e) {
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
 			logger.error(e);
 			throw new KrakenCallException(e, method.getName());
 		}
