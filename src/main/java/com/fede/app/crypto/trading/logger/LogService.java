@@ -34,7 +34,7 @@ public class LogService {
 
 		ConsoleHandler consoleHandler = new ConsoleHandler();
 		consoleHandler.setFormatter(new LogFormatter(true));
-		consoleHandler.setLevel(Level.INFO);
+		consoleHandler.setLevel(Level.ALL);
 		rootLogger.addHandler(consoleHandler);
 
 		List<FileHandler> fileHandlers = new ArrayList<>();

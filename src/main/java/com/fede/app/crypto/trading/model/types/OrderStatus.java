@@ -16,21 +16,19 @@ public enum OrderStatus {
 	EXPIRED("expired")
 	;
 
-	private List<String> labels;
+	private String label;
 
-	OrderStatus(String main, String... others) {
-		this.labels = new ArrayList<>();
-		labels.add(main);
-		labels.addAll(Arrays.asList(others));
+	OrderStatus(String label) {
+		this.label = label;
 	}
 
 	public String label() {
-		return labels.get(0);
+		return label;
 	}
 
-	public static synchronized OrderStatus getByLabel(String label) {
+	public static synchronized OrderStatus getByLabel(String toFind) {
 		return Arrays.stream(values())
-				   .filter(at -> at.labels.contains(label))
+				   .filter(at -> at.label.equals(toFind))
 				   .findAny()
 				   .orElse(null);
 	}

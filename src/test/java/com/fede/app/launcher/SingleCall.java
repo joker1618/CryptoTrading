@@ -118,7 +118,7 @@ public class SingleCall {
 	@Test
 	public void testGetTickers() throws Exception {
 		long starttm = System.currentTimeMillis();
-		List<String> pairs = Arrays.asList("XXBTZEUR,XXBTZUSD");
+		List<String> pairs = Arrays.asList("XXBTZEUR,XXBTZUSD,XXDGXXBT");
 		List<Ticker> tickers = krakenFacade.getTickers(pairs);
 		long endtm = System.currentTimeMillis();
 		printOut(tickers, String.format("TICKERS for %s", tickers), starttm, endtm);
@@ -227,6 +227,15 @@ public class SingleCall {
 
 	@Test
 	public void testTradeVolume() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+		List<String> pairs = Arrays.asList("XXBTZUSD", "XXBTZEUR");
+		long starttm = System.currentTimeMillis();
+		TradeVolume tradeVolume = krakenFacade.getTradeVolume(pairs);
+		long endtm = System.currentTimeMillis();
+		printOut(Arrays.asList(tradeVolume), String.format("TRADE VOLUME for %s", pairs), starttm, endtm);
+	}
+
+	@Test
+	public void testDepositMethods() throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 		List<String> pairs = Arrays.asList("XXBTZUSD", "XXBTZEUR");
 		long starttm = System.currentTimeMillis();
 		TradeVolume tradeVolume = krakenFacade.getTradeVolume(pairs);

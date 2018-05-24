@@ -179,6 +179,7 @@ public class KrakenFacadeImpl implements IKrakenFacade {
 	public List<AccountBalance> getAccountBalance() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 		long callTime = System.currentTimeMillis();
 		String json = krakenApi.queryPrivate(KrakenMethod.BALANCE);
+		System.out.println(json);
 		JsonToModel jm = new JsonToModel(json);
 		return jm.parseAccountBalance(callTime);
 	}

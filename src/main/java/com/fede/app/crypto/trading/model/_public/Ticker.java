@@ -106,6 +106,14 @@ public class Ticker  {
 		public void setLotVolume(Double lotVolume) {
 			this.lotVolume = lotVolume;
 		}
+
+		@Override
+		public String toString() {
+			return "TickerPrice{" +
+					   "price=" + price +
+					   ", lotVolume=" + lotVolume +
+					   '}';
+		}
 	}
 
 	public static class TickerWholePrice extends TickerPrice {
@@ -116,6 +124,15 @@ public class Ticker  {
 		}
 		public void setWholeLotVolume(Integer wholeLotVolume) {
 			this.wholeLotVolume = wholeLotVolume;
+		}
+
+		@Override
+		public String toString() {
+			return "TickerWholePrice{" +
+					   "price=" + price +
+					   ", lotVolume=" + lotVolume +
+					   ", wholeLotVolume=" + wholeLotVolume +
+					   '}';
 		}
 	}
 
@@ -134,6 +151,14 @@ public class Ticker  {
 		} 
 		public void setLast24Hours(Double last24Hours) {
 			this.last24Hours = last24Hours;
+		}
+
+		@Override
+		public String toString() {
+			return "TickerVolume{" +
+					   "today=" + today +
+					   ", last24Hours=" + last24Hours +
+					   '}';
 		}
 	}
 

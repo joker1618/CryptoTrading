@@ -28,7 +28,7 @@ public enum OrderMisc {
 		return label;
 	}
 
-	public static synchronized OrderMisc getByLabel(String label) {
+	public static OrderMisc getByLabel(String label) {
 		return Arrays.stream(values())
 				   .filter(at -> at.label.equals(label))
 				   .findAny()

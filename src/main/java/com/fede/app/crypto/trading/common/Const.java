@@ -21,8 +21,8 @@ public class Const {
 
 
 	// REVIEW remove
-	public static final String KRAKEN_KEY = "VRQ4Oe8ZNPbLEyjv26SlU7F5O8zR9DjXr07Q6EHf95ooaSszvOkISQTc";
-	public static final String KRAKEN_SECRET = "E07VIMtiE1x+0m1ef67ERAB8b3Xrk3Z1hxOlWbEUEB0dqKxghci7a+bnPeEmDrBigdYQ1My24fpPeMW9fOplIw==";
+	public static final String KRAKEN_KEY = "vC/BbE6uRpVSbw1bcewtc3uErxdAg6SrxIyGh9Gt+bnRNBhuvGH8WZsY";
+	public static final String KRAKEN_SECRET = "yhTNpydBCUOEpjs5jl87P1udrsAhHN7cKYX2+cxoCaibXruqHcdEGA0W4efrEduUzpopqI0HHITIU0xFocZMng==";
 
 	public static final NumberFormat NUMBER_FORMAT;
 	static {

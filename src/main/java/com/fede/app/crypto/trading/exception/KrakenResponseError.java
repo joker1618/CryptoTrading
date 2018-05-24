@@ -10,4 +10,5 @@ public class KrakenResponseError extends Exception {
 	public KrakenResponseError(String methodName, List<String> errors) {
 		super(String.format("Error calling '%s': %s", methodName, errors));
 	}
+
 }

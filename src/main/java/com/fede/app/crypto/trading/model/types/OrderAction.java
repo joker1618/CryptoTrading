@@ -15,19 +15,22 @@ public enum OrderAction {
 
 	private List<String> labels;
 
-	OrderAction(String main, String... others) {
+	OrderAction(String label, String shortLabel) {
 		this.labels = new ArrayList<>();
-		labels.add(main);
-		labels.addAll(Arrays.asList(others));
+		labels.add(label);
+		labels.add(shortLabel);
 	}
 
 	public String label() {
 		return labels.get(0);
 	}
+	public String shortLabel() {
+		return labels.get(1);
+	}
 
-	public static synchronized OrderAction getByLabel(String label) {
+	public static OrderAction getByLabel(String toFind) {
 		return Arrays.stream(values())
-				   .filter(at -> at.labels.contains(label))
+				   .filter(at -> at.labels.contains(toFind))
 				   .findAny()
 				   .orElse(null);
 	}

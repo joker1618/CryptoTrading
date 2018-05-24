@@ -46,9 +46,9 @@ public enum OrderType {
 		return labels.get(0);
 	}
 
-	public static synchronized OrderType getByLabel(String label) {
+	public static OrderType getByLabel(String toFind) {
 		return Arrays.stream(values())
-				   .filter(at -> at.labels.contains(label))
+				   .filter(at -> at.labels.contains(toFind))
 				   .findAny()
 				   .orElse(null);
 	}

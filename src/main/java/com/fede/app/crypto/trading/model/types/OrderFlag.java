@@ -29,7 +29,7 @@ public enum OrderFlag {
 		return description;
 	}
 
-	public static synchronized OrderFlag getByLabel(String label) {
+	public static OrderFlag getByLabel(String label) {
 		return Arrays.stream(values())
 				   .filter(at -> at.label.equals(label))
 				   .findAny()
